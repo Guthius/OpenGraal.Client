@@ -8,7 +8,7 @@ LevelLink::LevelLink(const std::string &data)
 {
 	std::vector<std::string> tokens;
 
-	boost::split(tokens, data, boost::is_any_of(","));
+	boost::split(tokens, data, boost::is_any_of(" "));
 	if (tokens.size() < 7)
 	{
 		return;
@@ -25,10 +25,10 @@ LevelLink::LevelLink(const std::string &data)
 		}
 	}
 
-	_x = std::stoi(tokens[offset + 1]);
-	_y = std::stoi(tokens[offset + 2]);
-	_w = std::stoi(tokens[offset + 3]);
-	_h = std::stoi(tokens[offset + 4]);
+	_x = static_cast<int>(std::stof(tokens[offset + 1]) * 16);
+	_y = static_cast<int>(std::stof(tokens[offset + 2]) * 16);
+	_w = static_cast<int>(std::stof(tokens[offset + 3]) * 16);
+	_h = static_cast<int>(std::stof(tokens[offset + 4]) * 16);
 
 	_newX = tokens[offset + 5];
 	_newY = tokens[offset + 6];
