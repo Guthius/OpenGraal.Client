@@ -24,13 +24,7 @@ private:
 	};
 
 public:
-	Game() : _player()
-	{
-		_level = new LevelInfo(
-				Level::Load("levels/onlinestartlocal.nw"),
-				TilesetManager::Get("pics1.png"),
-				0, 0);
-	}
+	Game();
 
 public:
 	void Run();

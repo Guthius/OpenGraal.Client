@@ -7,21 +7,14 @@
 
 class TextureManager {
 private:
-	struct TextureInfo {
-		std::string Name;
-		Texture2D Texture;
-		int RefCount;
-	};
-
-	typedef std::vector<TextureInfo> TextureInfoList;
+	typedef std::map<std::string, Texture2D> TextureMap;
 
 public:
-	static Texture2D Get(const std::string &name);
-	static void Release(Texture2D texture);
+	static Texture2D Get(const std::string &fileName);
 
 private:
-	static Texture2D Load(const std::string &name);
+	static Texture2D Load(const std::string &key);
 
 private:
-	static TextureInfoList _textures;
+	static TextureMap _textures;
 };

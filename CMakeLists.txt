@@ -26,6 +26,10 @@ add_executable(Terestria src/main.cpp
         src/AnimationManager.cpp
         src/AnimationManager.h
         src/Actors/Player.cpp
-        src/Actors/Player.h)
+        src/Actors/Player.h
+        src/LevelManager.cpp
+        src/LevelManager.h
+        src/FileManager.cpp
+        src/FileManager.h)
 
 target_link_libraries(Terestria PRIVATE raylib)

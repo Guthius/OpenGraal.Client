@@ -1,50 +1,38 @@
 #include "TextureManager.h"
+#include "FileManager.h"
 
-TextureManager::TextureInfoList TextureManager::_textures;
+#include <boost/algorithm/string.hpp>
 
-Texture2D TextureManager::Load(const std::string &name)
+TextureManager::TextureMap TextureManager::_textures;
+
+Texture2D TextureManager::Get(const std::string &fileName)
 {
-	auto fileName = TextToLower(name.c_str());
-	auto texture = LoadTexture(fileName);
+	auto key = boost::to_lower_copy(fileName);
 
-	_textures.push_back({name, texture, 1});
+	auto it = _textures.find(key);
+
+	if (it == _textures.end())
+	{
+		return Load(key);
+	}
+
+	return it->second;
+}
+
+Texture2D TextureManager::Load(const std::string &key)
+{
+	auto path = FileManager::GetPath(key);
+
+	if (path.empty())
+	{
+		_textures[key] = {};
+
+		return {};
+	}
+
+	auto texture = LoadTexture(path.string().c_str());
+
+	_textures[key] = texture;
 
 	return texture;
-}
-
-Texture2D TextureManager::Get(const std::string &name)
-{
-	for (auto &i : _textures)
-	{
-		if (i.Name == name)
-		{
-			i.RefCount++;
-
-			return i.Texture;
-		}
-	}
-
-	return Load(name);
-}
-
-void TextureManager::Release(Texture2D texture)
-{
-	for (auto it = _textures.begin(); it != _textures.end();)
-	{
-		if (it->Texture.id != texture.id)
-		{
-			++it;
-
-			continue;
-		}
-
-		it->RefCount--;
-
-		if (it->RefCount <= 0)
-		{
-			UnloadTexture(it->Texture);
-
-			_textures.erase(it);
-		}
-	}
 }

@@ -2,6 +2,37 @@
 #include "Utils.h"
 
 #include <rlgl.h>
+#include <boost/algorithm/string.hpp>
+
+LevelLink::LevelLink(const std::string &data)
+{
+	std::vector<std::string> tokens;
+
+	boost::split(tokens, data, boost::is_any_of(","));
+	if (tokens.size() < 7)
+	{
+		return;
+	}
+
+	auto offset = tokens.size() - 7;
+
+	auto newLevel = tokens[0];
+	if (offset > 0)
+	{
+		for (int i = 0; i < offset; ++i)
+		{
+			newLevel += " " + tokens[offset];
+		}
+	}
+
+	_x = std::stoi(tokens[offset + 1]);
+	_y = std::stoi(tokens[offset + 2]);
+	_w = std::stoi(tokens[offset + 3]);
+	_h = std::stoi(tokens[offset + 4]);
+
+	_newX = tokens[offset + 5];
+	_newY = tokens[offset + 6];
+}
 
 void Level::Draw(Tileset *tileset) const
 {
@@ -132,7 +163,9 @@ Level *Level::LoadNw(std::ifstream &stream)
 		}
 	}
 
-	return new Level(board);
+	std::vector<LevelLink> links;
+
+	return new Level(board, links);
 }
 
 Level *Level::LoadGraal(std::ifstream &stream, int bits, size_t codeMask, size_t controlBit)
@@ -202,7 +235,21 @@ Level *Level::LoadGraal(std::ifstream &stream, int bits, size_t codeMask, size_t
 		count = 1;
 	}
 
-	return new Level(board);
+	std::vector<LevelLink> links;
+	std::string line;
+
+	while (std::getline(stream, line))
+	{
+		boost::trim(line);
+		if (line.empty() || line == "#")
+		{
+			break;
+		}
+
+		links.emplace_back(line);
+	}
+
+	return new Level(board, links);
 }
 
 Level *Level::LoadGraal(std::ifstream &stream, const char *version)

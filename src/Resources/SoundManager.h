@@ -6,12 +6,15 @@
 
 class SoundManager
 {
+private:
+	typedef std::map<std::string, Sound> SoundMap;
+
 public:
 	static Sound Get(const std::string &fileName);
 
 private:
-	static Sound TryLoad(const std::string &fileName);
+	static Sound Load(const std::string &key);
 
 private:
-	static std::map<std::string, Sound> Sounds;
+	static SoundMap Sounds;
 };

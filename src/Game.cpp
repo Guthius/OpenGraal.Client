@@ -3,6 +3,18 @@
 #include <rlgl.h>
 
 #include "Animation.h"
+#include "FileManager.h"
+#include "LevelManager.h"
+
+Game::Game() : _player()
+{
+	FileManager::BuildFileTable("levels");
+
+	_level = new LevelInfo(
+			LevelManager::Get("onlinestartlocal.graal"),
+			TilesetManager::Get("pics1.png"),
+			0, 0);
+}
 
 void Game::Run()
 {
@@ -44,7 +56,10 @@ void Game::Draw() const
 	rlSetTexture(_level->Tileset->GetTexture().id);
 
 	rlPushMatrix();
-	rlTranslatef(cx, cy, 0);
+	rlTranslatef(
+			static_cast<float>(cx),
+			static_cast<float>(cy),
+			0);
 
 	_level->Level->Draw(_level->Tileset);
 
@@ -62,12 +77,11 @@ void Game::DrawPlayer() const
 
 static void DrawDiagnosticsText(const char *str, int y)
 {
-	DrawText(str, 11, y + 1, 10, BLACK);
-	DrawText(str, 10, y, 10, WHITE);
+	DrawText(str, 11, y + 1, 20, BLACK);
+	DrawText(str, 10, y, 20, WHITE);
 }
 
 void Game::DrawDiagnostics()
 {
-	DrawDiagnosticsText(TextFormat("Data Path: %s", GetWorkingDirectory()), 10);
-	DrawDiagnosticsText(TextFormat("FPS: %d", GetFPS()), 30);
+	DrawDiagnosticsText(TextFormat("FPS: %d", GetFPS()), 10);
 }
