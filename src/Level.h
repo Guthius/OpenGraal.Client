@@ -20,6 +20,8 @@ public:
 
 private:
 	static Level *LoadNw(std::ifstream &stream);
+	static Level *LoadGraal(std::ifstream &stream, int bits, size_t codeMask, size_t controlBit);
+	static Level *LoadGraal(std::ifstream &stream, const char *version);
 
 private:
 	std::vector<short> _board;

@@ -54,19 +54,26 @@ Level *Level::Load(const std::filesystem::path &path)
 		return nullptr;
 	}
 
-	auto file = std::ifstream(path, std::ios::binary);
-	if (!file)
+	auto stream = std::ifstream(path, std::ios::binary);
+	if (!stream)
 	{
 		return nullptr;
 	}
 
-	std::string line;
-	if (!std::getline(file, line) || line.size() < 8 || line.substr(0, 8) != "GLEVNW01")
+	char version[9]{};
+
+	stream.read(version, 8);
+	if (!stream)
 	{
 		return nullptr;
 	}
 
-	return LoadNw(file);
+	if (TextIsEqual(version, "GLEVNW01"))
+	{
+		return LoadNw(stream);
+	}
+
+	return LoadGraal(stream, version);
 }
 
 Level *Level::LoadNw(std::ifstream &stream)
@@ -126,4 +133,95 @@ Level *Level::LoadNw(std::ifstream &stream)
 	}
 
 	return new Level(board);
+}
+
+Level *Level::LoadGraal(std::ifstream &stream, int bits, size_t codeMask, size_t controlBit)
+{
+	constexpr int boardSize = 64 * 64;
+
+	int bitsRead = 0;
+	char byte;
+	size_t buf = 0;
+	uint16_t code;
+	short tile1 = -1;
+	short tile2;
+	int boardIndex = 0;
+	bool doubleMode = false;
+	int count = 0;
+	std::vector<short> board(64 * 64);
+
+	while (boardIndex < boardSize && !stream.eof())
+	{
+		while (bitsRead < bits)
+		{
+			stream.read(&byte, 1);
+
+			buf |= static_cast<uint8_t>(byte) << bitsRead;
+
+			bitsRead += 8;
+		}
+
+		code = buf & codeMask;
+		buf >>= bits;
+		bitsRead -= bits;
+
+		if (code & controlBit)
+		{
+			doubleMode = (code & 0x100) == 0x100;
+			count = code & 0xFF;
+			continue;
+		}
+
+		if (doubleMode)
+		{
+			if (tile1 == -1)
+			{
+				tile1 = static_cast<short>(code);
+				continue;
+			}
+
+			tile2 = static_cast<short>(code);
+
+			for (auto i = 0; i < count && boardIndex < boardSize - 1; ++i)
+			{
+				board[boardIndex++] = tile1;
+				board[boardIndex++] = tile2;
+			}
+
+			tile1 = -1;
+			doubleMode = false;
+		}
+		else
+		{
+			for (auto i = 0; i < count && boardIndex < boardSize; ++i)
+			{
+				board[boardIndex++] = static_cast<short>(code);
+			}
+		}
+
+		count = 1;
+	}
+
+	return new Level(board);
+}
+
+Level *Level::LoadGraal(std::ifstream &stream, const char *version)
+{
+	auto v = -1;
+
+	if (TextIsEqual(version, "GR-V1.00")) v = 0;
+	else if (TextIsEqual(version, "GR-V1.01")) v = 1;
+	else if (TextIsEqual(version, "GR-V1.02")) v = 2;
+	else if (TextIsEqual(version, "GR-V1.03")) v = 3;
+
+	if (v == -1)
+	{
+		return nullptr;
+	}
+
+	return LoadGraal(
+			stream,
+			v > 0 ? 13 : 12,
+			v > 0 ? 0x1FFF : 0xFFF,
+			v > 0 ? 0x1000 : 0x800);
 }
