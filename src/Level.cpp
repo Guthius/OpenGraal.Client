@@ -75,6 +75,16 @@ void Level::Draw(Tileset *tileset) const
 		}
 	}
 
+	for (const auto &link: _links)
+	{
+		auto x = static_cast<float>(link.GetX());
+		auto w = static_cast<float>(link.GetWidth());
+		auto y = static_cast<float>(link.GetY());
+		auto h = static_cast<float>(link.GetHeight());
+
+		DrawRectangleLinesEx({x, y, w, h}, 2.0f, GREEN);
+	}
+
 	rlEnd();
 }
 
