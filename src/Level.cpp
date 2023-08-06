@@ -180,7 +180,7 @@ Level *Level::LoadGraal(std::ifstream &stream, int bits, size_t codeMask, size_t
 	short tile2;
 	int boardIndex = 0;
 	bool doubleMode = false;
-	int count = 0;
+	int count = 1;
 	std::vector<short> board(64 * 64);
 
 	while (boardIndex < boardSize && !stream.eof())
