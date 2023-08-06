@@ -38,8 +38,8 @@ void Game::Draw() const
 	auto csy = static_cast<float>(GetScreenHeight()) / 2.0f;
 
 	auto pos = _player.GetPosition();
-	auto cx = csx - 16 - pos.x;
-	auto cy = csy - 16 - pos.y;
+	auto cx = static_cast<int>(csx - 16 - pos.x);
+	auto cy = static_cast<int>(csy - 16 - pos.y);
 
 	rlSetTexture(_level->Tileset->GetTexture().id);
 
