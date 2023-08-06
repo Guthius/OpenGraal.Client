@@ -1,11 +1,13 @@
 cmake_minimum_required(VERSION 3.26)
-project(Terestria)
+project(OpenGraal)
 
 find_package(raylib CONFIG REQUIRED)
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_FLAGS -mwindows)
 
-add_executable(Terestria src/main.cpp
+add_executable(OpenGraal
+        src/main.cpp
         src/Level.cpp
         src/Level.h
         src/Tileset.cpp
@@ -32,4 +34,5 @@ add_executable(Terestria src/main.cpp
         src/FileManager.cpp
         src/FileManager.h)
 
-target_link_libraries(Terestria PRIVATE raylib)
+target_sources(OpenGraal PRIVATE game.rc)
+target_link_libraries(OpenGraal PRIVATE raylib)
