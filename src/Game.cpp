@@ -6,7 +6,7 @@
 #include "FileManager.h"
 #include "LevelManager.h"
 
-Game::Game() : _player()
+Game::Game() : _player(this)
 {
 	FileManager::BuildFileTable("levels");
 
@@ -37,6 +37,18 @@ void Game::Run()
 
 		EndDrawing();
 	}
+}
+
+void Game::ChangeLevel(const std::string &levelName)
+{
+	auto level = LevelManager::Get(levelName);
+
+	if (level == nullptr)
+	{
+		return;
+	}
+
+	_level->Level = level;
 }
 
 void Game::Update()

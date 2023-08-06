@@ -25,11 +25,13 @@ LevelLink::LevelLink(const std::string &data)
 		}
 	}
 
-	_x = static_cast<int>(std::stof(tokens[offset + 1]) * 16);
-	_y = static_cast<int>(std::stof(tokens[offset + 2]) * 16);
-	_w = static_cast<int>(std::stof(tokens[offset + 3]) * 16);
-	_h = static_cast<int>(std::stof(tokens[offset + 4]) * 16);
+	auto x = static_cast<float>(static_cast<int>(std::stof(tokens[offset + 1]) * 16));
+	auto y = static_cast<float>(static_cast<int>(std::stof(tokens[offset + 2]) * 16));
+	auto w = static_cast<float>(static_cast<int>(std::stof(tokens[offset + 3]) * 16));
+	auto h = static_cast<float>(static_cast<int>(std::stof(tokens[offset + 4]) * 16));
 
+	_rect = {x, y, w, h};
+	_newLevel = newLevel;
 	_newX = tokens[offset + 5];
 	_newY = tokens[offset + 6];
 }
@@ -77,15 +79,35 @@ void Level::Draw(Tileset *tileset) const
 
 	for (const auto &link: _links)
 	{
-		auto x = static_cast<float>(link.GetX());
-		auto w = static_cast<float>(link.GetWidth());
-		auto y = static_cast<float>(link.GetY());
-		auto h = static_cast<float>(link.GetHeight());
+		auto r = link.GetRectangle();
+		auto x = r.x;
+		auto w = r.width;
+		auto y = r.y;
+		auto h = r.height;
 
-		DrawRectangleLinesEx({x, y, w, h}, 2.0f, GREEN);
+		DrawRectangleLines(x, y, w, h, YELLOW);
+		DrawRectangleLines(x + 1, y + 1, w - 2, h - 2, ORANGE);
 	}
 
 	rlEnd();
+}
+
+#include <algorithm>
+
+const LevelLink *Level::GetLinkAt(int x, int y) const
+{
+	for (const auto &link: _links)
+	{
+		auto &rect = link.GetRectangle();
+
+		if (x >= rect.x && x <= rect.x + rect.width &&
+			y >= rect.y && y <= rect.y + rect.height)
+		{
+			return &link;
+		}
+	}
+
+	return nullptr;
 }
 
 Level *Level::Load(const std::filesystem::path &path)

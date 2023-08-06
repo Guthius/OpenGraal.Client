@@ -1,5 +1,4 @@
 #include "Actor.h"
-#include "../AnimationManager.h"
 
 #include <rlgl.h>
 

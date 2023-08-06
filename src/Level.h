@@ -18,22 +18,13 @@ public:
 
 	[[nodiscard]] const std::string &GetNewY() const { return _newY; }
 
-	[[nodiscard]] int GetX() const { return _x; }
-
-	[[nodiscard]] int GetY() const { return _y; }
-
-	[[nodiscard]] int GetWidth() const { return _w; }
-
-	[[nodiscard]] int GetHeight() const { return _h; }
+	[[nodiscard]] const Rectangle &GetRectangle() const { return _rect; }
 
 private:
 	std::string _newLevel{};
 	std::string _newX{};
 	std::string _newY{};
-	int _x = 0;
-	int _y = 0;
-	int _w = 0;
-	int _h = 0;
+	Rectangle _rect;
 };
 
 class Level
@@ -45,6 +36,8 @@ public:
 	}
 
 	void Draw(Tileset *tileset) const;
+
+	const LevelLink *GetLinkAt(int x, int y) const;
 
 public:
 	static Level *Load(const std::filesystem::path &path);

@@ -28,6 +28,8 @@ public:
 
 public:
 	void Run();
+	void ChangeLevel(const std::string &levelName);
+	Level *GetCurrentLevel() const { return _level->Level; }
 
 private:
 	void Update();
