@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "Tileset.h"
+#include "LevelSign.h"
 
 class LevelLink
 {
@@ -24,20 +25,29 @@ private:
 	std::string _newLevel{};
 	std::string _newX{};
 	std::string _newY{};
-	Rectangle _rect;
+	Rectangle _rect{};
 };
 
 class Level
 {
 public:
-	explicit Level(const std::vector<short> &board, const std::vector<LevelLink> &links)
-			: _board(board), _links(links)
+	explicit Level(
+			const std::vector<short> &board,
+			const std::vector<LevelLink> &links,
+			const std::vector<LevelSign> &signs)
+			: _board(board), _links(links), _signs(signs)
 	{
 	}
 
 	void Draw(Tileset *tileset) const;
 
-	const LevelLink *GetLinkAt(int x, int y) const;
+	void DrawEditorHints() const;
+
+	[[nodiscard]] const LevelLink *GetLinkAt(int x, int y) const;
+
+	[[nodiscard]] TileType GetTileType(Tileset *tileset, int x, int y) const;
+
+	[[nodiscard]] bool OnWall(Tileset *tileset, Rectangle rect) const;
 
 public:
 	static Level *Load(const std::filesystem::path &path);
@@ -45,11 +55,12 @@ public:
 private:
 	static Level *LoadNw(std::ifstream &stream);
 
-	static Level *LoadGraal(std::ifstream &stream, int bits, size_t codeMask, size_t controlBit);
+	static Level *LoadGraal(std::ifstream &stream, int bits, size_t codeMask, size_t controlBit, bool hasChests);
 
 	static Level *LoadGraal(std::ifstream &stream, const char *version);
 
 private:
 	std::vector<short> _board;
 	std::vector<LevelLink> _links;
+	std::vector<LevelSign> _signs;
 };

@@ -3,13 +3,36 @@
 #include "TextureManager.h"
 #include <raylib.h>
 
+enum TileType
+{
+	Passable = 0,
+	Wall = (1 << 0),
+	Water = (1 << 1),
+	Chair = (1 << 2),
+	WaterShallow = (1 << 3),
+	Swamp = (1 << 4),
+	Jump = (1 << 5),
+	BedTop = (1 << 6),
+	BedBottom = (1 << 7),
+
+	Unknown = (1 << 16),
+};
+
 class Tileset
 {
 public:
-	explicit Tileset(const char *fileName) : _texture(TextureManager::Get(fileName))
+	explicit Tileset(const char *fileName);
+
+	~Tileset()
 	{
-		_tileWidth = 16.0f / (float) _texture.width;
-		_tileHeight = 16.0f / (float) _texture.height;
+		if (_tiles == nullptr)
+		{
+			return;
+		}
+
+		delete[] _tiles;
+
+		_tiles = nullptr;
 	}
 
 public:
@@ -19,13 +42,12 @@ public:
 
 	[[nodiscard]] float GetTileHeight() const { return _tileHeight; }
 
+	[[nodiscard]] TileType GetType(int tileId) const;
+
 private:
+	int _tileCount;
+	TileType *_tiles;
 	Texture2D _texture;
 	float _tileWidth;
 	float _tileHeight;
-};
-
-class TilesetManager {
-public:
-	static Tileset *Get(const char *fileName);
 };

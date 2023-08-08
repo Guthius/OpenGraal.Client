@@ -4,6 +4,13 @@
 #include <rlgl.h>
 #include <boost/algorithm/string.hpp>
 
+#define COLOR_LINK1     CLITERAL(Color){ 255, 255, 0, 255 }
+#define COLOR_LINK2     CLITERAL(Color){ 255, 128, 0, 255 }
+
+#define COLOR_SIGN1     CLITERAL(Color){ 255, 0, 0, 255 }
+#define COLOR_SIGN2     CLITERAL(Color){ 192, 0, 0, 255 }
+#define COLOR_SIGN3     CLITERAL(Color){ 128, 0, 0, 255 }
+
 LevelLink::LevelLink(const std::string &data)
 {
 	std::vector<std::string> tokens;
@@ -63,6 +70,16 @@ void Level::Draw(Tileset *tileset) const
 			auto ty1 = static_cast<float>(tiley) / 512.0f; // Top
 			auto ty2 = ty1 + tileHeight; // Bottom
 
+			auto type = tileset->GetType(tileId);
+			if (type & TileType::Unknown)
+			{
+				rlColor4ub(255, 0, 0, 255);
+			}
+			else
+			{
+				rlColor4ub(255, 255, 255, 255);
+			}
+
 			rlTexCoord2f(tx1, ty1);
 			rlVertex2f(sx1, sy1);
 
@@ -77,6 +94,13 @@ void Level::Draw(Tileset *tileset) const
 		}
 	}
 
+	DrawEditorHints();
+
+	rlEnd();
+}
+
+void Level::DrawEditorHints() const
+{
 	for (const auto &link: _links)
 	{
 		auto r = link.GetRectangle();
@@ -85,14 +109,23 @@ void Level::Draw(Tileset *tileset) const
 		auto y = r.y;
 		auto h = r.height;
 
-		DrawRectangleLines(x, y, w, h, YELLOW);
-		DrawRectangleLines(x + 1, y + 1, w - 2, h - 2, ORANGE);
+		DrawRectangleLines(x, y, w, h, COLOR_LINK1);
+		DrawRectangleLines(x + 1, y + 1, w - 2, h - 2, COLOR_LINK2);
 	}
 
-	rlEnd();
-}
+	for (const auto &sign: _signs)
+	{
+		auto r = sign.GetRectangle();
+		auto x = r.x;
+		auto w = r.width;
+		auto y = r.y;
+		auto h = r.height;
 
-#include <algorithm>
+		DrawRectangleLines(x, y, w, h, COLOR_SIGN1);
+		DrawRectangleLines(x + 1, y + 1, w - 2, h - 2, COLOR_SIGN2);
+		DrawRectangleLines(x + 2, y + 2, w - 4, h - 4, COLOR_SIGN3);
+	}
+}
 
 const LevelLink *Level::GetLinkAt(int x, int y) const
 {
@@ -196,11 +229,12 @@ Level *Level::LoadNw(std::ifstream &stream)
 	}
 
 	std::vector<LevelLink> links;
+	std::vector<LevelSign> signs;
 
-	return new Level(board, links);
+	return new Level(board, links, signs);
 }
 
-Level *Level::LoadGraal(std::ifstream &stream, int bits, size_t codeMask, size_t controlBit)
+Level *Level::LoadGraal(std::ifstream &stream, int bits, size_t codeMask, size_t controlBit, bool hasChests)
 {
 	constexpr int boardSize = 64 * 64;
 
@@ -268,6 +302,7 @@ Level *Level::LoadGraal(std::ifstream &stream, int bits, size_t codeMask, size_t
 	}
 
 	std::vector<LevelLink> links;
+	std::vector<LevelSign> signs;
 	std::string line;
 
 	while (std::getline(stream, line))
@@ -281,7 +316,69 @@ Level *Level::LoadGraal(std::ifstream &stream, int bits, size_t codeMask, size_t
 		links.emplace_back(line);
 	}
 
-	return new Level(board, links);
+	char baddyX;
+	char baddyY;
+	char baddyType;
+
+	/* Read Baddies */
+	while (!stream.eof())
+	{
+		stream.read(&baddyX, 1);
+		stream.read(&baddyY, 1);
+		stream.read(&baddyType, 1);
+
+		std::getline(stream, line);
+
+		if (!stream)
+		{
+			break;
+		}
+
+		if (baddyX == -1 && baddyY == -1 && baddyType == -1)
+		{
+			break;
+		}
+	}
+
+	/* Read NPC's */
+	while (std::getline(stream, line))
+	{
+		boost::trim(line);
+		if (line.empty() || line == "#")
+		{
+			break;
+		}
+	}
+
+	/* Read Chests */
+	if (hasChests)
+	{
+		while (std::getline(stream, line))
+		{
+			boost::trim(line);
+			if (line.empty() || line == "#")
+			{
+				break;
+			}
+		}
+	}
+
+	/* Read Signs */
+	while (std::getline(stream, line))
+	{
+		if (line.empty())
+		{
+			break;
+		}
+
+		auto x = static_cast<float>(line[0] - 32);
+		auto y = static_cast<float>(line[1] - 32);
+		auto text = LevelSign::Decode(line.substr(2));
+
+		signs.emplace_back(x * 16, y * 16, text);
+	}
+
+	return new Level(board, links, signs);
 }
 
 Level *Level::LoadGraal(std::ifstream &stream, const char *version)
@@ -302,5 +399,54 @@ Level *Level::LoadGraal(std::ifstream &stream, const char *version)
 			stream,
 			v > 0 ? 13 : 12,
 			v > 0 ? 0x1FFF : 0xFFF,
-			v > 0 ? 0x1000 : 0x800);
+			v > 0 ? 0x1000 : 0x800,
+			v > 0);
+}
+
+TileType Level::GetTileType(Tileset *tileset, int x, int y) const
+{
+	auto tx = static_cast<int>(x / 16);
+	auto ty = static_cast<int>(y / 16);
+
+	if (tx < 0 || tx > 63 || ty < 0 || ty > 63)
+	{
+		return TileType::Passable;
+	}
+
+	auto tileIndex = ty * 64 + tx;
+	auto tileId = _board[tileIndex];
+
+	return tileset->GetType(tileId);
+}
+
+bool Level::OnWall(Tileset *tileset, Rectangle rect) const
+{
+	auto sx = static_cast<int>(rect.x / 16);
+	auto sy = static_cast<int>(rect.y / 16);
+	auto dx = static_cast<int>((rect.x + rect.width) / 16);
+	auto dy = static_cast<int>((rect.y + rect.height) / 16);
+
+	if (sx < 0 || sx > 63 || sy < 0 || sy > 63)
+	{
+		return false;
+	}
+
+	dx = std::max(sx, std::min(dx, 63));
+	dy = std::max(sy, std::min(dy, 63));
+
+	for (auto y = sy; y <= dy; ++y)
+	{
+		for (auto x = sx; x <= dx; ++x)
+		{
+			auto tileIndex = y * 64 + x;
+			auto tileId = _board[tileIndex];
+
+			if (tileset->GetType(tileId) & TileType::Wall)
+			{
+				return true;
+			}
+		}
+	}
+
+	return false;
 }

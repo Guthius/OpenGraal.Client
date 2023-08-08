@@ -1,7 +1,7 @@
 #include "Animation.h"
 #include "TextureManager.h"
 #include "Utils.h"
-#include "Resources/SoundManager.h"
+#include "SoundManager.h"
 
 #include <fstream>
 #include <rlgl.h>

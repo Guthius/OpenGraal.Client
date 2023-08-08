@@ -1,5 +1,5 @@
 #include "SoundManager.h"
-#include "../FileManager.h"
+#include "FileManager.h"
 
 #include <boost/algorithm/string.hpp>
 

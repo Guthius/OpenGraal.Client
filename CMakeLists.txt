@@ -18,21 +18,25 @@ add_executable(OpenGraal
         src/Animation.h
         src/TextureManager.cpp
         src/TextureManager.h
-        src/Actors/Actor.h
+        src/Actor.h
         src/Utils.cpp
         src/Utils.h
-        src/Actors/Actor.cpp
+        src/Actor.cpp
         src/Constants.h
-        src/Resources/SoundManager.cpp
-        src/Resources/SoundManager.h
+        src/SoundManager.cpp
+        src/SoundManager.h
         src/AnimationManager.cpp
         src/AnimationManager.h
-        src/Actors/Player.cpp
-        src/Actors/Player.h
+        src/Player.cpp
+        src/Player.h
         src/LevelManager.cpp
         src/LevelManager.h
         src/FileManager.cpp
-        src/FileManager.h)
+        src/FileManager.h
+        src/LevelSign.cpp
+        src/LevelSign.h
+        src/TilesetManager.cpp
+        src/TilesetManager.h)
 
 target_sources(OpenGraal PRIVATE game.rc)
 target_link_libraries(OpenGraal PRIVATE raylib)

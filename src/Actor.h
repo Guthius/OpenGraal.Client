@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Animation.h"
-#include "../AnimationManager.h"
-#include "../Constants.h"
+#include "Animation.h"
+#include "AnimationManager.h"
+#include "Constants.h"
 
 #include <string>
 #include <raylib.h>
@@ -18,7 +18,7 @@ public:
 public:
 	virtual void Update(float dt);
 
-	void Draw() const;
+	virtual void Draw() const;
 
 public:
 	[[nodiscard]] Vector2 GetPosition() const { return _position; }
