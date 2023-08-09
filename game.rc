@@ -1,1 +1,23 @@
-IDI_ICON1               ICON        DISCARDABLE            "game.ico"
+GLFW_ICON ICON "game.ico"
+
+1 VERSIONINFO
+FILEVERSION     0,1,0,0
+PRODUCTVERSION  0,1,0,0
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040904E4"	// English US
+    BEGIN
+      VALUE "FileDescription", "OpenGraal"
+      VALUE "FileVersion", "0.1.0"
+      VALUE "InternalName", "OpenGraal"
+      VALUE "LegalCopyright", "(c) 2023 OpenGraal Project"
+      VALUE "ProductName", "OpenGraal"
+      VALUE "ProductVersion", "0.1.0"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x409, 1252	// English US
+  END
+END
