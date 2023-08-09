@@ -311,7 +311,7 @@ void Animation::Update(float dt, AnimationState &state)
 	state.Ended = true;
 }
 
-void Animation::Draw(float x, float y, Direction direction, const AnimationState &state) const
+void Animation::Draw(float x, float y, int direction, const AnimationState &state) const
 {
 	if (_frames.empty())
 	{
@@ -320,7 +320,7 @@ void Animation::Draw(float x, float y, Direction direction, const AnimationState
 
 	if (_singleDirection)
 	{
-		direction = Direction::Up;
+		direction = DIR_UP;
 	}
 
 	auto frameIndex = state.Frame;
@@ -331,7 +331,7 @@ void Animation::Draw(float x, float y, Direction direction, const AnimationState
 	}
 
 	auto &frame = _frames[frameIndex];
-	auto &sprites = frame.Sprites[static_cast<int>(direction)];
+	auto &sprites = frame.Sprites[direction];
 
 	if (sprites.empty())
 	{

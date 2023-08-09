@@ -22,16 +22,16 @@ public:
 
 public:
 	[[nodiscard]] Vector2 GetPosition() const { return _position; }
-	[[nodiscard]] Direction GetDirection() const { return _dir; }
+	[[nodiscard]] int GetDirection() const { return _dir; }
 	[[nodiscard]] const std::string &GetAnimation() const { return _animationName; }
 
 	void SetPosition(Vector2 &position) { _position = position; }
-	void SetDirection(Direction dir) { _dir = dir; }
+	void SetDirection(int dir) { _dir = dir; }
 	void SetAnimation(const std::string &name);
 
 private:
 	Vector2 _position{0, 0};
-	Direction _dir = Direction::Up;
+	int _dir = DIR_UP;
 	AnimationState _animationState{};
 	std::string _animationName{};
 	Animation *_animation = nullptr;

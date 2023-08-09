@@ -4,10 +4,32 @@
 #define BLOCK_TILE1 1
 #define BLOCK_TILE2 2
 
-static int movementKeys[4] = {KEY_UP, KEY_LEFT, KEY_DOWN, KEY_RIGHT};
+constexpr int movementKeys[4] = {KEY_UP, KEY_LEFT, KEY_DOWN, KEY_RIGHT};
 
 static float vecx[4] = {0, -1, 0, 1};
 static float vecy[4] = {-1, 0, 1, 0};
+
+static constexpr int GetDirectionKey(int direction)
+{
+	return movementKeys[direction];
+}
+
+static constexpr int GetOppositeDirectionKey(int direction)
+{
+	switch (direction)
+	{
+		default:
+			return direction;
+		case DIR_UP:
+			return movementKeys[2];
+		case DIR_LEFT:
+			return movementKeys[3];
+		case DIR_DOWN:
+			return movementKeys[0];
+		case DIR_RIGHT:
+			return movementKeys[1];
+	}
+}
 
 Player::Player(Game *game)
 {
@@ -29,30 +51,11 @@ void Player::Update(float dt)
 	}
 
 	CheckForLevelLinkAt(position);
+	CheckPushAndPull();
 
 	if (_mode != oldMode)
 	{
-		switch (_mode)
-		{
-			case Mode::Idle:
-				SetAnimation("idle");
-				break;
-
-			case Mode::Walk:
-				SetAnimation("walk");
-				break;
-
-			case Mode::Swim:
-				SetAnimation("swim");
-				break;
-
-			case Mode::Sit:
-				SetAnimation("sit");
-				break;
-
-			default:
-				break;
-		}
+		UpdateAnimation();
 	}
 
 	Actor::Update(dt);
@@ -62,9 +65,9 @@ void Player::Update(float dt)
 
 static float terrainSprite[][2] =
 		{
-				{0, 274},
+				{0,  274},
 				{32, 274},
-				{0, 306},
+				{0,  306},
 				{32, 306},
 		};
 
@@ -188,39 +191,36 @@ bool Player::CheckMovement(Vector2 &position, float speed, float slideSpeed)
 	}
 
 	auto moved = false;
-	auto blocked = 0;
 
-	for (int i = 0; i < 4; ++i)
+	for (int dir = 0; dir < 4; ++dir)
 	{
-		if (!IsKeyDown(movementKeys[i]))
+		if (!IsKeyDown(movementKeys[dir]))
 		{
 			continue;
 		}
 
-		auto direction = (Direction) i;
-
-		/*
-    // IF PLAYER MOVES, STOP THE PLAYER FROM PUSHING ANYMORE
-      if (k != player.dir) player.notpush = timevar2;
-		 * */
-
-		SetDirection(direction);
-
-		blocked = CheckWall(direction, speed);
-
-		if (blocked == 0)
+		if (dir != GetDirection())
 		{
-			position.x += vecx[i] * speed;
-			position.y += vecy[i] * speed;
+			_pushTimer = 0;
+		}
+
+		SetDirection(dir);
+
+		_wall = CheckWall(dir, speed);
+
+		if (_wall == 0)
+		{
+			position.x += vecx[dir] * speed;
+			position.y += vecy[dir] * speed;
 			moved = true;
 		}
 		else
 		{
-			ClearGap(position, direction, speed);
+			ClearGap(position, dir, speed);
 
-			if (blocked != (BLOCK_TILE1 | BLOCK_TILE2))
+			if (_wall != (BLOCK_TILE1 | BLOCK_TILE2))
 			{
-				Slide(position, direction, blocked, slideSpeed);
+				Slide(position, dir, slideSpeed);
 			}
 		}
 
@@ -235,6 +235,7 @@ bool Player::CheckMovement(Vector2 &position, float speed, float slideSpeed)
 	if (floor & TileType::Chair)
 	{
 		SetOverlay(OverlayType::None);
+
 		_mode = Mode::Sit;
 	}
 	else if (floor & TileType::Swamp)
@@ -248,6 +249,7 @@ bool Player::CheckMovement(Vector2 &position, float speed, float slideSpeed)
 	else if (floor & TileType::Water)
 	{
 		SetOverlay(OverlayType::None);
+
 		_mode = Mode::Swim;
 	}
 	else
@@ -255,14 +257,22 @@ bool Player::CheckMovement(Vector2 &position, float speed, float slideSpeed)
 		SetOverlay(OverlayType::None);
 	}
 
-	if (_mode == Mode::Swim || blocked != (BLOCK_TILE1 | BLOCK_TILE2))
+
+	return moved;
+}
+
+void Player::CheckPushAndPull()
+{
+	if (_mode == Mode::Swim || _wall != (BLOCK_TILE1 | BLOCK_TILE2))
 	{
-		return moved;
+		return;
 	}
+
+	auto dir = GetDirection();
 
 	if (IsKeyDown(KEY_A))
 	{
-		if (IsKeyDown(movementKeys[0]))
+		if (IsKeyDown(GetOppositeDirectionKey(dir)))
 		{
 			_mode = Mode::Pull;
 		}
@@ -272,22 +282,35 @@ bool Player::CheckMovement(Vector2 &position, float speed, float slideSpeed)
 		}
 	}
 
-	return moved;
+	if (IsKeyDown(GetDirectionKey(dir)))
+	{
+		if (_mode != Mode::Push)
+		{
+			_pushTimer += GetFrameTime();
+
+			if (_pushTimer >= .75f)
+			{
+				_mode = Mode::Push;
+			}
+		}
+	}
+	else
+	{
+		_pushTimer = 0;
+	}
 }
 
-int Player::CheckWall(Direction direction, float speed)
+int Player::CheckWall(int dir, float speed)
 {
 	auto pos = GetPosition();
 
-	auto i = (int) direction;
+	auto ax = pos.x + vecx[dir] * (dir < 2 ? speed : 32);
+	auto ay = pos.y + vecy[dir] * (dir < 2 ? speed : 32);
+	auto bx = pos.x + 16 + vecx[dir] * (dir < 2 ? speed + 16 : 16);
+	auto by = pos.y + 16 + vecy[dir] * (dir < 2 ? speed + 16 : 16);
 
-	auto ax = pos.x + vecx[i] * (i < 2 ? speed : 32);
-	auto ay = pos.y + vecy[i] * (i < 2 ? speed : 32);
-	auto bx = pos.x + 16 + vecx[i] * (i < 2 ? speed + 16 : 16);
-	auto by = pos.y + 16 + vecy[i] * (i < 2 ? speed + 16 : 16);
-
-	auto w = ((i == 1 || i == 3) ? speed : 16);
-	auto h = ((i == 0 || i == 2) ? speed : 16);
+	auto w = ((dir == 1 || dir == 3) ? speed : 16);
+	auto h = ((dir == 0 || dir == 2) ? speed : 16);
 
 	char result = 0;
 
@@ -304,13 +327,13 @@ int Player::CheckWall(Direction direction, float speed)
 	return result;
 }
 
-void Player::ClearGap(Vector2 &position, Direction direction, float speed)
+void Player::ClearGap(Vector2 &position, int dir, float speed)
 {
 	float dist = 0;
 
 	for (; dist < speed;)
 	{
-		auto wall = CheckWall(direction, dist);
+		auto wall = CheckWall(dir, dist);
 
 		if (wall != 0)
 		{
@@ -325,41 +348,42 @@ void Player::ClearGap(Vector2 &position, Direction direction, float speed)
 		return;
 	}
 
-	auto dir = (int) direction;
-
-	switch (direction)
+	switch (dir)
 	{
-		case Direction::Up:
-		case Direction::Down:
+		default:
+			break;
+
+		case DIR_UP:
+		case DIR_DOWN:
 			position.y += vecx[dir] * dist;
 			break;
 
-		case Direction::Left:
-		case Direction::Right:
+		case DIR_LEFT:
+		case DIR_RIGHT:
 			position.x += vecy[dir] * dist;
 			break;
 	}
 }
 
-void Player::Slide(Vector2 &position, Direction direction, int wall, float slideSpeed)
+void Player::Slide(Vector2 &position, int dir, float speed)
 {
-	Direction slideDirection;
+	int slideDir;
 
-	if (wall == BLOCK_TILE1)
+	if (_wall == BLOCK_TILE1)
 	{
-		switch (direction)
+		switch (dir)
 		{
-			case Direction::Up:
-				slideDirection = Direction::Right;
+			case DIR_UP:
+				slideDir = DIR_RIGHT;
 				break;
-			case Direction::Left:
-				slideDirection = Direction::Down;
+			case DIR_LEFT:
+				slideDir = DIR_DOWN;
 				break;
-			case Direction::Down:
-				slideDirection = Direction::Right;
+			case DIR_DOWN:
+				slideDir = DIR_RIGHT;
 				break;
-			case Direction::Right:
-				slideDirection = Direction::Down;
+			case DIR_RIGHT:
+				slideDir = DIR_DOWN;
 				break;
 			default:
 				return;
@@ -367,46 +391,84 @@ void Player::Slide(Vector2 &position, Direction direction, int wall, float slide
 	}
 	else
 	{
-		switch (direction)
+		switch (dir)
 		{
-			case Direction::Up:
-				slideDirection = Direction::Left;
+			case DIR_UP:
+				slideDir = DIR_LEFT;
 				break;
-			case Direction::Left:
-				slideDirection = Direction::Up;
+			case DIR_LEFT:
+				slideDir = DIR_UP;
 				break;
-			case Direction::Down:
-				slideDirection = Direction::Left;
+			case DIR_DOWN:
+				slideDir = DIR_LEFT;
 				break;
-			case Direction::Right:
-				slideDirection = Direction::Up;
+			case DIR_RIGHT:
+				slideDir = DIR_UP;
 				break;
 			default:
 				return;
 		}
 	}
 
-	auto blocked = CheckWall(slideDirection, slideSpeed);
+	auto blocked = CheckWall(slideDir, speed);
 
 	if (blocked != 0)
 	{
 		return;
 	}
 
-	auto dir = (int) slideDirection;
-
-	switch (direction)
+	switch (dir)
 	{
-		case Direction::Up:
-		case Direction::Down:
-			position.x += vecx[dir] * slideSpeed;
+		default:
+			return;
+
+		case DIR_UP:
+		case DIR_DOWN:
+			position.x += vecx[slideDir] * speed;
 			break;
 
-		case Direction::Left:
-		case Direction::Right:
-			position.y += vecy[dir] * slideSpeed;
+		case DIR_LEFT:
+		case DIR_RIGHT:
+			position.y += vecy[slideDir] * speed;
 			break;
 	}
 
 	SetPosition(position);
+}
+
+void Player::UpdateAnimation()
+{
+	switch (_mode)
+	{
+		case Mode::Idle:
+			SetAnimation("idle");
+			break;
+
+		case Mode::Walk:
+			SetAnimation("walk");
+			break;
+
+		case Mode::Swim:
+			SetAnimation("swim");
+			break;
+
+		case Mode::Sit:
+			SetAnimation("sit");
+			break;
+
+		case Mode::Pull:
+			SetAnimation("pull");
+			break;
+
+		case Mode::Grab:
+			SetAnimation("grab");
+			break;
+
+		case Mode::Push:
+			SetAnimation("push");
+			break;
+
+		default:
+			break;
+	}
 }

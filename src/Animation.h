@@ -71,7 +71,7 @@ private:
 public:
 	void Load(const std::filesystem::path &path);
 	void Update(float dt, AnimationState &state);
-	void Draw(float x, float y, Direction direction, const AnimationState &state) const;
+	void Draw(float x, float y, int direction, const AnimationState &state) const;
 	[[nodiscard]] size_t GetFrameCount() const { return _frames.size(); }
 	[[nodiscard]] float GetFrameDuration(size_t frame) const { return _frames[frame].Duration; }
 

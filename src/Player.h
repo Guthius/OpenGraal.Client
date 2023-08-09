@@ -17,14 +17,17 @@ private:
 	void ReturnIdle();
 	bool CheckForLevelLinkAt(Vector2 &position);
 	bool CheckMovement(Vector2 &position, float speed, float slideSpeed);
-	int CheckWall(Direction direction, float speed);
-	void ClearGap(Vector2 &position, Direction direction, float speed);
-	void Slide(Vector2 &position, Direction direction, int wallCheck, float slideSpeed);
+	void CheckPushAndPull();
+	int CheckWall(int dir, float speed);
+	void ClearGap(Vector2 &position, int dir, float speed);
+	void Slide(Vector2 &position, int dir, float speed);
+	void UpdateAnimation();
 
 	enum class Mode {
 		Idle,
 		Walk,
 		Grab,
+		Push,
 		Pull,
 		Swim,
 		Sit
@@ -55,4 +58,6 @@ private:
 	float _speed = 4.0f;
 	float _slideSpeed = 1.0f;
 	Texture2D _sprites{};
+	int _wall = 0;
+	float _pushTimer = 0.0f;
 };
