@@ -22,6 +22,13 @@ private:
 	void ClearGap(Vector2 &position, int dir, float speed);
 	void Slide(Vector2 &position, int dir, float speed);
 	void UpdateAnimation();
+	int GetTileFacing();
+
+
+	bool CheckJump(float dt, Vector2 &position);
+	bool CanJump(Vector2 &position);
+	void Jump();
+	bool JumpUpdate(float dt, Vector2 &position);
 
 	enum class Mode {
 		Idle,
@@ -30,7 +37,8 @@ private:
 		Push,
 		Pull,
 		Swim,
-		Sit
+		Sit,
+		Jump
 	};
 
 private:
@@ -60,4 +68,12 @@ private:
 	Texture2D _sprites{};
 	int _wall = 0;
 	float _pushTimer = 0.0f;
+
+
+	float _jumpTimer = 0.0f;
+	int _jumpStep = 0;
+	Vector2 _jumpOrigin{};
+	Vector2 _jumpFrom{};
+	Vector2 _jumpTo{};
+	Sound _jumpSound{};
 };

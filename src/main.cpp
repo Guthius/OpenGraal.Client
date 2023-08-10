@@ -5,6 +5,8 @@ constexpr const char* Title = "OpenGraal";
 
 int main()
 {
+	InitAudioDevice();
+
 	SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 
 	AnimationManager::LoadFrom("levels/ganis");

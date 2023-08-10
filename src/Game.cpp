@@ -28,8 +28,6 @@ Game::Game()
 
 void Game::Run()
 {
-	InitAudioDevice();
-
 	SetTargetFPS(60);
 
 	Animation ani{};
