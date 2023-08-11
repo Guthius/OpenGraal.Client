@@ -5,7 +5,7 @@
 #include <sstream>
 
 #define SIGN_BACKGROUND CLITERAL(Color){ 255, 247, 204, 255 }
-#define SIGN_VERTICAL_OFFSET 110
+#define SIGN_VERTICAL_OFFSET 80
 
 Sign::Letter Sign::Glyphs[96] =
 		{
