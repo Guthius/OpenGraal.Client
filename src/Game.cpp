@@ -33,7 +33,7 @@ Game::Game()
 
 void Game::Run()
 {
-	SetTargetFPS(60);
+	// SetTargetFPS(60);
 
 	Animation ani{};
 

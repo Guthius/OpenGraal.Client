@@ -89,13 +89,21 @@ Player::Player(Game *game)
 	_jumpSound = SoundManager::Get("jump.wav");
 }
 
+static constexpr float GetSpeed(float dt, float speed)
+{
+	return dt * speed * 70;
+}
+
 void Player::Update(float dt)
 {
 	auto position = GetPosition();
 	auto mode = _mode;
 
+	auto speed = GetSpeed(dt, _speed);
+	auto slideSpeed = GetSpeed(dt, _slideSpeed);
+
 	if (CheckJump(dt, position) ||
-		CheckMovement(position, _speed, _slideSpeed))
+		CheckMovement(position, speed, slideSpeed))
 	{
 		SetPosition(position);
 	}
