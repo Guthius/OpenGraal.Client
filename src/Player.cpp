@@ -231,8 +231,11 @@ bool Player::CheckForLevelLinkAt(Vector2 &position)
 		return false;
 	}
 
-	auto dx = std::stof(link->GetNewX()) * 16 + 8;
-	auto dy = std::stof(link->GetNewY()) * 16 + 16;
+	float dx, dy;
+
+	dx = link->GetNewX() == "playerx" ? position.x : std::stof(link->GetNewX()) * 16 + 8;
+	dy = link->GetNewY() == "playery" ? position.y : std::stof(link->GetNewY()) * 16 + 16;
+
 	auto pos = Vector2{dx, dy};
 
 	SetPosition(pos);
