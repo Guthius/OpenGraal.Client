@@ -16,8 +16,8 @@ struct AnimationState
 	bool Ended;
 	std::string Body{"body.png"};
 	std::string Head{"head0.png"};
-	std::string Sword{};
-	std::string Shield{};
+	std::string Sword{"sword1.png"};
+	std::string Shield{"shield1.png"};
 	std::string Attr1{"hat0.png"};
 
 	void Reset(size_t frame, Animation *animation);
@@ -74,10 +74,12 @@ public:
 	void Draw(float x, float y, int direction, const AnimationState &state) const;
 	[[nodiscard]] size_t GetFrameCount() const { return _frames.size(); }
 	[[nodiscard]] float GetFrameDuration(size_t frame) const { return _frames[frame].Duration; }
+	void PlaySound(size_t frame) const;
 
 private:
 	void DrawSprites(const AnimationState &state, const std::vector<SpriteRef> &sprites) const;
 	static void PlaySound(const std::string &fileName, const Vector2 &position);
+
 
 private:
 	[[nodiscard]] std::string GetTextureName(const AnimationState &state, const SpriteRef &spriteRef) const;

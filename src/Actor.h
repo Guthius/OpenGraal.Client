@@ -24,6 +24,7 @@ public:
 	[[nodiscard]] Vector2 GetPosition() const { return _position; }
 	[[nodiscard]] int GetDirection() const { return _dir; }
 	[[nodiscard]] const std::string &GetAnimation() const { return _animationName; }
+	[[nodiscard]] const AnimationState &GetAnimationState() const { return _animationState; }
 
 	void SetPosition(Vector2 &position) { _position = position; }
 	void SetDirection(int dir) { _dir = dir; }

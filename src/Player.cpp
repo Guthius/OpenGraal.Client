@@ -108,6 +108,8 @@ void Player::Update(float dt)
 		SetPosition(position);
 	}
 
+	CheckAttack(position);
+
 	if (_mode == Mode::Walk)
 	{
 		if (CheckForSignAt(position))
@@ -208,6 +210,14 @@ void Player::SetOverlay(OverlayType overlay)
 
 void Player::ReturnIdle()
 {
+	if (_mode == Mode::Attack)
+	{
+		if (!GetAnimationState().Ended)
+		{
+			return;
+		}
+	}
+
 	if (_mode == Mode::Swim)
 	{
 		return;
@@ -281,9 +291,29 @@ bool Player::CheckForSignAt(Vector2 &position)
 	return true;
 }
 
+void Player::CheckAttack(Vector2 &position)
+{
+	if (_mode != Mode::Walk && _mode != Mode::Idle)
+	{
+		return;
+	}
+
+	if (!IsKeyPressed(KEY_S))
+	{
+		return;
+	}
+
+	_mode = Mode::Attack;
+}
+
 bool Player::CheckMovement(Vector2 &position, float speed, float slideSpeed)
 {
 	ReturnIdle();
+
+	if (_mode == Mode::Attack)
+	{
+		return false;
+	}
 
 	if (_mode == Mode::Grab || _mode == Mode::Pull)
 	{
@@ -363,6 +393,11 @@ bool Player::CheckMovement(Vector2 &position, float speed, float slideSpeed)
 
 void Player::CheckPushAndPull()
 {
+	if (_mode == Mode::Attack)
+	{
+		return;
+	}
+
 	if (_mode == Mode::Jump)
 	{
 		return;
@@ -568,6 +603,10 @@ void Player::UpdateAnimation()
 
 		case Mode::Push:
 			SetAnimation("push");
+			break;
+
+		case Mode::Attack:
+			SetAnimation("sword");
 			break;
 
 		default:

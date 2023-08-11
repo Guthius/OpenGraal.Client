@@ -253,6 +253,18 @@ void AnimationState::Reset(size_t frame, Animation *animation)
 	Frame = frame;
 	NextFrame = animation->GetFrameDuration(frame);
 	Ended = false;
+
+	animation->PlaySound(frame);
+}
+
+void Animation::PlaySound(size_t frame) const
+{
+	auto &sound = _frames[frame].PlaySound;
+
+	if (!sound.empty())
+	{
+		PlaySound(sound, {0, 0});
+	}
 }
 
 void Animation::PlaySound(const std::string &fileName, const Vector2 &position)
