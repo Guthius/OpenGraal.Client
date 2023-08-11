@@ -100,6 +100,14 @@ void Player::Update(float dt)
 		SetPosition(position);
 	}
 
+	if (_mode == Mode::Walk)
+	{
+		if (CheckForSignAt(position))
+		{
+			_mode = Mode::Idle;
+		}
+	}
+
 	CheckForLevelLinkAt(position);
 	CheckPushAndPull();
 
@@ -230,6 +238,34 @@ bool Player::CheckForLevelLinkAt(Vector2 &position)
 	SetPosition(pos);
 
 	_game->ChangeLevel(link->GetNewLevel());
+
+	return true;
+}
+
+bool Player::CheckForSignAt(Vector2 &position)
+{
+	if (_wall != (BLOCK_TILE1 | BLOCK_TILE2))
+	{
+		return false;
+	}
+
+	auto dir = (int) GetDirection();
+	auto x = static_cast<int>(position.x + 16 + (VX[dir] * 24));
+	auto y = static_cast<int>(position.y + 16 + (VY[dir] * 24));
+
+	auto level = _game->GetCurrentLevel();
+	if (level == nullptr)
+	{
+		return false;
+	}
+
+	auto sign = level->GetSignAt(x, y);
+	if (sign == nullptr)
+	{
+		return false;
+	}
+
+	_game->ShowSign(sign->GetText());
 
 	return true;
 }

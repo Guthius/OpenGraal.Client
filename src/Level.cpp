@@ -94,7 +94,7 @@ void Level::Draw(Tileset *tileset) const
 		}
 	}
 
-	DrawEditorHints();
+	// DrawEditorHints();
 
 	rlEnd();
 }
@@ -137,6 +137,22 @@ const LevelLink *Level::GetLinkAt(int x, int y) const
 			y >= rect.y && y <= rect.y + rect.height)
 		{
 			return &link;
+		}
+	}
+
+	return nullptr;
+}
+
+const LevelSign *Level::GetSignAt(int x, int y) const
+{
+	for (const auto &sign: _signs)
+	{
+		auto &rect = sign.GetRectangle();
+
+		if (x >= rect.x && x <= rect.x + rect.width &&
+			y >= rect.y && y <= rect.y + rect.height)
+		{
+			return &sign;
 		}
 	}
 

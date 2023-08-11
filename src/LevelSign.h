@@ -9,7 +9,8 @@ public:
 	LevelSign(float x, float y, const std::string &text);
 
 public:
-	const Rectangle &GetRectangle() const { return _rect; }
+	[[nodiscard]] const Rectangle &GetRectangle() const { return _rect; }
+	[[nodiscard]] const std::string &GetText() const { return _text; }
 
 public:
 	static std::string Decode(const std::string &str);

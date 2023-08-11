@@ -1,7 +1,7 @@
 #include "Game.h"
 #include "AnimationManager.h"
 
-constexpr const char* Title = "OpenGraal";
+constexpr const char *Title = "OpenGraal";
 
 int main()
 {

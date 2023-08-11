@@ -4,6 +4,7 @@
 #include "Tileset.h"
 #include "Actor.h"
 #include "Player.h"
+#include "Sign.h"
 
 class Game
 {
@@ -30,10 +31,10 @@ public:
 	void Run();
 
 	void ChangeLevel(const std::string &levelName);
-
 	Level *GetCurrentLevel() const { return _level->Level; }
 	bool OnWall(Rectangle rect) const;
 	TileType GetTileType(int x, int y) const;
+	void ShowSign(const std::string &str);
 
 private:
 	void Update();
@@ -49,9 +50,10 @@ private:
 	static void DrawDiagnostics();
 
 private:
+	Sign *_sign;
 	LevelInfo *_level;
 	Player *_player;
-	Texture2D _state;
-	Font _font20;
-	Font _font14;
+	Texture2D _state{};
+	Font _font20{};
+	Font _font14{};
 };

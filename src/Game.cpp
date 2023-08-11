@@ -7,6 +7,9 @@
 #include "LevelManager.h"
 #include "TilesetManager.h"
 
+#define SIGN_WIDTH 382
+#define SIGN_HEIGHT 142
+
 Game::Game()
 {
 	FileManager::BuildFileTable("levels");
@@ -24,6 +27,8 @@ Game::Game()
 	_state = TextureManager::Get("state.png");
 	_font20 = LoadFontEx("levels/pixantiqua.ttf", 20, 0, 250);
 	_font14 = LoadFontEx("levels/pixantiqua.ttf", 16, 0, 250);
+
+	_sign = new Sign();
 }
 
 void Game::Run()
@@ -40,6 +45,9 @@ void Game::Run()
 
 		Draw();
 		DrawUI();
+
+		_sign->Draw(SIGN_WIDTH, SIGN_HEIGHT);
+
 		DrawDiagnostics();
 
 		Update();
@@ -80,8 +88,20 @@ TileType Game::GetTileType(int x, int y) const
 	return _level->Level->GetTileType(_level->Tileset, x, y);
 }
 
+void Game::ShowSign(const std::string &str)
+{
+	_sign->Show(str);
+}
+
 void Game::Update()
 {
+	if (_sign->IsOpen())
+	{
+		_sign->Update();
+
+		return;
+	}
+
 	auto csx = static_cast<float>(GetScreenWidth()) / 2.0f;
 	auto csy = static_cast<float>(GetScreenHeight()) / 2.0f;
 

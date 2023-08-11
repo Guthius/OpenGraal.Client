@@ -16,6 +16,7 @@ public:
 private:
 	void ReturnIdle();
 	bool CheckForLevelLinkAt(Vector2 &position);
+	bool CheckForSignAt(Vector2 &position);
 	bool CheckMovement(Vector2 &position, float speed, float slideSpeed);
 	void CheckPushAndPull();
 	int CheckWall(int dir, float speed);

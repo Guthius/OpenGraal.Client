@@ -45,6 +45,8 @@ public:
 
 	[[nodiscard]] const LevelLink *GetLinkAt(int x, int y) const;
 
+	[[nodiscard]] const LevelSign *GetSignAt(int x, int y) const;
+
 	[[nodiscard]] TileType GetTileType(Tileset *tileset, int x, int y) const;
 
 	[[nodiscard]] bool OnWall(Tileset *tileset, Rectangle rect) const;

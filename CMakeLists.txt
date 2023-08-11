@@ -36,7 +36,9 @@ add_executable(OpenGraal
         src/LevelSign.cpp
         src/LevelSign.h
         src/TilesetManager.cpp
-        src/TilesetManager.h)
+        src/TilesetManager.h
+        src/Sign.cpp
+        src/Sign.h)
 
 target_sources(OpenGraal PRIVATE game.rc)
 target_link_libraries(OpenGraal PRIVATE raylib)
