@@ -22,7 +22,7 @@ OpenGraal aims to load legacy assets (levels, tiles, animations, sounds) and pro
 
 ## Project status
 
-- Early-stage and under active development
+- Early-stage and under development
 - APIs and file/folder layout may change
 
 ## Requirements
