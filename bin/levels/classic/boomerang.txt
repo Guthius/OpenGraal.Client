@@ -1,0 +1,99 @@
+if (playertouchsme) {
+ toweapons Boomerang;
+ set gotboomerang;
+ destroy;
+}
+if (weaponfired && this.flycounter<=0) {
+  hideimg 1;
+  hidesword 0.3;
+  this.distance = 13;
+  this.steplen = 1.5;
+
+  timeout = 0.05;
+  this.flycounter = 0;
+  this.oldx = playerx;
+  this.oldy = playery;
+}
+if (timeout) {
+  this.flycounter++;
+  if (this.flycounter<6) {
+    if (playerdir==0 || playerdir==2) playersprite = 13;
+    else playersprite = 6;
+    if (playerdir==0) showimg 1,wboom4.gif,playerx-0.7,playery+1.4;
+    if (playerdir==1) showimg 1,wboom3.gif,playerx+1.9,playery+1.5;
+    if (playerdir==2) showimg 1,wboom2.gif,playerx+2.3,playery+0.7;
+    if (playerdir==3) showimg 1,wboom2.gif,playerx-0.2,playery+1.5;
+    if (this.flycounter==2) freezeplayer 0.2;
+    timeout = 0.05;
+  } else if (this.flycounter==6) {
+    playersprite = 0;
+    this.mx = 0;
+    this.my = 0;
+    if (playerx>this.oldx) this.mx+=this.steplen;
+    if (playerx<this.oldx) this.mx-=this.steplen;
+    if (playery>this.oldy) this.my+=this.steplen;
+    if (playery<this.oldy) this.my-=this.steplen;
+    if (this.mx!=0 && this.my!=0) {
+      this.mx*=0.714;
+      this.my*=0.714;
+    }
+    if (this.mx==0 && this.my==0) {
+      if (playerdir==0) this.my-=this.steplen;
+      if (playerdir==1) this.mx-=this.steplen;
+      if (playerdir==2) this.my+=this.steplen;
+      if (playerdir==3) this.mx+=this.steplen;
+    }
+    this.flyx = playerx+0.5;
+    this.flyy = playery+1;
+    if (playerdir==0) this.flyx--;
+    if (playerdir==2) this.flyx++;
+    timeout = 0.05;
+  } else if (this.flycounter<6+this.distance) {
+    fac = cos(3.14/2*(this.flycounter-6)/this.distance);
+    this.flyx += this.mx*fac;
+    this.flyy += this.my*fac;
+    showimg 1,wboom.gif,this.flyx,this.flyy;
+    if (onwall(this.flyx+0.5,this.flyy+0.5)) {
+      putleaps 4,this.flyx,this.flyy;
+      this.flycounter = 6+this.distance;
+    } else
+      this.testhurt = 1;
+    timeout = 0.05;
+  } else  {
+    distx = playerx+0.5-this.flyx;
+    disty = playery+1-this.flyy;
+    abs = (distx^2+disty^2)^0.5;
+    if (abs>=2) {
+      fac = arctan((this.flycounter-6-this.distance)/this.distance);
+      this.flyx += distx/abs*this.steplen*fac;
+      this.flyy += disty/abs*this.steplen*fac;
+      showimg 1,wboom.gif,this.flyx,this.flyy;
+      this.testhurt = 1;
+      timeout = 0.05;
+    } else {
+      hideimg 1;
+      this.flycounter = 0;
+    }
+  }
+}
+if (playerenters) {
+  hideimg 1;
+  this.flycounter = 0;
+  timeout = 0;
+  show;
+}
+if (this.testhurt == 1) {
+  for (i=0; i<compuscount; i++) {
+    if (abs(this.flyx-compus[i].x)<=1 &&
+        abs(this.flyy-(compus[i].y-0.5))<=1.5 &&
+        compus[i].mode!=3 &&
+compus[i].mode!=5)
+      hitcompu i,0,this.flyx+0.5,this.flyy+0.5;
+  }
+  for (i=1; i<playerscount; i++) {
+    if (abs((this.flyx+0.7)-(players[i].x+1.5))<=1 &&
+        abs((this.flyy+0.5)-(players[i].y+1.5))<=1.5)
+      hitplayer i,0,this.flyx+0.5,this.flyy+0.5;
+  }
+  this.testhurt = 0;
+}

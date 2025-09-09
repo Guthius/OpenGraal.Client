@@ -1,0 +1,69 @@
+if(visible){maceswung=1}
+if(playerenters){
+timeout=.05;
+this.dircheck=0;
+diagy=0;
+diagx=0;
+this.player=closeplay;
+}
+if(timeout){
+timeout=.05;
+if(!this.dircheck==1){
+if(x<=players[this.player].x+3&&x>=players[this.player].x-3&&y>=players[this.player].y){macedir=0; drawunderplayer}
+else if(x<=players[this.player].x+3&&x>=players[this.player].x-3&&y<=players[this.player].y){macedir=2; drawoverplayer}
+else if(y<=players[this.player].y+3&&y>=players[this.player].y-3&&x<=players[this.player].x){macedir=3; drawoverplayer}
+else if(y<=players[this.player].y+3&&y>=players[this.player].y-3&&x>=players[this.player].x){macedir=1; drawunderplayer}
+else {macedir=4}
+if(macedir==4&&diagy==0&&diagx==0){
+if(players[this.player].y>bossy){diagy=2}
+if(players[this.player].y<bossy){diagy=1}
+if(players[this.player].x>bossx){diagx=2}
+if(players[this.player].x<bossx){diagx=1}
+}
+this.dircheck=1;
+}
+if(!this.dircheck==0){
+this.counter++;
+if(this.counter>=10&&this.counter<=20){
+if(macedir==1){x-=1}
+if(macedir==0){y-=1}
+if(macedir==2){y+=1}
+if(macedir==3){x+=1}
+if(macedir==4){
+if(diagy==1){y-=.6}
+if(diagy==2){y+=.6}
+if(diagx==1){x-=.6}
+if(diagx==2){x+=.6}
+}
+}
+if(this.counter<10){
+if(macedir==1){x+=.5}
+if(macedir==0){y+=.5}
+if(macedir==2){y-=.5}
+if(macedir==3){x-=.5}
+if(macedir==4){
+if(diagy==1){y+=.25}
+if(diagy==2){y-=.25}
+if(diagx==1){x+=.25}
+if(diagx==2){x-=.25}
+}
+}
+if(this.counter>20){
+if(macedir==1){x+=1}
+if(macedir==0){y+=1}
+if(macedir==2){y-=1}
+if(macedir==3){x-=1}
+if(macedir==4){
+if(diagy==1){y+=.6}
+if(diagy==2){y-=.6}
+if(diagx==1){x+=.6}
+if(diagx==2){x-=.6}
+}
+}
+if(this.counter>25){maceswung=0; destroy}
+}
+}
+if(playertouchsme){hurt macepower}
+if (x-playerx<1 && playerx-x<1 && y-playery<1 && playery-y<1){
+hurt macepower;
+}

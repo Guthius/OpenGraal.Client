@@ -1,0 +1,59 @@
+if (playertouchsme) {
+ say 6;
+ toweapons Pegasus Boots;
+ set gotpegasusboots;
+}
+if (weaponfired) {
+ destroy;  //Added by Olorin on June 20, 2000 to get rid of illegal NPC
+ this.m=1;
+ this.oldx = playerx;
+ this.oldy = playery;
+
+ if (this.inuse=0) this.inuse=1; else this.inuse=0;
+ if (this.inuse=1) timeout=.05
+}
+if (timeout && this.inuse=1) {
+ if (playersprite<1 || playersprite>8) {this.inuse=0;}
+ else {
+  this.mx=0; this.my=0;
+  if (playerx<this.oldx) this.mx=this.m;
+  if (playery<this.oldy) this.my=this.m;
+  if (playerx>this.oldx) this.mx=-1*this.m;
+  if (playery>this.oldy) this.my=-1*this.m;
+  this.dir=10*this.my+this.mx;
+
+  //HORIZONTAL  movement (X)
+  this.rx=1;
+  if (this.mx<0) this.rx=4-1;
+  if (this.mx>0) this.rx=-1.5-1;
+  ok=1;
+  for (i=1;i<=2;i+=.25;) {
+    this.rx+=.25;
+    for (this.ry=1;this.ry<=2.5;this.ry+=.5) {
+      if (onwall(playerx+this.rx+this.mx,playery+this.ry)) {
+        ok=0;
+      }
+    }
+  }
+  if (ok==1) playerx-=this.mx;
+
+  //VERTICAL movement (Y)
+  this.ry=1;
+  if (this.my<0) this.ry=4.5-1.5;
+  if (this.my>0) this.ry=-1-1.5;
+  ok=1;
+  for (i=1;i<=3;i+=.25;) {
+    this.ry+=.25;
+    for (this.rx=.75;this.rx<=2.5;this.rx+=.5) {
+      if (onwall(playerx+this.rx,playery+this.ry+this.my)) {
+        ok=0;
+      }
+    }
+  }
+  if (ok==1) playery-=this.my;
+
+  this.oldx = playerx;
+  this.oldy = playery;
+  timeout=.05;
+ }
+}

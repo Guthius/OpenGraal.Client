@@ -1,0 +1,25 @@
+if (playerenters) {
+  canbecarried;
+  this.lifetime = 5*5;
+  timeout = 0.2;
+}
+if (wasthrown) timeout = 0.2;
+if (timeout) {
+  oldx = x;
+  oldy = y;
+
+  testdir = random(0,4);
+  if (testdir<1) y -= 0.5;
+  else if (testdir<2) x -= 0.5;
+  else if (testdir<3) y += 0.5;
+  else x += 0.5;
+
+  if (onwall(x+1,y+1)) {
+    x = oldx;
+    y = oldy;
+  }
+  
+  this.lifetime--;
+  if (this.lifetime<=0) destroy;
+  timeout = 0.2;
+}

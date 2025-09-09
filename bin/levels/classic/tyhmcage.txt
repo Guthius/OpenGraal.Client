@@ -1,0 +1,16 @@
+if(created) {
+timeout=5;
+// showtimer;
+}
+if(timeout||waspelt||washit||wasshot||exploded){
+putleaps 2,x,y;
+this.foe=int(random(1,7));
+if(this.foe==1) putnewcomp dragon,x,y,baddydragonred.gif,10;
+else if(this.foe==2) putnewcomp shootingsoldier,x,y,baddylizardonblack.gif,10;
+else if(this.foe==3) putnewcomp octopus,x,y,baddytest.gif,10;
+else if(this.foe==4) putnewcomp frog,x,y,chiken.gif,10;
+else if(this.foe==5) putnewcomp swampsoldier,x,y,snowmangler.gif,3;
+else putnewcomp lizardon,x,y,badzol.gif,10;
+crowding--;
+destroy;
+}

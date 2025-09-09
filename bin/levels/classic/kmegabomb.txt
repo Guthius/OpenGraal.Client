@@ -1,0 +1,59 @@
+// NPC made by Kraken
+// Mega bomb for my Lizardon caves in Avalon
+
+if (created) {
+LayBombx=x;
+LayBomby=y;
+LayBomb=1;
+timeout=0.05;
+this.mode=3;
+}
+if (timeout&&this.mode==3) {
+timeout=0.05;
+this.explode+=.5;
+if (this.explode==35) {
+this.mode=2;
+timeout=0.05;
+}
+}
+if (timeout&&this.mode==2) {
+putexplosion 1, x,y;
+LayBombx=0;
+LayBomby=0;
+LayBomb=0;
+hide;
+sleep 3;
+this.mode=0;
+timeout=0.05;
+}
+if (timeout&&this.mode==0&&this.count<=5) {
+putexplosion 1, x,y;
+this.count+=1;
+timeout=.3;
+}
+if (timeout&&this.mode==0&&this.count>=5) {
+this.mode=1;
+this.count=0;
+}
+if (timeout&&this.mode==1&&this.count<=4) {
+putexplosion 2, x,y;
+putexplosion 3, x+1.7,y+1.7;
+putexplosion 3, x+1.7,y-1.7;
+putexplosion 3, x-1.7,y+1.7;
+putexplosion 3, x-1.7,y-1.7;
+timeout=.2;
+this.count+=1;
+}
+if (timeout&&this.mode==1&&this.count>=4) {
+putexplosion 5, x,y;
+putexplosion 4, x+2.7,y+2.7;
+putexplosion 4, x+2.7,y-2.7;
+putexplosion 4, x-2.7,y+2.7;
+putexplosion 4, x-2.7,y-2.7;
+timeout=0;
+this.count=0;
+destroy;
+}
+if (BombAte==1) {
+destroy;
+}

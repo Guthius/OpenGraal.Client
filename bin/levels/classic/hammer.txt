@@ -1,0 +1,101 @@
+if (playertouchsme) {
+  toweapons Hammer;
+  set gothammer;
+  set alreadygothammer;
+  destroy;
+}
+if (playerenters) {
+  hideimg 1;
+  this.step = 0;
+  timeout = 0;
+  show;
+}
+if (weaponfired && this.step<=0) {
+  hideimg 1;
+  hidesword 0.5;
+  freezeplayer 0.5;
+
+  timeout = 0.05;
+  this.step = 0;
+}
+if (timeout) {
+  this.step++;
+  if (this.step<10) {
+    if (this.step<3) {
+      if (playerdir==0) playersprite = 11;
+      else if (playerdir==2) playersprite = 6;
+      else playersprite = 9;
+    } else {
+      if (playerdir==0) playersprite = 10;
+      else if (playerdir==2) playersprite = 11;
+      else playersprite = 11;
+    }
+    if (this.step==6) {
+      set teststake;
+      set testhurt;
+    }
+    if (playerdir==0) showimg 1,wham0.gif,playerx-0.75,playery-1.7;
+    if (playerdir==1) showimg 1,wham1.gif,playerx-1.7,playery-0.2;
+    if (playerdir==2) showimg 1,wham2.gif,playerx+0.6,playery-0.4;
+    if (playerdir==3) showimg 1,wham3.gif,playerx+1.5,playery-0.2;
+    timeout = 0.05;
+  } else  {
+    playersprite = 0;
+    hideimg 1;
+    this.step = 0;
+  }
+}
+if (teststake) {
+  unset teststake;
+  putx = playerx + 0.5;
+  puty = playery + 2;
+  if (playerdir==0) puty -= 3;
+  if (playerdir==1) { putx -= 2; puty -= 0.5; }
+  if (playerdir==2) { putx += 0.5; puty += 1; }
+  if (playerdir==3) { putx += 2; puty -= 0.5; }
+  putx = int(putx);
+  puty = int(puty);
+  set isstake;
+  for (i=0; i<2; i++) for (j=0; j<2; j++) {
+    b = board[putx+i+64*(puty+j)];
+    bx = b % 16;
+    by = int(b / 16);
+    if (!(bx==10+i && by==20+j) &&
+        !(bx==4+i && by==103+j))
+      unset isstake;
+  }
+  if (isstake) {
+    unset isstake;
+    board[putx+64*puty] = 10+112*16;
+    board[putx+1+64*puty] = 11+112*16;
+    board[putx+64*(puty+1)] = 10+113*16;
+    board[putx+1+64*(puty+1)] = 11+113*16;
+    updateboard putx,puty,2,2;
+    play axe.wav;
+  } else play arrowon.wav;
+}
+if (testhurt) {
+  unset testhurt;
+  testx = playerx+1.5;
+  testy = playery+2;
+  if (playerdir==0) testy-=2;
+  if (playerdir==1) testx-=2;
+  if (playerdir==2) testy+=2;
+  if (playerdir==3) testx+=2;
+  for (i=0; i<compuscount; i++) {
+    if (abs(testx-(compus[i].x+1))<=1 &&
+        abs(testy-(compus[i].y+1))<=1.5 &&
+        compus[i].mode!=3 &&
+        compus[i].mode!=5)
+      hitcompu i,3,testx,testy;
+  }
+  for (i=1; i<playerscount; i++) {
+    if (abs(testx-(players[i].x+1.5))<=1 &&
+        abs(testy-(players[i].y+2))<=1.5) {
+      hitplayer i,1,testx,testy;
+//      putleaps 2,testx-1,testy-1;
+//      unset gothammer;
+//      destroy;
+    }
+  }
+}

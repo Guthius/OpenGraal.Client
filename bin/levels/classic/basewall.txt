@@ -1,0 +1,24 @@
+if (created) {
+save[2] = 15;
+save[3] = 0;
+timereverywhere;
+}
+
+if (washit || exploded || wasshot) {
+if (save[3]==0) {
+save[3] = 1;
+save[2] = save[2] - 1;
+temphp = save[2];
+message HP:#v(temphp);
+timeout = 2;
+if (save[2]<=0) {
+play crush.wav;
+destroy;
+}
+}
+}
+
+if (timeout) {
+save[3] = 0;
+message;
+}

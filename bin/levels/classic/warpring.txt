@@ -1,0 +1,27 @@
+if (playertouchsme) {
+  toweapons Warp Ring;
+  set gotwarpring;
+  hide;
+}
+
+if (weaponfired) {
+  freezeplayer 2.4;
+  timeout=.1;
+  this.rotation=0;
+}
+if (timeout) {
+  this.rotation++;
+  playerdir=(this.rotation%4);
+  if (this.rotation<=24) {
+    timeout=.1;
+  }
+  if (this.rotation=12) {
+    putleaps 5, playerx, playery;
+    playerx=13.5;
+    playery=28;
+    setlevel level13.graal;
+  }
+  if (this.rotation==13) putleaps 2, playerx, playery;
+}
+
+

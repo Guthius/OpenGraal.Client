@@ -1,0 +1,441 @@
+/******************************************/
+/***** GO Staff NPCW Made by Fox (GP) *****/
+/***** Version 1.3b     Date 11/22/00 *****/
+/******************************************/
+if (playerenters) {
+  this.gphorse = 0;
+  this.calledhorse = 0;
+  timereverywhere;
+  timeout = 0.05;
+  this.ap = playerap;
+}
+if (playertouchsme) {
+  toweapons GP Tool;
+}
+// Security Script
+if (created && isweapon) {
+  if (!(strequals(#g,GP) || strequals(#g,GP Captain) || strequals(#g,GP Chief) || strequals(#g,GP Asst Chief) || strequals(#g,GP Senior Captain) || strequals(#g,Admin) || strequals(#g,Coder))) {
+    this.secure = 0;
+    destroy;
+  } else {
+    this.secure = 1;
+    if (!gpspeed1 && !gpspeed2) {
+      set gpspeed1;
+    }
+  }
+}
+// Activation Script
+if (weaponfired || firedonhorse) {
+  if (!(keydown(0) && keydown(1) && keydown(2) && keydown(3))) {
+    if (this.fired = 0) {
+      this.fired = 1;
+    } else if (this.fired = 1) {
+      this.fired = 0;
+    } else if (this.fired = 2) {
+      this.fired = 1;
+    }
+  } else {
+    if (!this.fired = 2) {
+      this.fired = 2;
+    }
+  }
+}
+if (playerchats) {
+  this.message = 0;
+}
+if (timeout && this.secure = 1) {
+  if (!(strequals(#g,GP) || strequals(#g,GP Captain) || strequals(#g,GP Chief) || strequals(#g,GP Asst Chief) || strequals(#g,GP Senior Captain) || strequals(#g,Admin) || strequals(#g,Coder)) && this.secondary = 0) {
+    this.secondary = 0;
+  } else {
+    this.secondary = 1;
+  }
+// Command List Script
+  if (strequals(#c,GP Commands)) {
+    this.message = 1;
+  }
+  if (this.message = 1) {
+    setplayerprop #c, The list got too long to display here. Say "GP Tool Website" to view the list.;
+  }
+  if (strequals(#c,GP Tool Website)) {
+    openurl swordsmen.net-games.com/fox/gptool/;
+    setplayerprop #c,;
+  }
+// God Mode Script
+  if (strequals(#c,GP God)) {
+    if (this.god = 0) {
+      this.god = 1;
+      this.counter = 20;
+      setplayerprop #c,God Mode = OFF;
+    } else {
+      this.god = 0;
+      this.counter = 20;
+      setplayerprop #c,God Mode = ON;
+    }
+  }
+  if (this.god = 0) {
+    if (!playerhearts = playerfullhearts) {
+      playerhearts = playerfullhearts;
+    }
+  }
+// Horse Script
+  if (strequals(#c,GP Horse) && !playeronhorse && this.calledhorse = 0) {
+    this.horsex = playerx;
+    this.horsey = playery + 1.5;
+    puthorse ridepolice.gif,this.horsex,this.horsey;
+    setstring this.caller,#n;
+    this.calledhorse = 1;
+    this.horsecounter = 30;
+    setplayerprop #c,;
+    playerdir = 2;
+  }
+  if (this.calledhorse = 1 && this.gphorse = 0) {
+    for (this.pindex=0;this.pindex<playerscount;this.pindex++) {
+      if ((players[this.pindex].x in |playerx - 5, playerx + 5|) && (players[this.pindex].y in |playery - 5, playery + 5|)) {
+        if (!strequals(#n(this.pindex),#s(this.caller))) {
+          if (!playerswimming) {
+            hitplayer this.pindex, 0, playerx+1.5, playery+1.5;
+          } else {
+            for (this.i=0;this.i<horsescount;this.i=this.i) {
+              if ((horses[this.i].x in |playerx - 5, playerx + 5|) && (horses[this.i].y in |playery - 5, playery + 5|)) {
+                removehorse this.i;
+              } else {
+                this.i++;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  if (playeronhorse) {
+    if (keydown(5)) {
+      takeplayerhorse;
+    }
+    if (strequals(#5,ridepolice.gif)) {
+      this.gphorse = 1;
+    }
+  }
+  if (this.horsecounter > 0) {
+    this.horsecounter--;
+  }
+  if (((keydown(5) && this.gphorse = 1) || this.horsecounter = 0) || (this.gphorse = 1 && playersprite = 39) || ((keydown(0) || keydown(1) || keydown(3) || playery > this.horsey) && this.calledhorse = 1)) {
+    this.gphorse = 0;
+    this.horsecounter = -1;
+    this.calledhorse = 0;
+    for (this.i=0;this.i<horsescount;this.i=this.i) {
+      if ((horses[this.i].x in |playerx - 5, playerx + 5|) && (horses[this.i].y in |playery - 5, playery + 5|)) {
+        removehorse this.i;
+      } else {
+        this.i++;
+      }
+    }
+  }
+// Arrow Script
+  if (strequals(#c,GP Arrows)) {
+    if (this.arrows = 0) {
+      this.arrows = 1;
+      this.counter = 20;
+      setplayerprop #c,Auto-Fill Arrows = OFF;
+    } else {
+      this.arrows = 0;
+      this.counter = 20;
+      setplayerprop #c,Auto-Fill Arrows = ON;
+    }
+  }
+  if (this.arrows = 0) {
+    if (!playerdarts = 99) {
+      playerdarts = 99;
+    }
+  }
+// Bomb Script
+  if (strequals(#c,GP Bombs)) {
+    if (this.bombs = 0) {
+      this.bombs = 1;
+      this.counter = 20;
+      setplayerprop #c,Auto-Fill Bombs = OFF;
+    } else {
+      this.bombs = 0;
+      this.counter = 20;
+      setplayerprop #c,Auto-Fill Bombs = ON;
+    }
+  }
+  if (this.bombs = 0) {
+    if (!playerbombs = 99) {
+      playerbombs = 99;
+    }
+  }
+// AP/Saint Script
+/*  if (strequals(#c,#v(playersaysnumber) AP)) {
+    this.ap = playersaysnumber;
+    setplayerprop #c,;
+  }
+  if (strequals(#c,GP AP)) {
+    this.ap = 100;
+    setplayerprop #c,;
+  }
+  if (!playerap = this.ap) {
+    playerap = this.ap;
+  }*/
+// Jail Warp Script
+  if (strequals(#c,GP Jail)) {
+    setplayerprop #c,;
+    playerdir = 2;
+    if (!strequals(#L,police5.graal)) {
+      setstring this.level,#L;
+      this.playerx = playerx;
+      this.playery = playery;
+      setlevel2 police5.graal,30,30;
+    } else {
+      setlevel2 #s(this.level),this.playerx,this.playery;
+    }
+  }
+// Baddy Repel Script
+  if (strequals(#c,GP Repel)) {
+    if (this.baddy = 0) {
+      this.baddy = 1;
+      this.counter = 20;
+      setplayerprop #c,Auto-Baddy Repel = OFF;
+    } else {
+      this.baddy = 0;
+      this.counter = 20;
+      setplayerprop #c,Auto-Baddy Repel = ON;
+    }
+  }
+  if (playersaysnumber && strcontains(#c,BaddyHurt)) {
+    this.baddyhurt = playersaysnumber;
+    this.counter = 20;
+    setplayerprop #c,BaddyHurt = #v(this.baddyhurt) Half-Hearts;
+  }
+  if (this.baddy = 0) {
+    for (this.bindex=0;this.bindex<compuscount;this.bindex++) {
+      if ((compus[this.bindex].x in |playerx - 5, playerx + 5|) && (compus[this.bindex].y in |playery - 5, playery + 5|)) {
+        hitcompu this.bindex, this.baddyhurt, playerx+1.5, playery+1.5;
+      }
+    }
+  }
+// ArrowDefense Script
+  if (strequals(#c,GP Defense)) {
+    if (this.arrowdefense = 0) {
+      this.arrowdefense = 1;
+      this.counter = 20;
+      setplayerprop #c,Arrow Defense = OFF;
+    } else {
+      this.arrowdefense = 0;
+      this.counter = 20;
+      setplayerprop #c,Arrow Defense = ON;
+    }
+  }
+  if (this.arrowdefense = 0) {
+    for (this.aindex=0;this.aindex<arrowscount;this.aindex++) {
+      if ((arrows[this.aindex].x in |playerx - 5, playerx + 5|) && (arrows[this.aindex].y in |playery - 5, playery + 5|)) {
+        removearrow this.aindex;
+      }
+    }
+  }
+// Auto-Weapons Script
+  if (strequals(#c,GP Weapons)) {
+    if (this.weapons = 0) {
+      this.weapons = 1;
+      this.counter = 20;
+      setplayerprop #c,Enable Weapons = OFF;
+    } else {
+      this.weapons = 0;
+      this.counter = 20;
+      setplayerprop #c,Enable Weapons = ON;
+    }
+  }
+  if (this.weapons = 0) {
+    if (!weaponsenabled) {
+      enableweapons;
+    }
+  }
+// Verbal Ghost Script
+  if (strequals(#c,GP Ghost)) {
+    if (!this.fired = 2) {
+      this.fired = 2;
+    } else {
+      this.fired = 1;
+    }
+    setplayerprop #c,;
+  }
+// Speed Script
+  if (strequals(#c,GP Speed)) {
+    if (gpspeed1) {
+      unset gpspeed1;
+      set gpspeed2;
+      setplayerprop #c,GP Speed = 2;
+      this.counter = 20;
+    } else if (gpspeed2) {
+      unset gpspeed2;
+      set gpspeed1;
+      setplayerprop #c,GP Speed = 1;
+      this.counter = 20;
+    }
+  }
+  if (gpspeed1) {
+    if (!this.speed = 0.55) {
+      this.speed = 0.55;
+    }
+  } else if (gpspeed2) {
+    if (!this.speed = 1.35) {
+      this.speed = 1.35;
+    }
+  }
+// Walking Script
+  if (this.fired > 0) {
+    if (playersprite in |14,18|) {
+      playersprite = 0;
+    }
+    if (!(playersprite in |9,24| || playersprite =  33) && !keydown(5)) {
+      if (keydown(0)) {
+        playery -= this.speed;
+      }
+      if (keydown(1)) {
+        playerx -= this.speed;
+      }
+      if (keydown(2)) {
+        playery += this.speed;
+      }
+      if (keydown(3)) {
+        playerx += this.speed;
+      }
+    }
+  }
+// Image Script
+  if (gpspeed1) {
+    if (this.fired = 0) {
+      this.red = 1;
+      this.grey = 1;
+      if (this.blue = 0) {
+        setimg gptoolblue.gif;
+        this.blue = -1;
+        this.bluecount = 13;
+      }
+      if (this.blue = 1) {
+        setimg gptoolrb.gif;
+        this.blue = -1;
+        this.bluecount = 13;
+      }
+    } else if (this.fired = 1) {
+      this.blue = 1;
+      this.grey = 2;
+      if (this.red = 0) {
+        setimg gptoolred.gif;
+        this.red = -1;
+        this.redcount = 13;
+      }
+      if (this.red = 1) {
+        setimg gptoolbr.gif;
+        this.red = -1;
+        this.redcount = 13;
+      }
+      if (this.red = 2) {
+        setimg gptoolgr.gif;
+        this.red = -1;
+        this.redcount = 13;
+      }
+    } else if (this.fired = 2) {
+      this.red = 2;
+      if (this.grey = 0) {
+        setimg gptoolgrey.gif;
+        this.grey = -1;
+        this.greycount = 13;
+      }
+      if (this.grey = 1) {
+        setimg gptoolbg.gif;
+        this.grey = -1;
+        this.greycount = 13;
+      }
+      if (this.grey = 2) {
+        setimg gptoolrg.gif;
+        this.grey = -1;
+        this.greycount = 13;
+      }
+      hideplayer 0.05;
+    }
+  } else if (gpspeed2) {
+    if (this.fired = 0) {
+      this.red = 1;
+      this.grey = 1;
+      if (this.blue = 0) {
+        setimg gptoolblue2.gif;
+        this.blue = -1;
+        this.bluecount = 13;
+      }
+      if (this.blue = 1) {
+        setimg gptoolrb2.gif;
+        this.blue = -1;
+        this.bluecount = 13;
+      }
+    } else if (this.fired = 1) {
+      this.blue = 1;
+      this.grey = 2;
+      if (this.red = 0) {
+        setimg gptoolred2.gif;
+        this.red = -1;
+        this.redcount = 13;
+      }
+      if (this.red = 1) {
+        setimg gptoolbr2.gif;
+        this.red = -1;
+        this.redcount = 13;
+      }
+      if (this.red = 2) {
+        setimg gptoolgr2.gif;
+        this.red = -1;
+        this.redcount = 13;
+      }
+    } else if (this.fired = 2) {
+      this.red = 2;
+      if (this.grey = 0) {
+        setimg gptoolgrey2.gif;
+        this.grey = -1;
+        this.greycount = 13;
+      }
+      if (this.grey = 1) {
+        setimg gptoolbg2.gif;
+        this.grey = -1;
+        this.greycount = 13;
+      }
+      if (this.grey = 2) {
+        setimg gptoolrg2.gif;
+        this.grey = -1;
+        this.greycount = 13;
+      }
+      hideplayer 0.05;
+    }
+  }
+// Counter Script
+  if (this.counter > 0) {
+    this.counter--;
+  }
+  if (this.counter = 0) {
+     setplayerprop #c,;
+     this.counter = -1;
+  }
+// ImageCounters Script
+  // BLUE \\
+  if (this.bluecount > 0) {
+    this.bluecount--;
+  }
+  if (this.bluecount = 1) {
+     this.blue = 0;
+  }
+  // RED \\
+  if (this.redcount > 0) {
+    this.redcount--;
+  }
+  if (this.redcount = 1) {
+     this.red = 0;
+  }
+  // GREY \\
+  if (this.greycount > 0) {
+    this.greycount--;
+  }
+  if (this.greycount = 1) {
+     this.grey = 0;
+  }
+  timeout = 0.05;
+} else if (timeout && (this.secure = 0 || this.secondary = 0) && isweapon) {
+  destroy;
+}

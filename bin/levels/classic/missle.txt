@@ -1,0 +1,21 @@
+if (targetselected == -1) {
+destroy;
+}
+
+if (!(targetselected == -1)) {
+timeout = .05;
+}
+
+if (timeout) {
+this.xdist = (x+.5)-(compus[targetselected].x+1);
+this.ydist = (y+.5)-(compus[targetselected].y+1);
+this.temp = (((this.xdist)^2 + (this.ydist)^2)^.5);
+x = (x - (this.xdist)/(this.temp));
+y = (y - (this.ydist)/(this.temp));
+timeout = .05;
+}
+
+if (timeout && (abs(this.xdist)<=.5) && (abs(this.ydist)<=.5)) {
+putexplosion 1, x-.5, y+.25;
+destroy;
+}

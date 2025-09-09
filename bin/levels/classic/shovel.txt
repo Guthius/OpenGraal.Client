@@ -1,0 +1,32 @@
+if (playertouchsme) {
+  set gotshovel;
+  toweapons Shovel;
+  destroy;
+}
+if (weaponfired) {
+  putx = playerx + 1.5;
+  puty = playery + 2;
+  if (playerdir==0) puty -= 1;
+  if (playerdir==1) putx -= 1;
+  if (playerdir==2) puty += 1;
+  if (playerdir==3) putx += 1;
+  putx = int(putx/2)*2;
+  puty = int(puty/2)*2;
+  emtpy = 1;
+  for (i=0; i<2; i++) for (j=0; j<2; j++) {
+    b = board[putx+i+64*(puty+j)];
+    bx = b % 16;
+    by = int(b / 16);
+    if (!(bx==15 && (by==31 || by==63 || by==127)))
+      emtpy = 0;
+  }
+  if (emtpy==1) {
+/*    board[putx+64*puty] = 10+114*16;
+    board[putx+1+64*puty] = 11+114*16;
+    board[putx+64*(puty+1)] = 10+115*16;
+    board[putx+1+64*(puty+1)] = 11+115*16;
+    updateboard putx,puty,2,2;*/
+
+    putobject Hole,putx,puty;
+  }
+}

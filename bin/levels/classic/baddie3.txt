@@ -1,0 +1,64 @@
+if (playing && this.init == 0) { this.state = 0; this.time = 10; this.init = 1; this.life = 5; dontblock; timeout = .1; }
+if (gameover) { itemcount--; destroy; }
+
+if (timeout) {
+  // Test fireballs
+  if (abs((x + .5) - fbx) < 1 && abs((y + .5) - fby) < 1) {
+    this.life -= fp;
+    if (this.life <= 0) {
+      score += 14;
+      if (random(0, 1) < .00001 && fp < 3) fp++;
+      darts = random(0, 3);
+      if (darts < 1) addenemy = 1;
+      else if (darts < 2) addenemy = 2;
+      else addenemy = 0;
+      itemcount--;
+      enemycount++;
+      play compudead.wav;
+      destroy;
+    }
+  }
+
+  // Test bombs
+  if (abs((x + .5) - explodex) < 2 && abs((y + .5) - explodey) < 2 && explode) {
+    this.life -= bp;
+    if (this.life <= 0) {
+      score += 20;
+      darts = random(0, 3);
+      if (darts < 1) addenemy = 1;
+      else if (darts < 2) addenemy = 2;
+      else addenemy = 0;
+      itemcount--;
+      enemycount++;
+      play compudead.wav;
+      destroy;
+    }
+  }
+
+  // Move
+  if (this.state == 1) {		// Evade player
+    if (mainy > y && !onwall (x, y-.1)) y -= .1;
+    if (mainx > x && !onwall (x-.1, y)) x -= .1;
+    if (mainy < y && !onwall (x, y+1.1)) y += .1;
+    if (mainx < x && !onwall (x+1.1, y)) x += .1;
+  }
+  if (this.state == 2) {		// Follow player
+    if (mainy < y && !onwall (x, y-.1)) y -= .1;
+    if (mainx < x && !onwall (x-.1, y)) x -= .1;
+    if (mainy > y && !onwall (x, y+1.1)) y += .1;
+    if (mainx > x && !onwall (x+1.1, y)) x += .1;
+  }
+
+  this.time--;
+  if (this.time < 0) {
+    this.time = random(5, 30);
+    this.state = random(0, 4);
+    if (this.state < 1) this.state = 0;
+    else if (this.state < 2) this.state = 1;
+    else this.state = 2;
+  }
+  // Test collision
+  if (abs((x + .5) - (mainx + .5)) < 1 && abs ((y + .5) - (mainy + .5)) < 1) set killedplayer;
+
+  timeout = .1;
+}

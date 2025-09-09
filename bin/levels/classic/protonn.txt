@@ -1,0 +1,73 @@
+//========== ProtonSpell A.I.=========
+//  written by Bruges, CEO Bruges Core
+//  gfx by Captain USA, Bruges Core
+//                        (13/04/1999)
+//  email: Bruges@geocities.com
+//  http://members.xoom.com/bruges/
+//
+// Below are variables which modify
+// the spell's behavior. Press PgDn
+// to view them all.
+//
+//
+//
+if (playerenters && !this.init=1) {
+ this.init=1;
+ timereverywhere;
+ this.stepdist=.5;		//dist covered by each "step"
+ this.dir=1;
+ this.range=15;
+ this.power=2;
+ this.shieldblocks=1;
+ timeout=0.05;
+ this.cast=1;
+}
+//do not edit anything below this
+//			line!!
+//----------------------------------------------------------------
+if (playerenters){
+ dontblock;
+ drawoverplayer;
+}
+
+for (i=0;i<playerscount;i++) {
+ if (playertouchsme) {
+  if (this.shieldblocks=1 &&((this.dir=1 && players[i].dir=2)||(this.dir=2 && players[i].dir=1)||(this.dir=3 && players[i].dir=0)||(this.dir=4 && players[i].dir=3))) {this.cast=0}else{
+   hitplayer i,this.power,x,y;
+   if (x>players[i].x) {if (!onwall(players[i].x+.5-.5,players[i].y+.5)) players[i].x=players[i].x-.5;if (!onwall(players[i].x+.5-.5,players[i].y+.5)) players[i].x=players[i].x-.5;};
+   if (x<players[i].x) {if (!onwall(players[i].x+.5+.5,players[i].y+.5)) players[i].x=players[i].x+.5;if (!onwall(players[i].x+.5+.5,players[i].y+.5)) players[i].x=players[i].x+.5;};
+   if (y>players[i].y) {if (!onwall(players[i].x+.5,players[i].y+.5-.5)) players[i].y=players[i].y-.5;if (!onwall(players[i].x+.5,players[i].y+.5-.5)) players[i].y=players[i].y-.5;};
+   if (y<players[i].y) {if (!onwall(players[i].x+.5,players[i].y+.5+.5)) players[i].y=players[i].y+.5;if (!onwall(players[i].x+.5,players[i].y+.5+.5)) players[i].y=players[i].y+.5;};
+   }
+  this.cast=0;
+ };
+ if ( (this.dir=1 && (y-players[i].y>0 && y-players[i].y<4) && (x>=players[i].x && x<=players[i].x+1)) ||
+      (this.dir=2 && (x-players[i].x>-2 && x-players[i].x<1) && (y>=players[i].y && y<=players[i].y+2)) ||
+      (this.dir=3 && (y-players[i].y>-2 && y-players[i].y<2) && (x>=players[i].x && x<=players[i].x+1)) ||
+      (this.dir=4 && (x-players[i].x>-1 && x-players[i].x<2) && (y>=players[i].y && y<=players[i].y+2)) ) if (this.cast>0){
+  if (this.shieldblocks=1 &&((this.dir=1 && players[i].dir=2)||(this.dir=2 && players[i].dir=1)||(this.dir=3 && players[i].dir=0)||(this.dir=4 && players[i].dir=3))) {this.cast=0}else{
+   hitplayer i,this.power,x,y;
+   if (x>players[i].x) {if (!onwall(players[i].x+.5-.5,players[i].y+.5)) players[i].x=players[i].x-.5;if (!onwall(players[i].x+.5-.5,players[i].y+.5)) players[i].x=players[i].x-.5;};
+   if (x<players[i].x) {if (!onwall(players[i].x+.5+.5,players[i].y+.5)) players[i].x=players[i].x+.5;if (!onwall(players[i].x+.5+.5,players[i].y+.5)) players[i].x=players[i].x+.5;};
+   if (y>players[i].y) {if (!onwall(players[i].x+.5,players[i].y+.5-.5)) players[i].y=players[i].y-.5;if (!onwall(players[i].x+.5,players[i].y+.5-.5)) players[i].y=players[i].y-.5;};
+   if (y<players[i].y) {if (!onwall(players[i].x+.5,players[i].y+.5+.5)) players[i].y=players[i].y+.5;if (!onwall(players[i].x+.5,players[i].y+.5+.5)) players[i].y=players[i].y+.5;};
+   }
+  this.cast=0;
+ };
+}
+
+
+if (timeout) {
+ if (this.cast=0) destroy;
+
+ if (this.dir=1) {y-=this.stepdist}
+ else if (this.dir=2) {x+=this.stepdist}
+ else if (this.dir=3) {y+=this.stepdist}
+ else if (this.dir=4) {x-=this.stepdist}
+ this.range-=this.stepdist;
+ if (this.range<=0) this.cast=0;
+
+ timeout=0.05;
+}
+
+//=====================================================================

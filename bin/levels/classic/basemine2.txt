@@ -1,0 +1,12 @@
+if (playertouchsme) {
+toweapons #n's mine layer;
+destroy;
+}
+
+if (weaponfired) {
+if (playerdir==0) putnpc coin.gif, basemine.txt, playerx+1, playery-1;
+else if (playerdir==1) putnpc coin.gif, basemine.txt, playerx-.5, playery+1;
+else if (playerdir==2) putnpc coin.gif, basemine.txt, playerx+1, playery+3;
+else if (playerdir==3) putnpc coin.gif, basemine.txt, playerx+3, playery+1;
+destroy;
+}

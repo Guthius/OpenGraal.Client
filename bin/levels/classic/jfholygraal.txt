@@ -1,0 +1,46 @@
+// JF Holy Graal
+// By Vangel (JF)
+
+timereverywhere;
+if (playerenters) timeout=1;
+if (timeout) this.active=1;
+if (playertouchsme && (this.active==0) && (pastor)) canbecarried;
+if (washit) {
+  playerhearts=.5;
+  playerbombs=0;
+  playerdarts=0;
+  playermp=0;
+}
+
+if (playertouchsme && (this.active==1)) {
+  unset BeQuietInChurch;
+  unset BannedFromChurch;
+  for (i=0;i<25;i++) {
+    freezeplayer .1;
+    setplayerprop #c,*gulp*;
+    if (strequals(#L,jfchurch.graal) || strequals(#L,jfchurch2.graal)) {
+      if ((i>=8) && (!pastor) && (!DrankWine)) {
+//        playerap++;
+        playerhearts+=.5;
+//        playerbombs+=5;
+//        playerdarts+=5;
+//        if (magicendowed) playermp+=5;
+      }
+    }
+    if (i==8) setgif jfgraalwithwine2.gif;
+    if (i==12) setgif jfgraalwithwine3.gif;
+    if (i==16) setgif jfgraalwithwine4.gif;
+    if (i==20) setgif graal.gif;
+    sleep .05;
+  }
+  if ((!pastor) && (!DrankWine)) {
+    playerhearts=playerfullhearts;
+//    if (strequals(#L,jfchurch.graal) || strequals(#L,jfchurch2.graal)) {
+//      playerbombs=99;
+//      playerdarts=99;
+//      if (magicendowed) playermp=100;
+//    }
+  }
+  set DrankWine;
+  destroy;
+}

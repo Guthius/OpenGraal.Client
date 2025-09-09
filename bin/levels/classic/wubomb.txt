@@ -1,0 +1,27 @@
+if (playerenters) {
+this.explo=0;
+setgif wubomb.gif;
+canbecarried;timereverywhere; 
+timeout=3;
+}
+if (timeout&&(this.explo==0)){
+this.explo=1;
+setgif wubomb2.gif;
+sleep 1.5;
+putexplosion 1, x, y;
+hide;
+for(this.i=0;this.i<=15;this.i++){
+putexplosion 2, x+random(-6, 6), y+random(-6, 6);
+sleep .1;
+}
+destroy;
+}
+if(exploded){
+putexplosion 1, x, y;
+hide;
+for(this.i=0;this.i<=15;this.i++){
+putexplosion 2, x+random(-6, 6), y+random(-6, 6);
+sleep .1;
+}
+destroy;
+}

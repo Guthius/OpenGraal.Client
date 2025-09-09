@@ -1,0 +1,16 @@
+if (playerenters){ 
+timeout = 0.05;
+}
+if (playertouchsme) {
+  if (playerdir==0&&playershieldpower>=3&&playersprite==0) putleaps 5,x,y-1;
+  else {
+    set icefreeze;
+    putnpc wiceblock.gif,iceblock.txt,playerx-2/16,playery-7/16;
+  }
+  destroy;
+}
+if (timeout) {
+  timeout = 0.05;
+  y++;
+  if (y>61) destroy;
+}

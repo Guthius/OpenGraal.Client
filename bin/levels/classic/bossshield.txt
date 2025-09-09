@@ -1,0 +1,11 @@
+if(playerenters){timeout=0.05}
+if(timeout){
+timeout=.05;
+this.count++;
+if(visible){bossact=9; blockagain}
+if(this.count>39){
+bossact=1;
+destroy;
+}
+}
+if(wasshot){play swordon.wav; bossact=1; destroy}

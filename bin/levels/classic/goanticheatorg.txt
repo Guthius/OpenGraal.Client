@@ -1,0 +1,64 @@
+// Cheater's Bow
+// Rescripted by Vangel
+//
+// Cheater's Bow locks a cheater's head and clothing
+// and constantly disables the weapons.
+//
+// Nov 26, 1999
+// =============================================
+// If you make any changes to this script, please note them here:
+//
+//
+
+// required for testing...
+// if (playerchats) {
+//   if (playersays(abc123321cba)) destroy;
+// }
+
+if (playerenters) {
+  dontblock;
+  drawoverplayer;
+  if (strequals(#f,goanticheat.gif)) {
+    if ((playerfullhearts>18) || (playerswordpower>3)) {
+      set Cheater;
+      setgif wbowi1.gif;
+      show;
+      timeout=.05;
+      toweapons Bow;
+    }
+    hide;
+    setgif goanticheat.gif;
+  }
+  this.waittime=100;
+  timeout=.05;
+}
+
+if (timeout) {
+  timeout=.05;
+  if (strequals(#f,goanticheat.gif)) {
+    this.waittime--;
+    if (this.waittime<=0) destroy;
+  } else if (strequals(#f,wbowi1.gif)) {
+    set Cheater;
+  } else {
+    show;
+    message Error!;
+  }
+}
+
+if (Cheater) {
+  disableweapons;
+  playerhearts=.5;
+  playerbombs=0;
+  playerdarts=0;
+  playerrupees=0;
+  sethead headcheater.gif;
+  setskincolor yellow;
+  setcoatcolor yellow;
+  setsleevecolor yellow;
+  setshoecolor yellow;
+  setbeltcolor yellow;
+  setplayerprop #c,;
+  takeplayercarry;
+  timeout=.05;
+}

@@ -1,0 +1,36 @@
+if(created){
+canbecarried;
+//brespawn=0;
+//sleep 0.5;
+}
+
+if (washit || exploded) {
+putleaps 0, x, y;
+x=x-2;
+lay greenrupee;
+hide;
+dontblock;
+sleep 1;
+brespawn=2;
+destroy;
+}
+if (wasthrown) {
+unset carriesaredbush;
+putleaps 0, x, y;
+putexplosion 9, x-2, y+2;
+putexplosion 9, x-2, y-2;
+putexplosion 9, x+2, y-2;
+putexplosion 9, x+2, y+2;
+brespawn=2;
+hide;
+dontblock;
+sleep 0.05;
+destroy;
+}
+
+if (brespawn>=2) {
+brespawn=3;
+timeout=0.05;
+destroy;
+}
+

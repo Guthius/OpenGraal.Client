@@ -1,0 +1,27 @@
+if(created){
+  setstring server.kcloc,#L;
+  timeout=0.05;
+}  
+if(playertouchsme&&playerismale&&playersprite<39&&!hasweapon(Prince's Crown)){
+  timeout=0.05;
+  this.destroyme=1;
+  toweapons King's Crown;
+}
+if(playerenters) setstring server.kcloc,#L;
+if(timeout){
+  if(isweapon){
+    setstring server.kingdecay,0;
+    if(playersprite<37) showimg 0,kingcrown.gif,playerx+0.5,playery-0.5;
+    else if(playersprite==37){
+      if(playerdir==0||playerdir==2) showimg 0,kingcrown.gif,playerx+0.5,playery-1;
+      else if(playerdir==3) showimg 0,kingcrown.gif,playerx+0.15,playery-1;
+      else showimg 0,kingcrown.gif,playerx+0.85,playery-1;
+    }else showimg 0,kingcrown.gif,playerx+0.5,playery-1;
+  }else if(this.destroyme>0||!strequals(#s(server.kcloc),#L)||strtofloat(#s(server.kingdecay))>19) destroy;
+  timeout=0.05;
+}
+if(weaponfired||(isweapon&&(playersprite>9&&(playersprite<37||playersprite>38)))){
+  hideimg 0;
+  putnpc kingcrown.gif,kingcrown.txt,playerx,playery;
+  destroy;
+}

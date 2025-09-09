@@ -1,0 +1,6 @@
+if (playertouchsme||playerenters) {
+  toweapons Magical Boomerang;
+}
+if (weaponfired) {
+destroy;
+}

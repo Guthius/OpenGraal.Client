@@ -1,0 +1,16 @@
+if (playerenters && !this.init=1) {
+ this.init=1;
+ timereverywhere;
+ timeout=.05;
+ drawunderplayer;
+ dontblock;
+}
+if (playertouchsme) {
+ if (!BrugesTowerIronBoots) hurt 1;
+}
+if (timeout) {
+ if (this.img=0) {this.img=1; setgif brugestowerspikes1.gif;}
+ else
+ if (this.img=1) {this.img=0; setgif brugestowerspikes2.gif;}
+ timeout=.2;
+}

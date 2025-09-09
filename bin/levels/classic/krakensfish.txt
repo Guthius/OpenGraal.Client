@@ -1,0 +1,32 @@
+if (created) {
+showlocal;
+this.fishweight = int(random(0,26));
+if (this.fishweight<=2) {this.weight=9}
+if (this.fishweight>=3&&<=17) {this.weight=6}
+if (this.fishweight>=18&&<=26) {this.weight=3}
+timeout=5;
+}
+if (created&&GotKBait) {
+showlocal;
+this.weight=9;
+unset GotKBait;
+}
+
+if (playertouchsme) {
+if (this.weight==3) {
+set CaughtFishWeight3;
+}
+if (this.weight==6) {
+set CaughtFishWeight6;
+}
+if (this.weight==9) {
+set CaughtFishWeight9;
+}
+unset gotafish;
+toinventory GotKrakensFish;
+destroy;
+}
+if (timeout) {
+unset gotafish;
+destroy;
+}

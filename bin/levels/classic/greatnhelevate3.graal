@@ -1,0 +1,14 @@
+GR-V1.03@0'ÁœsÌI@0'ÁœsÌI@0'ÁœsÌI@0'ÁœsÌI@0'ÁœsÌI@0'ÁœsÌI@0'ÁœsÌI@0'ÁœsÌI@0'ÁœsÌI@0'ÁœsÌI@0'ÁœsÌI@0'5Àœt3¢¯ø<Ãæ¤v3â³p;£_¸ÀœÔ.üÅA\5º†]ô˜“Ú…»8ˆ©f×ð‹~ásR»ðqÕèvÑ/\`Njîâ ¦š]Ã/ú…ÌIíÂ_ÄU£kØE¿p9©]¸‹ƒ˜jv¿è.0'µqW®aýÂæ¤vá.bªÙ5ü¢_¸ÀœÔ.†@ÜccÀœ$7†ÆØK£_¸Àœt4àÊˆ*ceÀœ4W†Ê`@0'ÁœsÌI@0'ÁœsRÌI#
+ÿÿÿ
+4Weledoor.gif#if (playerenters) { }§if (playertouchsme && floor1) {playerx = 48; playery = 20; setlevel greatnlobby.graal;}§if (playertouchsme && floor2) {playerx = 44; playery = 27; setlevel greatnhfloor2.graal;}§if(playertouchsme && floor3) {playerx = 44; playery = 27;  setlevel greatnhfloor3.graal;}§if(playertouchsme && floor4) {playerx = 44; playery = 27;  setlevel greatnhfloor4.graal;}§if (playertouchsother) { }§if (playerlaysitem) { }§if (compusdied) { }§if (playerendsreading) { }§if (exploded || washit || wasshot || waspelt) { }§if (timeout) { }
+:Oswitchgreen.gif#if (playertouchsme) {§unset floor1; unset floor2; unset floor4;§say 2; setgif switchred.gif;§play ge64elvt.mid;§ timeout = 7;}§if (playertouchsother) { }§if (playerlaysitem) { }§if (compusdied) { }§if (playerendsreading) { }§if (exploded || washit || wasshot || waspelt) { }§if (timeout) { stopmidi; play Atlantis.mid; say 4; setgif switchgreen.gif; set floor3;}§§
+5Oswitchgreen.gif#if (playerenters) { }§if (playertouchsme) {§unset floor1; unset floor3; unset floor4;§say 1; setgif switchred.gif;§play ge64elvt.mid;§ timeout = 7;}§if (playertouchsother) { }§if (playerlaysitem) { }§if (compusdied) { }§if (playerendsreading) { }§if (exploded || washit || wasshot || waspelt) { }§if (timeout) { stopmidi; play Atlantis.mid; say 4; setgif switchgreen.gif; set floor2;}§
+0Oswitchgreen.gif#if (playertouchsme) {§unset floor2; unset floor3; unset floor4;§say 0; setgif switchred.gif;§play ge64elvt.mid;§ timeout = 7;}§if (playertouchsother) { }§if (playerlaysitem) { }§if (compusdied) { }§if (playerendsreading) { }§if (exploded || washit || wasshot || waspelt) { }§if (timeout) { stopmidi; play Atlantis.mid; say 4; setgif switchgreen.gif; set floor1;}
+:S#if (playerenters) { set floor3;}§if (playertouchsme) { }§if (playertouchsother) { }§if (playerlaysitem) { }§if (compusdied) { }§if (playerendsreading) { }§if (exploded || washit || wasshot || waspelt) { }§if (timeout) { }
+#
+#
+  &HBG@yMHy?EHHKyUa
+  &HBG@yMHy?EHHKyVa
+  &HBG@yMHy?EHHKyWa
+  &HBG@yMHy?EHHKyXa
+  #BG@^

@@ -1,0 +1,21 @@
+//Scripted by Gandarian of Bruges Core
+if (playerenters) show;
+if (playertouchsme) {
+  set gotgandsbow;
+  toweapons AutoBowgun;
+  destroy;
+}
+if (weaponfired && playerdarts>0) {
+  this.fired=0;
+  freezeplayer 0.6;
+  setbow wbowcross.gif;
+  playersprite = 33;
+  shootarrow playerdir;
+  timeout = 0.1;
+}
+if (timeout&&(this.fired<=4)&&(playerdarts>0)){
+  this.fired+=1;
+  shootarrow playerdir;
+  playerdarts-=1;
+  timeout = 0.1;
+}

@@ -1,0 +1,58 @@
+//
+//  Armageddon's MorphStuff
+//         - random -
+//
+//  script by Vangel (JF)
+//  -=dedicated to Jesus=-
+//
+//
+
+if (playerenters) {
+
+  //initialize the NPC
+  this.rotation=1;
+  timeout=.05;
+  followplayer;
+}
+
+if (timeout) {
+  if (!ArmaPermSword) {
+    x=10; y=10;
+    destroy;
+  } else {
+
+    //sword
+    this.rnd=random(0,10);
+    if ((this.rnd>=0) && (this.rnd<1)) setsword fishsword.gif, playerswordpower;
+    if ((this.rnd>=1) && (this.rnd<2)) setsword flaminsword.gif, playerswordpower;
+    if ((this.rnd>=2) && (this.rnd<3)) setsword hackcorpsaxe.gif, playerswordpower;
+    if ((this.rnd>=3) && (this.rnd<4)) setsword hackcorpssword.gif, playerswordpower;
+    if ((this.rnd>=4) && (this.rnd<5)) setsword lightsaber1.gif, playerswordpower;
+    if ((this.rnd>=5) && (this.rnd<6)) setsword OrangeLightSaber.gif, playerswordpower;
+    if ((this.rnd>=6) && (this.rnd<7)) setsword spearsword.gif, playerswordpower;
+    if ((this.rnd>=7) && (this.rnd<8)) setsword sticksword.gif, playerswordpower;
+    if ((this.rnd>=8) && (this.rnd<9)) setsword swordoflife.gif, playerswordpower;
+    if ((this.rnd>=9) && (this.rnd<10)) setsword blacksword.gif, playerswordpower;
+
+    //shield
+    this.rnd=random(0,15);
+    if ((this.rnd>=0) && (this.rnd<1)) setshield akumashield.gif, playershieldpower;
+    if ((this.rnd>=1) && (this.rnd<2)) setshield blackshield.gif, playershieldpower;
+    if ((this.rnd>=2) && (this.rnd<3)) setshield bloodysmile.gif, playershieldpower;
+    if ((this.rnd>=3) && (this.rnd<4)) setshield blueshield.gif, playershieldpower;
+    if ((this.rnd>=4) && (this.rnd<5)) setshield docshield.gif, playershieldpower;
+    if ((this.rnd>=5) && (this.rnd<6)) setshield fagshield.gif, playershieldpower;
+    if ((this.rnd>=6) && (this.rnd<7)) setshield FireSheild.gif, playershieldpower;
+    if ((this.rnd>=7) && (this.rnd<8)) setshield goldshield.gif, playershieldpower;
+    if ((this.rnd>=8) && (this.rnd<9)) setshield goldshield2.gif, playershieldpower;
+    if ((this.rnd>=9) && (this.rnd<10)) setshield hackcorpsshield.gif, playershieldpower;
+    if ((this.rnd>=10) && (this.rnd<11)) setshield happyshield.gif, playershieldpower;
+    if ((this.rnd>=11) && (this.rnd<12)) setshield iceshield.gif, playershieldpower;
+    if ((this.rnd>=12) && (this.rnd<13)) setshield linkshield.gif, playershieldpower;
+    if ((this.rnd>=13) && (this.rnd<14)) setshield rainbow.gif, playershieldpower;
+    if ((this.rnd>=14) && (this.rnd<15)) setshield sardonshield.gif, playershieldpower;
+
+    timeout=5;
+  }
+}
+

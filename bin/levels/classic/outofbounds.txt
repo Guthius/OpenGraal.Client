@@ -1,0 +1,4 @@
+if(created) message UNDER CONSTRUCTION;
+if(playertouchsme&&strequals(#g,LAT)&&this.locked<=0) message #c(0);
+if(playerchats&&strequals(#g,LAT)&&playersays(lock)) this.locked=1;
+if(playerchats&&strequals(#g,LAT)&&playersays(unlock)) this.locked=0;

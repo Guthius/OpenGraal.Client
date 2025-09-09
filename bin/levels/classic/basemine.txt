@@ -1,0 +1,44 @@
+if (created) {
+save[0] = 0;
+save[2] = 3;
+save[3] = 0;
+timereverywhere;
+message Loading...;
+}
+
+if (playertouchsme && save[0] == 0) {
+save[0] = 1;
+save[1] = players[0].id;
+message;
+}
+
+if (playertouchsme && (save[1]==players[0].id)) {
+dontblock;
+}
+
+if (playertouchsme && !(save[1]==players[0].id)) {
+putexplosion 2, x-.5, y-.5;
+blockagain;
+}
+
+if (washit || exploded) {
+if (save[3] == 0) {
+save[3] = 1;
+save[2] = save[2] - 1;
+if (washit && !(save[1]==players[0].id)) disableweapons;
+if (washit && !(save[1]==players[0].id)) putexplosion 2, x-.5, y-.5;
+temphp = save[2];
+message HP:#v(temphp);
+timeout = 2;
+if (save[2]<=0) {
+play crush.wav;
+putexplosion 2, x-.5, y-.5;
+destroy;
+}
+}
+}
+
+if (timeout) {
+save[3] = 0;
+message;
+}

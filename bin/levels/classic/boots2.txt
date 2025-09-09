@@ -1,0 +1,33 @@
+// Antago Sky Dwellers
+//
+// ============================
+//
+if (playertouchsme) {
+toweapons Sky Dwellers;
+hide;
+}
+if (weaponfired) {
+if (!featheractive) {
+set featheractive;
+timeout = .05;
+setgif flyboots.gif;
+}
+else {
+unset featheractive;
+timeout = 0;
+unset timeout;
+playersprite=0;
+setgif flyboots2.gif;
+}
+}
+if (timeout && playermp>0) {
+if (playersprite>=1 && playersprite<=8) {
+if (playerdir==0) playery--;
+if (playerdir==1) playerx--;
+if (playerdir==2) playery++;
+if (playerdir==3) playerx++;
+playermp-=1;
+}
+timeout = .05;
+}
+if (playersays(destroy fly boots)) { destroy;}

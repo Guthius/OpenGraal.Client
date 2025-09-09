@@ -1,0 +1,16 @@
+if(created) canbecarried;
+
+if(wasthrown){
+putbomb 3,x,y;
+putbomb 3,x-3,y;
+putbomb 3,x,y-3;
+putbomb 3,x+3,y;
+putbomb 3,x,y+3;
+putexplosion 1,x,y;
+destroy;
+}
+if(chestcheck>0){
+crespawn=1;
+chestcheck=0;
+destroy;
+}

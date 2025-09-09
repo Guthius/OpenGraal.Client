@@ -1,0 +1,10 @@
+if(playertouchsme||waspelt||washit||wasshot||exploded){
+putleaps 2,x,y;
+putexplosion 5,x,y;
+putexplosion 3,x+2,y+2;
+putexplosion 3,x+2,y-2;
+putexplosion 3,x-2,y-2;
+putexplosion 3,x-2,y+2;
+crowding--;
+destroy;
+}

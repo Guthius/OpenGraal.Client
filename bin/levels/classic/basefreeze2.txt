@@ -1,0 +1,12 @@
+if (playertouchsme) {
+toweapons #n's freeze trap layer;
+destroy;
+}
+
+if (weaponfired) {
+if (playerdir==0) putnpc crystalorb.gif, basefreeze.txt, playerx+.5, playery-2;
+else if (playerdir==1) putnpc crystalorb.gif, basefreeze.txt, playerx-1.5, playery+.5;
+else if (playerdir==2) putnpc crystalorb.gif, basefreeze.txt, playerx+.5, playery+3;
+else if (playerdir==3) putnpc crystalorb.gif, basefreeze.txt, playerx+2.5, playery+.5;
+destroy;
+}

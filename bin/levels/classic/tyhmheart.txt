@@ -1,0 +1,10 @@
+if(created) {
+canbecarried;
+dontblock;
+}
+if(wasthrown||waspelt||washit||wasshot||exploded){
+putleaps 4,x,y;
+lay2 heart,x,y;
+crowding--;
+destroy;
+}

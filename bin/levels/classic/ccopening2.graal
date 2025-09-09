@@ -1,0 +1,10 @@
+GR-V1.03@pÁE\D@pÁE\D@pÁE\D@pÁE\D@pÁE\D@pÁE\D@pÁE\D@pÁE\D@pÁE\D@pÁE\D@pÁE\D@pÁE\D@pÁE\D@pÁE\D@pÁE\D@pÁE\D#
+ÿÿÿ
+;*ccopen3.gif#timeout=.1;§if (timeout) {hideplayer 1;freezeplayer 1;playerx=x+18;playery=y+8}
+L9black.gif#if (playerenters) {message The baddies started taking over Chaotica, one place }
+L;black.gif#if (playerenters) {timeout=.5;message ;timereverywhere }§if (timeout) {message at a time. Soon, they had taken over most of the land }
+L=black.gif#if (playerenters) {timeout=1;message ;timereverywhere }§if (timeout) {message known as Chaotica. There was constant fighting that}
+]8#if (playerenters) {timeout=8;timereverywhere; }§if (timeout) {setlevel ccopening3.graal }
+L?black.gif#if (playerenters) {timeout=1.5;message ;timereverywhere}§if (timeout) {message involved the north and south sides of Nosroc River.}
+#
+#

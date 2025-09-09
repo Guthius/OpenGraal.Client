@@ -1,0 +1,28 @@
+if (wasthrown) {this.msg=100;cannotbecarried; BirdData=1;}
+if ((playerenters && !this.init=1) || timeout) {
+ if (playerenters && !this.init=1) {
+  this.init=1;
+  this.sx=x;
+  this.sy=y;
+  BirdData=0;
+  this.timer=60;
+  timereverywhere;
+ }
+ this.timer-=.3;
+ if (BirdData=1) this.timer-=3;
+ if (this.msg<=0) canbecarried;
+ timeout=.3;
+ if (BirdData=2) {
+  if (this.msg<=50) {message ;}
+  if (this.msg=100) message Sqwark!;
+  if (this.msg=90) message Hello dear!;
+  if (this.msg=80) {message Underground!;
+                    set PlayerMightKnowBrugesTowerPass};
+  if (this.msg=70) message Cane of Brugara!;
+  if (this.msg=60) message Sqwark!;
+  if (this.msg<50 && this.msg>0) {BirdData=0;  message ; this.msg=0; }
+  this.msg--;
+ }
+ if (this.timer<=0)  destroy;
+
+}

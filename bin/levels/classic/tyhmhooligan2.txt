@@ -1,0 +1,74 @@
+dontblock;
+for (i=0; i<playerscount; i++) {
+if(abs((players[i].x+1)-(x+0.5))<=2&&abs((players[i].y+1.5)-(y+0.5))<=2.2){
+if(this.speed<0.5){
+this.speed=1.5;
+this.dirk = players[i].dir;
+}else{
+putleaps 4,x,y;
+putexplosion 2.5,x,y;
+destroy;
+}
+}
+}
+if(exploded){
+putleaps 4,x,y;
+putexplosion 2.5,x,y;
+TyhmHB=TyhmHB-1;
+destroy;
+}
+
+if(wasshot){
+putleaps 1,x,y;
+destroy;
+}
+
+if(this.speed>0){
+if(washit){
+this.dirk=this.dirk+2;
+if (this.dirk>3) this.dirk=this.dirk-3;
+}
+if(this.dirk=0){
+this.flyy=y-this.speed;
+this.flyx=x;
+}
+if(this.dirk=1){
+this.flyx=x-this.speed;
+this.flyy=y;
+}
+if(this.dirk=2){
+this.flyy=y+this.speed;
+this.flyx=x;
+}
+if(this.dirk=3){
+this.flyx=x+this.speed;
+this.flyy=y;
+}
+if (onwall(this.flyx+0.3,this.flyy+0.3)&&this.wallignore<1) {
+this.dirk=this.dirk+2;
+if (this.dirk>3) this.dirk=this.dirk-4;
+this.wallignore=5;
+} else this.testhurt = 1;
+
+if (this.testhurt == 1) {
+  for (i=0; i<compuscount; i++) {
+    if (abs(this.flyx-compus[i].x)<=0.5 &&
+        abs(this.flyy-(compus[i].y-1))<=2 &&
+        compus[i].mode!=3){
+        hitcompu i,1,x,y;
+        putleaps 4,x,y;
+        putexplosion 2.5,compus[i].x,compus[i].y;
+        destroy;
+    }
+  }
+
+  this.testhurt = 0;
+}
+
+//if it made it this far, it hasn't blown up.
+y=this.flyy;
+x=this.flyx;
+this.speed=this.speed-0.05;
+}
+this.wallignore=this.wallignore-1;
+timeout=0.05;

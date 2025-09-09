@@ -1,0 +1,14 @@
+if (playerenters) {
+  if (icefreeze) {
+    freezeplayer 3;
+    x = playerx-2/16;
+    y = playery-7/16;
+    unset icefreeze;
+    timeout = 3;
+  }
+}
+if (timeout) {
+  putleaps 5,x+1,y;
+  putleaps 5,x+1,y+2;
+  destroy;
+}

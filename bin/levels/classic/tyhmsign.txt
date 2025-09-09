@@ -1,0 +1,13 @@
+if(playertouchsme||waspelt||washit||wasshot||exploded){
+putleaps 2,x,y;
+shootball;
+sleep 0.5;
+shootball;
+sleep 0.5;
+shootball;
+sleep 0.5;
+shootball;
+crowding--;
+putleaps 2,x,y;
+destroy;
+}

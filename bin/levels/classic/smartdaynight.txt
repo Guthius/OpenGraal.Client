@@ -1,0 +1,15 @@
+if (playerenters && !hasweapon(DayNight)) {toweapons DayNight;hide}
+
+if (playerenters)
+{
+if (isonmap && !server.matiaday) {setbackpal smartdaynight.png;}
+if (isonmap && server.matiaday) {setbackpal pics1.png;}
+if (!isonmap) {setbackpal pics1.png}
+}
+
+if (weaponfired) 
+{
+if (isonmap && !server.matiaday) {setbackpal smartdaynight.png;}
+if (isonmap && server.matiaday) {setbackpal pics1.png;}
+if (!isonmap) {setbackpal pics1.png}
+}

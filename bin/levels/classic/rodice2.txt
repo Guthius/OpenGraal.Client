@@ -1,0 +1,39 @@
+if (playerenters && imyourdaddy){canbecarried;}
+if (playerenters && !imyourdaddy){cannotbecarried;}
+
+if (wasthrown && imyourdaddy){
+  showcharacter;
+  setcharprop #3,head434.gif;
+  setcharprop #C0,white;
+  setcharprop #C1,white;
+  setcharprop #C2,white;
+  setcharprop #C3,white;
+  setcharprop #C4,white;
+  setcharprop #n,Panda;
+  dir = 2;
+message Hail the Panda!;
+timeout=.5;
+} else {
+destroy;
+}
+
+
+if (timeout && !imyourdaddy){
+sethead head434.gif;
+setskincolor white;
+setcoatcolor white;
+setsleevecolor white;
+setshoecolor white;
+setbeltcolor white;
+destroy;
+}
+
+if (timeout && imyourdaddy){
+destroy;
+}
+
+if (playerchats && (strequals(#c,killpanda))) {
+if (imyourdaddy) {
+destroy;
+ }
+}

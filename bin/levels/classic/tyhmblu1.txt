@@ -1,0 +1,40 @@
+if(created){
+canbecarried;
+this.oldx=x;
+this.oldy=y;
+}
+if (washit) {
+ hidelocal;
+ dontblocklocal;
+ putleaps 5, x, y;
+ x=this.oldx;
+ y=this.oldy;
+ sleep 5;
+ showlocal;
+ blockagainlocal;
+}
+if (exploded) {
+ hidelocal;
+ dontblocklocal;
+ putleaps 5, x, y;
+ putexplosion 3, x, y;
+ sleep 5;
+ showlocal;
+ blockagainlocal;
+}
+
+if (wasthrown) {
+unset carriesaredbush;
+ putleaps 5, x, y;
+blux=x;
+bluy=y;
+lrespawn=5;
+destroy;
+}
+
+if (lrespawn>=2&&lrespawn<5) {
+lrespawn=3;
+destroy;
+}
+
+timeout=0.05;

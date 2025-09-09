@@ -1,0 +1,7 @@
+// NPC made by Reaper of Souls
+if (playerenters) show;
+if (gotgbowdest) {
+  toweapons Godbow;
+}
+if (weaponfired) {destroy;
+}

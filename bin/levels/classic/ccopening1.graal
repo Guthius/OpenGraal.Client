@@ -1,0 +1,10 @@
+GR-V1.03@pÁE\D@pÁE\D@pÁE\D@pÁE\D@pÁE\D@pÁE\D@pÁE\D@pÁE\D@pÁE\D@pÁE\D@pÁE\D@pÁE\D@pÁE\D@pÁE\D@pÁE\D@pÁE\D#
+ÿÿÿ
+;*ccopen1.gif#timeout=.1;timereverywhere;§if (timeout) {hideplayer 1;freezeplayer 1;playerx=x+18;playery=y+8;setplayerprop #c,   }
+L9black.gif#if (playerenters) {message In a normally peaceful land also known as Chaotica,;play stef61.mid }
+L;black.gif#if (playerenters) {timeout=.5;message ;timereverywhere}§if (timeout) {message there was a time when baddies were not destructive.}
+L=black.gif#if (playerenters) {timeout=1;message ;timereverywhere}§if (timeout) {message With a new king, they tried to take over the land, which}
+];#if (playerenters) {timeout=8;timereverywhere; }§if (timeout) {setlevel ccopening2.graal }
+L?black.gif#if (playerenters) {timeout=1.5;message ;timereverywhere}§if (timeout) {message resulted in many battles between the north and south.}
+#
+#

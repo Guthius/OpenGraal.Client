@@ -1,0 +1,213 @@
+//The Grappler v1.0 by Gandarian of Graalonline
+
+if (playertouchsme) {
+  toweapons Grapple;
+}
+if (playerenters) {
+  this.range=30;
+  this.number=this.range/2-this.range/8;
+  for (this.i=1; this.i<=this.number+1; this.i++) hideimg this.i;
+  this.flycounter = 0;
+  timeout = 0;
+  show;
+}
+
+if (weaponfired && this.counter<=0) {
+  this.out=1;
+  this.hitsome=0;
+  this.range=30;
+  this.number=this.range/2-this.range/8;
+  this.counter=0;
+  if(playerdir==0)
+    {
+    this.flyx=playerx+.5;
+    this.flyy=playery-.5;
+    }
+  if(playerdir==1)
+    {
+    this.flyx=playerx;
+    this.flyy=playery+.5;
+    }
+  if(playerdir==2)
+    {
+    this.flyx=playerx+2;
+    this.flyy=playery+3;
+    }
+  if(playerdir==3)
+    {
+    this.flyx=playerx;
+    this.flyy=playery+.5;
+    }
+    this.px=playerx;this.py=playery;
+  timeout=.05;
+}
+if(timeout&&this.out=1){
+  playerx=this.px; playery=this.py;
+
+if(playerdir==0){
+  if(onwall(this.flyx, this.flyy+abs(0*(this.flyy-playery)))&&this.hitsome==0)
+    {
+    this.hitsome=1; this.drange=this.counter; this.counter=0;
+    }
+  if(this.hitsome==1&&this.counter<this.drange)
+    {
+    if(!onwall(this.px-1, thix.py))this.py-=1;
+    freezeplayer .06;
+    playersprite=11;
+    hidesword;
+    for (this.i=1; this.i<=this.number+1; this.i++)
+      hideimg this.i;
+    showimg 1, wgrapple_n.gif, this.flyx, this.flyy+abs(0*(this.flyy-playery));
+    for(this.a=1;this.a<this.number;this.a++)
+      showimg this.a+1, wgrapple0.gif, this.flyx, this.flyy+abs((this.a/this.number)*(this.flyy-playery));
+    this.testhurt=1;
+    }
+  if(this.hitsome==0&&this.counter<this.range)
+    {
+    if(this.counter<=this.range/2)this.flyy-=1;
+    else this.flyy+=1;
+    freezeplayer .06;
+    playersprite=11;
+    hidesword;
+    for (this.i=1; this.i<=this.number+1; this.i++)
+      hideimg this.i;
+    showimg 1, wgrapple_n.gif, this.flyx, this.flyy+abs(0*(this.flyy-playery));
+    for(this.a=1;this.a<this.number;this.a++)
+      showimg this.a+1, wgrapple0.gif, this.flyx, this.flyy+abs((this.a/this.number)*(this.flyy-playery));
+    this.testhurt=1;
+    }
+}
+
+if(playerdir==1){
+  if(onwall(this.flyx+abs(0*(this.flyx-playerx)), this.flyy+1.2)&&this.hitsome==0)
+    {
+    this.hitsome=1; this.drange=this.counter; this.counter=0;
+    }
+  if(this.hitsome==1&&this.counter<this.drange)
+    {
+    if(!onwall(this.px-1, thix.py))this.px-=1;
+    freezeplayer .06;
+    playersprite=11;
+    hidesword;
+    for (this.i=1; this.i<=this.number+1; this.i++)
+      hideimg this.i;
+    showimg 1, wgrapple_w.gif, this.flyx+abs(0*(this.flyx-playerx)), this.flyy+1.2;
+    for(this.a=1;this.a<this.number;this.a++)
+      showimg this.a+1, wgrapple0.gif, this.flyx+abs((this.a/this.number)*(this.flyx-playerx)), this.flyy+1.2;
+    this.testhurt=1;
+    }
+  if(this.hitsome==0&&this.counter<this.range)
+    {
+    if(this.counter<=this.range/2)this.flyx-=1;
+    else this.flyx+=1;
+    freezeplayer .06;
+    playersprite=11;
+    hidesword;
+    for (this.i=1; this.i<=this.number+1; this.i++)
+      hideimg this.i;
+    showimg 1, wgrapple_w.gif, this.flyx+abs(0*(this.flyx-playerx)), this.flyy+1.2;
+    for(this.a=1;this.a<this.number;this.a++)
+      showimg this.a+1, wgrapple0.gif, this.flyx+abs((this.a/this.number)*(this.flyx-playerx)), this.flyy+1.2;
+    this.testhurt=1;
+    }
+}
+
+if(playerdir==2){
+  if(onwall(this.flyx, this.flyy-abs(0*(this.flyy-playery-2)))&&this.hitsome==0)
+    {
+    this.hitsome=1; this.drange=this.counter; this.counter=0;
+    }
+  if(this.hitsome==1&&this.counter<this.drange)
+    {
+    if(!onwall(this.px-1, thix.py))this.py+=1;
+    freezeplayer .06;
+    playersprite=11;
+    hidesword;
+    for (this.i=1; this.i<=this.number+1; this.i++)
+      hideimg this.i;
+    showimg 1, wgrapple_s.gif, this.flyx, this.flyy-abs(0*(this.flyy-playery-2));
+    for(this.a=1;this.a<this.number;this.a++)
+      showimg this.a+1, wgrapple0.gif, this.flyx, this.flyy-abs((this.a/this.number)*(this.flyy-playery-2));
+    this.testhurt=1;
+    }
+  if(this.hitsome==0&&this.counter<this.range)
+    {
+    if(this.counter<=this.range/2)this.flyy+=1;
+    else this.flyy-=1;
+    freezeplayer .06;
+    playersprite=11;
+    hidesword;
+    for (this.i=1; this.i<=this.number+1; this.i++)
+      hideimg this.i;
+    showimg 1, wgrapple_s.gif, this.flyx, this.flyy-abs(0*(this.flyy-playery-2));
+    for(this.a=1;this.a<this.number;this.a++)
+      showimg this.a+1, wgrapple0.gif, this.flyx, this.flyy-abs((this.a/this.number)*(this.flyy-playery-2));
+    this.testhurt=1;
+    }
+}
+
+
+if(playerdir==3){
+  if(onwall(2+this.flyx-abs(0*(this.flyx-playerx)), this.flyy+1.2)&&this.hitsome==0)
+    {
+    this.hitsome=1; this.drange=this.counter; this.counter=0;
+    }
+  if(this.hitsome==1&&this.counter<this.drange)
+    {
+    if(!onwall(this.px+1, thix.py))this.px+=1;
+    freezeplayer .06;
+    playersprite=11;
+    hidesword;
+    for (this.i=1; this.i<=this.number+1; this.i++)
+      hideimg this.i;
+    showimg 1, wgrapple_e.gif, 2+this.flyx-abs(0*(this.flyx-playerx)), this.flyy+1.2;
+    for(this.a=1;this.a<this.number;this.a++)
+      showimg this.a+1, wgrapple0.gif, 2+this.flyx-abs((this.a/this.number)*(this.flyx-playerx)), this.flyy+1.2;
+    this.testhurt=1;
+    }
+  if(this.hitsome==0&&this.counter<this.range)
+    {
+    if(this.counter<=this.range/2)this.flyx+=1;
+    else this.flyx-=1;
+    freezeplayer .06;
+    playersprite=11;
+    hidesword;
+    for (this.i=1; this.i<=this.number+1; this.i++)
+      hideimg this.i;
+    showimg 1, wgrapple_e.gif, 2+this.flyx-abs(0*(this.flyx-playerx)), this.flyy+1.2;
+    for(this.a=1;this.a<this.number;this.a++)
+      showimg this.a+1, wgrapple0.gif, 2+this.flyx-abs((this.a/this.number)*(this.flyx-playerx)), this.flyy+1.2;
+    this.testhurt=1;
+    }
+}
+
+  this.counter++;
+  timeout=.05;
+}
+
+if(timeout&&this.counter>=this.range&&this.hitsome==0){
+  for (this.i=1; this.i<=this.number+1; this.i++)
+     hideimg this.i;
+  this.counter=0; this.out=0; timeout=0;
+  }
+if(timeout&&this.counter>=this.drange&&this.hitsome==1){
+  for (this.i=1; this.i<=this.number+1; this.i++)
+    hideimg this.i;
+  this.counter=0; this.out=0; this.hitsome=0; timeout=0;
+  }
+
+if (this.testhurt == 1) {
+  for (i=0; i<compuscount; i++) {
+    if (abs(this.flyx-compus[i].x)<=1 &&
+        abs(this.flyy-(compus[i].y-0.5))<=1.5 &&
+        compus[i].mode!=3)
+      hitcompu i,1,this.flyx+0.5,this.flyy+0.5;
+  }
+  for (i=1; i<playerscount; i++) {
+    if (abs((this.flyx+0.7)-(players[i].x+1.5))<=1 &&
+        abs((this.flyy+0.5)-(players[i].y+1.5))<=1.5)
+      hitplayer i,1,this.flyx+0.5,this.flyy+0.5;
+  }
+  this.testhurt = 0;
+}
+

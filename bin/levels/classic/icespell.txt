@@ -1,0 +1,4 @@
+if (icemateriafired) {timeout=0.6}
+if (playertouchsme) { freezeplayer 1; play lift.wav}
+if (exploded || washit) { destroy}
+if (timeout) { destroy}

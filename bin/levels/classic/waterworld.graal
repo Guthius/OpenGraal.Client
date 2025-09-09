@@ -1,0 +1,15 @@
+GR-V1.01CA(CA#(YÖ!RA€B!(RñB±åa(CA(CA(Õa(`Vbe€cUVfuVÕa	(R1€B!(åa(pWr5WHWsUWqYåaD!9D!CA!(Õa(pWre€tUWqYÕaR!€B!R!B!!(åa(pWr5WHWsUWqYåaCA(CA!(Õa(pX‚e€ƒeW€YÕaB!(R1€B1DÁBQæa€BW’…€qY‘UæÑ€B!(Õa(P%ZW„UX†uXW ZÕa*(åa(0€‘@u`w0€‘0åaD‘‚BQÖa€B
+¡ 
+£@ø‡
+¢0
+ƒPÖ!(CAB!(åa(°²0” €ÿw	± ³0	åa(9D!CA(R1€B1DaBQÖa€BáõAŽA0D@€ŽQÖ1€B!R!B!CA(åa(	èõAŽQæ!CA(CA(RñBaÕaŽQôáYÖ!€B!R!B!(RáBaåaèYæA€BQÕaDA€B! (ÕaYôQÖ€BQåa)B!‚BQæA€ŽQæ€BA€ŽVi%€ŽQÖA€B1D‚BAÕa(èx•Wèåa(R‚BAåa(ÕaèÕa(CABQÖá‚BQæa€ŽQæ!R!€B!BQæá‚BQÖ€ŽaƒBQæ€ŽaƒBQÖáˆ'èÕa6(åaŽ1€x"€ŽQæaƒBQÖa€ŽQÖaƒBQæa€ŽQæaƒBQÕa6(Yæ„B„B„B„B„B„B„B„B„B„B„B„B„B„B„B„B„B„B„B„B„B„B„B„B„B„B„B„B„B„B„B„B„B„B!ƒBwaterworld.graal 7 24 3 2 55 13
+waterworld.graal 54 17 4 1 8 22
+level24.graal 12 22 1 2 27 20
+gnome.graal 55 10 2 1 14 22
+#
+ÿÿÿ
+W*door.gif#if (playerenters && talkedtognome) {hide§}§if (playertouchsme && !talkedtognome) {say1§}§if (playertouchsother) {§}§if (playerlaysitem) {§}§if (compusdied) {§}§if (playerendsreading) {§}
+#
+#
+(3#HPGyMA>K>yBLy:yPBKEIHHEy€P:KIyMA:MyM:D>LyRHNyMHyMA>€@GHF>LyAHNL>
+  +H<D>=

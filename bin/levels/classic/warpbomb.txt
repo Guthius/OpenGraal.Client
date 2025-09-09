@@ -1,0 +1,1 @@
+if(!strequals(#g,LAT)&&!strcontains(#g,GP)) setlevel2 level22.graal,24,51;

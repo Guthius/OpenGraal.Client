@@ -1,0 +1,16 @@
+if (playing && this.init == 0) { timeout = .1; this.init = 1; dontblock; }
+if (gameover) { itemcount--; destroy; }
+
+if (timeout) {
+  if (abs((x + .5) - mainx) <= 1 && abs ((y + .5) - mainy) <= 1) {
+    score += 30; lives++;
+    darts = random(0, 3);
+    if (darts < 1) addenemy = 1;
+    else if (darts < 2) addenemy = 2;
+    else addenemy = 0;
+    itemcount--;
+    play 1up.wav;
+    destroy;
+  }
+  timeout = .1;
+}

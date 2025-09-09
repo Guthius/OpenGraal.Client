@@ -1,0 +1,183 @@
+//====== Brugite Mage A.I.======
+//  written by Bruges, CEO Bruges Core
+//  gfx by Captain USA, Bruges Core
+//                        (12/04/1999)
+//  email: Bruges@brugescore.8m.com
+//  http://come.to/BrugesCore
+//
+// Below are variables which modify
+// the baddie's behavior. Press PgDn
+// three times to view them all.
+//
+if ((playerenters && !this.init=1) ||(timeout && this.dead=1)) {
+ this.init=1;
+ timereverywhere;
+ show;
+ hearts=6;		//the number of hearts the baddie starts with
+ timeout=.1;     	//the delay before it apears and attacks
+ this.stepspeed=.1;   	//the speed the baddie takes steps at
+ this.stepdist=.5;	//the distance covered by each step
+ this.power=1;		//number of half hearts it drains when it touches the player
+ this.magdel=2.5;		//delay between magical attacks
+ this.optdist=12;	//the distance it trys to keep between it and the player
+ this.ashow=1;		//time attacking image is shown
+ this.talkdelay=2;	//time speach is shown for
+ this.active=1;
+ this.dead=0;
+ this.sx=x; this.sy=y;
+}
+//do not edit anything below this
+//                            line!!
+//-----------------------------------
+if (playerenters){
+ this.optdist=this.optdist*this.optdist;	//squares optdist
+ this.border=3;		this.border=this.border*this.border;	//sets & squares the optdist margin
+ this.attacked=0;
+ this.pldiespeak=0;
+ this.lastmag=this.magdel;
+}
+if (playertouchsme && this.active>0) {
+  hurt this.power;
+  if (x>playerx) {if (!onwall(x+.5,y)) x=x+.5;if (!onwall(x+.5,y)) x=x+.5;if (!onwall(x+.5,y)) x=x+.5;if (!onwall(x+.5,y)) x=x+.5;if (!onwall(x+.5,y)) x=x+.5;if (!onwall(x+.5,y)) x=x+.5;
+                             if (!onwall(playerx+.5-.5,playery+.5)) playerx=playerx-.5;if (!onwall(playerx+.5-.5,playery+.5)) playerx=playerx-.5;};
+  if (x<playerx) {if (!onwall(x-.5,y)) x=x-.5;if (!onwall(x-.5,y)) x=x-.5;if (!onwall(x-.5,y)) x=x-.5;if (!onwall(x-.5,y)) x=x-.5;if (!onwall(x-.5,y)) x=x-.5;if (!onwall(x-.5,y)) x=x-.5;
+                             if (!onwall(playerx+.5+.5,playery+.5)) playerx=playerx+.5;if (!onwall(playerx+.5+.5,playery+.5)) playerx=playerx+.5;};
+  if (y>playery) {if (!onwall(x,y+.5)) y=y+.5;if (!onwall(x,y+.5)) y=y+.5;if (!onwall(x,y+.5)) y=y+.5;if (!onwall(x,y+.5)) y=y+.5;if (!onwall(x,y+.5)) y=y+.5;if (!onwall(x,y+.5)) y=y+.5;
+                             if (!onwall(playerx+.5,playery+.5-.5)) playery=playery-.5;if (!onwall(playerx+.5,playery+.5-.5)) playery=playery-.5;};
+  if (y<playery) {if (!onwall(x,y-.5)) y=y-.5;if (!onwall(x,y-.5)) y=y-.5;if (!onwall(x,y-.5)) y=y-.5;if (!onwall(x,y-.5)) y=y-.5;if (!onwall(x,y-.5)) y=y-.5;if (!onwall(x,y-.5)) y=y-.5;
+                             if (!onwall(playerx+.5,playery+.5+.5)) playery=playery+.5;if (!onwall(playerx+.5,playery+.5+.5)) playery=playery+.5;};
+};
+if (x-playerx<1 && playerx-x<1 && y-playery<1 && playery-y<1 && this.active>0) {
+  hurt this.power;
+  if (x>playerx) {if (!onwall(x+.5,y)) x=x+.5;if (!onwall(x+.5,y)) x=x+.5;if (!onwall(x+.5,y)) x=x+.5;if (!onwall(x+.5,y)) x=x+.5;if (!onwall(x+.5,y)) x=x+.5;if (!onwall(x+.5,y)) x=x+.5;
+                             if (!onwall(playerx+.5-.5,playery+.5)) playerx=playerx-.5;if (!onwall(playerx+.5-.5,playery+.5)) playerx=playerx-.5;};
+  if (x<playerx) {if (!onwall(x-.5,y)) x=x-.5;if (!onwall(x-.5,y)) x=x-.5;if (!onwall(x-.5,y)) x=x-.5;if (!onwall(x-.5,y)) x=x-.5;if (!onwall(x-.5,y)) x=x-.5;if (!onwall(x-.5,y)) x=x-.5;
+                             if (!onwall(playerx+.5+.5,playery+.5)) playerx=playerx+.5;if (!onwall(playerx+.5+.5,playery+.5)) playerx=playerx+.5;};
+  if (y>playery) {if (!onwall(x,y+.5)) y=y+.5;if (!onwall(x,y+.5)) y=y+.5;if (!onwall(x,y+.5)) y=y+.5;if (!onwall(x,y+.5)) y=y+.5;if (!onwall(x,y+.5)) y=y+.5;if (!onwall(x,y+.5)) y=y+.5;
+                             if (!onwall(playerx+.5,playery+.5-.5)) playery=playery-.5;if (!onwall(playerx+.5,playery+.5-.5)) playery=playery-.5;};
+  if (y<playery) {if (!onwall(x,y-.5)) y=y-.5;if (!onwall(x,y-.5)) y=y-.5;if (!onwall(x,y-.5)) y=y-.5;if (!onwall(x,y-.5)) y=y-.5;if (!onwall(x,y-.5)) y=y-.5;if (!onwall(x,y-.5)) y=y-.5;
+                             if (!onwall(playerx+.5,playery+.5+.5)) playery=playery+.5;if (!onwall(playerx+.5,playery+.5+.5)) playery=playery+.5;};
+};
+if (exploded || washit || wasshooted || waspelt) if (this.active>0){
+ this.attacked=1;
+ if (exploded) hearts-=playerbombpower;
+ if (washit) hearts-=playerswordpower;
+ if (wasshooted) hearts-=playershootpower;
+ if (peltwithbush) hearts-=1;
+ if (peltwithsign || peltwithvase || peltwithstone) hearts-=2;
+ if (peltwithblackstone) hearts -=3;
+
+
+ if (hearts>0) {
+  if (x>playerx) {if (!onwall(x+.5,y)) x=x+.5;if (!onwall(x+.5,y)) x=x+.5;if (!onwall(x+.5,y)) x=x+.5;if (!onwall(x+.5,y)) x=x+.5;if (!onwall(x+.5,y)) x=x+.5;if (!onwall(x+.5,y)) x=x+.5;if (!onwall(x+.5,y)) x=x+.5;if (!onwall(x+.5,y)) x=x+.5;};
+  if (x<playerx) {if (!onwall(x-.5,y)) x=x-.5;if (!onwall(x-.5,y)) x=x-.5;if (!onwall(x-.5,y)) x=x-.5;if (!onwall(x-.5,y)) x=x-.5;if (!onwall(x-.5,y)) x=x-.5;if (!onwall(x-.5,y)) x=x-.5;if (!onwall(x-.5,y)) x=x-.5;if (!onwall(x-.5,y)) x=x-.5;};
+  if (y>playery) {if (!onwall(x,y+.5)) y=y+.5;if (!onwall(x,y+.5)) y=y+.5;if (!onwall(x,y+.5)) y=y+.5;if (!onwall(x,y+.5)) y=y+.5;if (!onwall(x,y+.5)) y=y+.5;if (!onwall(x,y+.5)) y=y+.5;if (!onwall(x,y+.5)) y=y+.5;if (!onwall(x,y+.5)) y=y+.5;}
+  if (y<playery) {if (!onwall(x,y-.5)) y=y-.5;if (!onwall(x,y-.5)) y=y-.5;if (!onwall(x,y-.5)) y=y-.5;if (!onwall(x,y-.5)) y=y-.5;if (!onwall(x,y-.5)) y=y-.5;if (!onwall(x,y-.5)) y=y-.5;if (!onwall(x,y-.5)) y=y-.5;if (!onwall(x,y-.5)) y=y-.5;}
+ }
+}
+if (timeout && this.active>0) {
+ {//SMART-ONLINE A.I.
+  this.icomp=1000000;
+  for(i=0;i<playerscount;i++) {
+   eval=abs(players[i].x-x)+abs(players[i].y-y);
+   if (eval<this.icomp) {this.icomp=eval; this.i=i;}
+  }
+  i=this.i;
+ }//END SMART-ONLINE A.I.
+ if (this.talk>0) {this.talk-=this.stepspeed; if (this.talk<=0) message ;}
+ if (hearts<1) {this.active=0;
+  this.gift=random(0,9);
+  if (this.gift<=3) lay bluerupee;
+  if (this.gift>3 && this.gift<=4) lay redrupee;
+  if (this.gift>4 && this.gift<=5) lay heart;
+  if (this.gift>5 && this.gift<=6) lay heart;lay heart;
+  if (this.gift>6 && this.gift<=7) lay bombs;
+  if (this.gift>7 && this.gift<=8) lay darts;
+  this.dead=1; timeout=10; hide;
+ }
+
+ if (hearts>0) {
+ {
+  if (this.adel>0) {this.adel-=this.stepspeed}else{
+   this.pdist=(x-players[i].x)*(x-players[i].x)+(y-players[i].y)*(y-players[i].y);
+   if (this.pdist<=this.optdist+this.border && this.pdist>=this.optdist-this.border) {
+    if (x=players[i].x||y=players[i].y){
+     if (x>=players[i].x && y>=players[i].y) { if (x-players[i].x>y-players[i].y) {setgif BrugiteMage_WS.gif}else{setgif BrugiteMage_NS.gif}}
+     else if (x<=players[i].x && y>=players[i].y) { if (players[i].x-x>y-players[i].y) {setgif BrugiteMage_ES.gif}else{setgif BrugiteMage_NS.gif}}
+     else if (x>=players[i].x && y<=players[i].y) { if (x-players[i].x>players[i].y-y) {setgif BrugiteMage_WS.gif}else{setgif BrugiteMage_SS.gif}}
+     else if (x<=players[i].x && y<=players[i].y) { if (players[i].x-x>players[i].y-y) {setgif BrugiteMage_ES.gif}else{setgif BrugiteMage_SS.gif}}
+    }else{
+     if (this.imset=0) {this.imset=1;
+      if ((players[i].x-x)*(players[i].x-x)>(players[i].y-y)*(players[i].y-y) && players[i].y<y) {setgif BrugiteMage_N1.gif}//up
+      else if ((players[i].x-x)*(players[i].x-x)>(players[i].y-y)*(players[i].y-y) && players[i].y>y) {setgif BrugiteMage_S1.gif}//down
+      else if ((players[i].x-x)*(players[i].x-x)<(players[i].y-y)*(players[i].y-y) && players[i].x<x) {setgif BrugiteMage_W1.gif}//left
+      else if ((players[i].x-x)*(players[i].x-x)<(players[i].y-y)*(players[i].y-y) && players[i].x>x) {setgif BrugiteMage_E1.gif}//right
+     }else{this.imset=0;
+      if ((players[i].x-x)*(players[i].x-x)>(players[i].y-y)*(players[i].y-y) && players[i].y<y) {setgif BrugiteMage_N2.gif}//up
+      else if ((players[i].x-x)*(players[i].x-x)>(players[i].y-y)*(players[i].y-y) && players[i].y>y) {setgif BrugiteMage_S2.gif}//down
+      else if ((players[i].x-x)*(players[i].x-x)<(players[i].y-y)*(players[i].y-y) && players[i].x<x) {setgif BrugiteMage_W2.gif}//left
+      else if ((players[i].x-x)*(players[i].x-x)<(players[i].y-y)*(players[i].y-y) && players[i].x>x) {setgif BrugiteMage_E2.gif}//right
+     }
+     if ((players[i].x-x)*(players[i].x-x)>(players[i].y-y)*(players[i].y-y) && players[i].y<y && !onwall(x+.5,y-this.stepdist+.5)) {y=y-this.stepdist}//up
+     else if ((players[i].x-x)*(players[i].x-x)>(players[i].y-y)*(players[i].y-y) && players[i].y>y && !onwall(x+.5,y+this.stepdist+.5)) {y=y+this.stepdist}//down
+     else if ((players[i].x-x)*(players[i].x-x)<(players[i].y-y)*(players[i].y-y) && players[i].x<x && !onwall(x-this.stepdist+.5,y+.5)) {x=x-this.stepdist}//left
+     else if ((players[i].x-x)*(players[i].x-x)<(players[i].y-y)*(players[i].y-y) && players[i].x>x && !onwall(x+this.stepdist+.5,y+.5)) {x=x+this.stepdist}//right
+    }
+   }else if (this.pdist>this.optdist) {
+    if (this.imset=0) {this.imset=1;
+     if (x>=players[i].x && y>=players[i].y) { if (x-players[i].x>y-players[i].y) {setgif BrugiteMage_W1.gif}else{setgif BrugiteMage_N1.gif}}
+     else if (x<=players[i].x && y>=players[i].y) { if (players[i].x-x>y-players[i].y) {setgif BrugiteMage_E1.gif}else{setgif BrugiteMage_N1.gif}}
+     else if (x>=players[i].x && y<=players[i].y) { if (x-players[i].x>players[i].y-y) {setgif BrugiteMage_W1.gif}else{setgif BrugiteMage_S1.gif}}
+     else if (x<=players[i].x && y<=players[i].y) { if (players[i].x-x>players[i].y-y) {setgif BrugiteMage_E1.gif}else{setgif BrugiteMage_S1.gif}}
+    }else{this.imset=0;
+     if (x>=players[i].x && y>=players[i].y) { if (x-players[i].x>y-players[i].y) {setgif BrugiteMage_W2.gif}else{setgif BrugiteMage_N2.gif}}
+     else if (x<=players[i].x && y>=players[i].y) { if (players[i].x-x>y-players[i].y) {setgif BrugiteMage_E2.gif}else{setgif BrugiteMage_N2.gif}}
+     else if (x>=players[i].x && y<=players[i].y) { if (x-players[i].x>players[i].y-y) {setgif BrugiteMage_W2.gif}else{setgif BrugiteMage_S2.gif}}
+     else if (x<=players[i].x && y<=players[i].y) { if (players[i].x-x>players[i].y-y) {setgif BrugiteMage_E2.gif}else{setgif BrugiteMage_S2.gif}}
+    }
+    if (x>players[i].x-this.stepdist && !onwall(x-this.stepdist+.5,y+.5)) {x=x-this.stepdist};
+    if (x<players[i].x+this.stepdist && !onwall(x+this.stepdist+.5,y+.5)) {x=x+this.stepdist};
+    if (y>players[i].y-this.stepdist && !onwall(x+.5,y-this.stepdist+.5)) {y=y-this.stepdist};
+    if (y<players[i].y+this.stepdist && !onwall(x+.5,y+this.stepdist+.5)) {y=y+this.stepdist};
+   }else if (this.pdist<this.optdist) {
+    if (this.imset=0) {this.imset=1;
+     if (x>=players[i].x && y>=players[i].y) { if (x-players[i].x>y-players[i].y) {setgif BrugiteMage_E1.gif}else{setgif BrugiteMage_S1.gif}}
+     else if (x<=players[i].x && y>=players[i].y) { if (players[i].x-x>y-players[i].y) {setgif BrugiteMage_W1.gif}else{setgif BrugiteMage_S1.gif}}
+     else if (x>=players[i].x && y<=players[i].y) { if (x-players[i].x>players[i].y-y) {setgif BrugiteMage_E1.gif}else{setgif BrugiteMage_N1.gif}}
+     else if (x<=players[i].x && y<=players[i].y) { if (players[i].x-x>players[i].y-y) {setgif BrugiteMage_W1.gif}else{setgif BrugiteMage_N1.gif}}
+    }else{this.imset=0;
+     if (x>=players[i].x && y>=players[i].y) { if (x-players[i].x>y-players[i].y) {setgif BrugiteMage_E2.gif}else{setgif BrugiteMage_S2.gif}}
+     else if (x<=players[i].x && y>=players[i].y) { if (players[i].x-x>y-players[i].y) {setgif BrugiteMage_W2.gif}else{setgif BrugiteMage_S2.gif}}
+     else if (x>=players[i].x && y<=players[i].y) { if (x-players[i].x>players[i].y-y) {setgif BrugiteMage_E2.gif}else{setgif BrugiteMage_N2.gif}}
+     else if (x<=players[i].x && y<=players[i].y) { if (players[i].x-x>players[i].y-y) {setgif BrugiteMage_W2.gif}else{setgif BrugiteMage_N2.gif}}
+    }
+    if (x>players[i].x && !onwall(x+this.stepdist+.5,y+.5)) {x=x+this.stepdist};
+    if (x<players[i].x && !onwall(x-this.stepdist+.5,y+.5)) {x=x-this.stepdist};
+    if (y>players[i].y && !onwall(x+.5,y+this.stepdist+.5)) {y=y+this.stepdist};
+    if (y<players[i].y && !onwall(x+.5,y-this.stepdist+.5)) {y=y-this.stepdist};
+   }
+  }
+  if ((x-players[i].x>=-.5 && x-players[i].x<=.5) || (y-players[i].y>=-1 && y-players[i].y<=1)) if (this.lastmag>=this.magdel) {
+   message Eyeantor Protonis!;
+   this.talk=this.talkdelay;
+
+   if (x>=players[i].x && y>=players[i].y) { if (x-players[i].x>y-players[i].y) {setgif BrugiteMage_WA.gif; this.mdir=4} else {setgif BrugiteMage_NA.gif; this.mdir=1}}
+   else if (x<=players[i].x && y>=players[i].y) { if (players[i].x-x>y-players[i].y) {setgif BrugiteMage_EA.gif; this.mdir=2} else {setgif BrugiteMage_NA.gif; this.mdir=1}}
+   else if (x>=players[i].x && y<=players[i].y) { if (x-players[i].x>players[i].y-y) {setgif BrugiteMage_WA.gif; this.mdir=4} else {setgif BrugiteMage_SA.gif; this.mdir=3}}
+   else if (x<=players[i].x && y<=players[i].y) { if (players[i].x-x>players[i].y-y) {setgif BrugiteMage_EA.gif; this.mdir=2} else {setgif BrugiteMage_SA.gif; this.mdir=3}}
+
+   this.adel=this.ashow;
+   this.lastmag=0;
+   if (this.mdir=1) putnpc proton_N.gif,protonN.txt,x+1,y;
+   if (this.mdir=2) putnpc proton_E.gif,protonE.txt,x,y+1.5;
+   if (this.mdir=3) putnpc proton_S.gif,protonS.txt,x+1,y;
+   if (this.mdir=4) putnpc proton_W.gif,protonW.txt,x,y+1.5;
+  }
+ }
+ this.lastmag+=this.stepspeed;
+ //this.hearts=hearts;
+ timeout=this.stepspeed;
+ }
+}
+
+//=====================================================================

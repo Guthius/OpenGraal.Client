@@ -1,0 +1,2 @@
+if (playerenters) {canbecarried;canbepushed;timeout=15}
+if(timeout){destroy}

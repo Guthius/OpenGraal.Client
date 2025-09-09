@@ -1,0 +1,27 @@
+if (playerenters) {
+timereverywhere;
+blockagain;
+drawoverplayer;
+curdistance=100;
+curplayer=-1;
+for (p=0;p<playerscount;p++) {
+pdistance=(((players[p].x-x)^2)+((players[p].y-y)^2))^0.5;
+if (pdistance<curdistance) {
+curplayer=p;
+curdistance=pdistance;
+}
+}
+if (curplayer==0) {
+x=players[curplayer].x-1.5;
+y=players[curplayer].y-1.5;
+}
+}
+timeout=5;
+timershow;
+
+if (playertouchsme) {
+blockagain;
+drawoverplayer;
+}
+
+if (timeout) destroy;

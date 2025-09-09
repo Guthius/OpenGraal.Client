@@ -1,0 +1,50 @@
+// Graal v1.3 NPC by Stefan Knorr
+if (created) {
+  showcharacter;
+  setcharprop #3,head129.gif;
+  setcharprop #C0,orange;
+  setcharprop #C1,black;
+  setcharprop #C2,orange;
+  setcharprop #C3,black;
+  setcharprop #C4,blue;
+  setcharprop #n,FrEAk+ God of Insanity;
+  setcharprop #c,;
+  setcharprop #1,sword1.gif;
+  swordpower = 1;
+  setcharprop #2,shield1.gif;
+  shieldpower = 1;
+  dir = 2;
+  sprite = 0;
+  ap = 50;
+  hearts = 3;
+  x = 24;
+  y = 15;
+}
+if (playertouchsme && timeout==0) {
+  sleep 0.95;
+  y=14.5;
+  sprite=1;
+  dir=0;
+  sleep 0.05;
+  y=14;
+  sprite=2;
+  sleep 0.05;
+  sprite=3;
+  sleep 0.05;
+  sprite=4;
+  sleep 0.05;
+  sprite=23;
+  sleep 0.2;
+  sprite=24;
+  sleep 0.35;
+  y=14.5;
+  sprite=25;
+  dir=2;
+  sleep 0.05;
+  y=15;
+  sprite=26;
+  sleep 0.05;
+  sprite=24;
+  sleep 0.25;
+  sprite=0;
+}

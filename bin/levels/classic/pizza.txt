@@ -1,0 +1,17 @@
+if (created) {
+  canbecarried;
+  y+=.5;
+  timeout=15;
+}
+if (playertouchsme) {
+   hurt -3;
+  destroy;
+}
+   // backup so that the pizza doesn't sit on a building
+   // forever.
+if (wasthrown) {
+timeout=9;
+}
+if (timeout) { 
+destroy;
+}

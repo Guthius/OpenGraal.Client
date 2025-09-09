@@ -1,0 +1,131 @@
+//script by Vangel (JF)
+
+if (playerenters) {
+
+  //initialize the NPC
+  this.rotation=1;
+  timeout=.05;
+  followplayer;
+}
+
+if (timeout) {
+  if (!ArmaPermClothes) {
+    x=10; y=10;
+    destroy;
+  } else {
+
+    //skin color (gloves
+    this.rnd=random(0,19);
+    if ((this.rnd>=0) && (this.rnd<1)) setskincolor white;
+    if ((this.rnd>=1) && (this.rnd<2)) setskincolor yellow;
+    if ((this.rnd>=2) && (this.rnd<3)) setskincolor orange;
+    if ((this.rnd>=3) && (this.rnd<4)) setskincolor pink;
+    if ((this.rnd>=4) && (this.rnd<5)) setskincolor red;
+    if ((this.rnd>=5) && (this.rnd<6)) setskincolor darkred;
+    if ((this.rnd>=6) && (this.rnd<7)) setskincolor lightgreen;
+    if ((this.rnd>=7) && (this.rnd<8)) setskincolor green;
+    if ((this.rnd>=8) && (this.rnd<9)) setskincolor darkgreen;
+    if ((this.rnd>=9) && (this.rnd<10)) setskincolor lightblue;
+    if ((this.rnd>=10) && (this.rnd<11)) setskincolor blue;
+    if ((this.rnd>=11) && (this.rnd<12)) setskincolor darkblue;
+    if ((this.rnd>=12) && (this.rnd<13)) setskincolor brown;
+    if ((this.rnd>=13) && (this.rnd<14)) setskincolor cynober;
+    if ((this.rnd>=14) && (this.rnd<15)) setskincolor purple;
+    if ((this.rnd>=15) && (this.rnd<16)) setskincolor darkpurple;
+    if ((this.rnd>=16) && (this.rnd<17)) setskincolor lightgray;
+    if ((this.rnd>=17) && (this.rnd<18)) setskincolor gray;
+    if ((this.rnd>=18) && (this.rnd<19)) setskincolor black;
+
+    //coat color
+    this.rnd=random(0,19);
+    if ((this.rnd>=0) && (this.rnd<1)) setcoatcolor white;
+    if ((this.rnd>=1) && (this.rnd<2)) setcoatcolor yellow;
+    if ((this.rnd>=2) && (this.rnd<3)) setcoatcolor orange;
+    if ((this.rnd>=3) && (this.rnd<4)) setcoatcolor pink;
+    if ((this.rnd>=4) && (this.rnd<5)) setcoatcolor red;
+    if ((this.rnd>=5) && (this.rnd<6)) setcoatcolor darkred;
+    if ((this.rnd>=6) && (this.rnd<7)) setcoatcolor lightgreen;
+    if ((this.rnd>=7) && (this.rnd<8)) setcoatcolor green;
+    if ((this.rnd>=8) && (this.rnd<9)) setcoatcolor darkgreen;
+    if ((this.rnd>=9) && (this.rnd<10)) setcoatcolor lightblue;
+    if ((this.rnd>=10) && (this.rnd<11)) setcoatcolor blue;
+    if ((this.rnd>=11) && (this.rnd<12)) setcoatcolor darkblue;
+    if ((this.rnd>=12) && (this.rnd<13)) setcoatcolor brown;
+    if ((this.rnd>=13) && (this.rnd<14)) setcoatcolor cynober;
+    if ((this.rnd>=14) && (this.rnd<15)) setcoatcolor purple;
+    if ((this.rnd>=15) && (this.rnd<16)) setcoatcolor darkpurple;
+    if ((this.rnd>=16) && (this.rnd<17)) setcoatcolor lightgray;
+    if ((this.rnd>=17) && (this.rnd<18)) setcoatcolor gray;
+    if ((this.rnd>=18) && (this.rnd<19)) setcoatcolor black;
+
+    //sleves
+    this.rnd=random(0,19);
+    if ((this.rnd>=0) && (this.rnd<1)) setsleevecolor white;
+    if ((this.rnd>=1) && (this.rnd<2)) setsleevecolor yellow;
+    if ((this.rnd>=2) && (this.rnd<3)) setsleevecolor orange;
+    if ((this.rnd>=3) && (this.rnd<4)) setsleevecolor pink;
+    if ((this.rnd>=4) && (this.rnd<5)) setsleevecolor red;
+    if ((this.rnd>=5) && (this.rnd<6)) setsleevecolor darkred;
+    if ((this.rnd>=6) && (this.rnd<7)) setsleevecolor lightgreen;
+    if ((this.rnd>=7) && (this.rnd<8)) setsleevecolor green;
+    if ((this.rnd>=8) && (this.rnd<9)) setsleevecolor darkgreen;
+    if ((this.rnd>=9) && (this.rnd<10)) setsleevecolor lightblue;
+    if ((this.rnd>=10) && (this.rnd<11)) setsleevecolor blue;
+    if ((this.rnd>=11) && (this.rnd<12)) setsleevecolor darkblue;
+    if ((this.rnd>=12) && (this.rnd<13)) setsleevecolor brown;
+    if ((this.rnd>=13) && (this.rnd<14)) setsleevecolor cynober;
+    if ((this.rnd>=14) && (this.rnd<15)) setsleevecolor purple;
+    if ((this.rnd>=15) && (this.rnd<16)) setsleevecolor darkpurple;
+    if ((this.rnd>=16) && (this.rnd<17)) setsleevecolor lightgray;
+    if ((this.rnd>=17) && (this.rnd<18)) setsleevecolor gray;
+    if ((this.rnd>=18) && (this.rnd<19)) setsleevecolor black;
+
+    //shoes
+    this.rnd=random(0,19);
+    if ((this.rnd>=0) && (this.rnd<1)) setshoecolor white;
+    if ((this.rnd>=1) && (this.rnd<2)) setshoecolor yellow;
+    if ((this.rnd>=2) && (this.rnd<3)) setshoecolor orange;
+    if ((this.rnd>=3) && (this.rnd<4)) setshoecolor pink;
+    if ((this.rnd>=4) && (this.rnd<5)) setshoecolor red;
+    if ((this.rnd>=5) && (this.rnd<6)) setshoecolor darkred;
+    if ((this.rnd>=6) && (this.rnd<7)) setshoecolor lightgreen;
+    if ((this.rnd>=7) && (this.rnd<8)) setshoecolor green;
+    if ((this.rnd>=8) && (this.rnd<9)) setshoecolor darkgreen;
+    if ((this.rnd>=9) && (this.rnd<10)) setshoecolor lightblue;
+    if ((this.rnd>=10) && (this.rnd<11)) setshoecolor blue;
+    if ((this.rnd>=11) && (this.rnd<12)) setshoecolor darkblue;
+    if ((this.rnd>=12) && (this.rnd<13)) setshoecolor brown;
+    if ((this.rnd>=13) && (this.rnd<14)) setshoecolor cynober;
+    if ((this.rnd>=14) && (this.rnd<15)) setshoecolor purple;
+    if ((this.rnd>=15) && (this.rnd<16)) setshoecolor darkpurple;
+    if ((this.rnd>=16) && (this.rnd<17)) setshoecolor lightgray;
+    if ((this.rnd>=17) && (this.rnd<18)) setshoecolor gray;
+    if ((this.rnd>=18) && (this.rnd<19)) setshoecolor black;
+
+    //belt
+    this.rnd=random(0,19);
+    if ((this.rnd>=0) && (this.rnd<1)) setbeltcolor white;
+    if ((this.rnd>=1) && (this.rnd<2)) setbeltcolor yellow;
+    if ((this.rnd>=2) && (this.rnd<3)) setbeltcolor orange;
+    if ((this.rnd>=3) && (this.rnd<4)) setbeltcolor pink;
+    if ((this.rnd>=4) && (this.rnd<5)) setbeltcolor red;
+    if ((this.rnd>=5) && (this.rnd<6)) setbeltcolor darkred;
+    if ((this.rnd>=6) && (this.rnd<7)) setbeltcolor lightgreen;
+    if ((this.rnd>=7) && (this.rnd<8)) setbeltcolor green;
+    if ((this.rnd>=8) && (this.rnd<9)) setbeltcolor darkgreen;
+    if ((this.rnd>=9) && (this.rnd<10)) setbeltcolor lightblue;
+    if ((this.rnd>=10) && (this.rnd<11)) setbeltcolor blue;
+    if ((this.rnd>=11) && (this.rnd<12)) setbeltcolor darkblue;
+    if ((this.rnd>=12) && (this.rnd<13)) setbeltcolor brown;
+    if ((this.rnd>=13) && (this.rnd<14)) setbeltcolor cynober;
+    if ((this.rnd>=14) && (this.rnd<15)) setbeltcolor purple;
+    if ((this.rnd>=15) && (this.rnd<16)) setbeltcolor darkpurple;
+    if ((this.rnd>=16) && (this.rnd<17)) setbeltcolor lightgray;
+    if ((this.rnd>=17) && (this.rnd<18)) setbeltcolor gray;
+    if ((this.rnd>=18) && (this.rnd<19)) setbeltcolor black;
+
+    this.rotation=2;
+    timeout=5;
+  }
+}
+

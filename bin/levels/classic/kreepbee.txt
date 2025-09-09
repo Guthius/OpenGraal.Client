@@ -1,0 +1,99 @@
+//JF Firesnake
+//I made it a bee
+// www.wtvl.net/jesusfreaks/
+if (playerenters) {this.bee=0;
+  this.maxspeed=1;
+  this.accel=.075;
+  this.hearts=0;
+  this.hurttime=0;
+  hide;
+  this.curpic=0;
+  timeout=.05;
+}
+if (timeout) {this.bee++;
+if (this.bee==200) {destroy}
+this.x=x;this.y=y;
+ for (i=1;i<playerscount;i++) {
+if (players[i].x<this.x+3.5&&players[i].x>this.x-3.5&&players[i].y>this.y-3.5&&players[i].y<this.y+3.5) {
+hitplayer i,1,playerx,playery}
+
+  if ((!visible) && (this.hurttime==0) && (this.hearts==0)) {
+    drawoverplayer;
+    dontblock;
+    this.xspeed=0;
+    this.yspeed=0;
+    this.hearts=10;
+    this.hurttime=0;
+    show;
+  }
+  if (this.hurttime>0) {
+    this.hurttime-=.25;
+    timeout=.25;
+  } else {
+    drawoverplayer;
+    dontblock;
+    if (!visible) { show; }
+    if (players[i].x>x) {
+      this.xspeed+=this.accel;
+      if (this.xspeed<0) { this.xspeed+=this.accel; }
+      if (this.xspeed>this.maxspeed) { this.xspeed=this.maxspeed; }
+      if (onwall(x+this.xspeed+2, y)) { this.xspeed=0; }
+      if (onwall(x+this.xspeed+2, y+1)) { this.xspeed=0; }
+      if (onwall(x+this.xspeed+2, y+1.99)) { this.xspeed=0; }
+    } else {
+      this.xspeed-=this.accel;
+      if (this.xspeed>0) { this.xspeed-=this.accel; }
+      if (this.xspeed<-this.maxspeed) { this.xspeed=-this.maxspeed; }
+      if (onwall(x+this.xspeed, y)) { this.xspeed=0; }
+      if (onwall(x+this.xspeed, y+1)) { this.xspeed=0; }
+      if (onwall(x+this.xspeed, y+1.99)) { this.xspeed=0; }
+    }
+    if (players[i].y>y) {
+      this.yspeed+=this.accel;
+      if (this.yspeed<0) { this.yspeed+=this.accel; }
+      if (this.yspeed>this.maxspeed) { this.yspeed=this.maxspeed; }
+      if (onwall(x, y+this.yspeed+2)) { this.yspeed=0; }
+      if (onwall(x+1, y+this.yspeed+2)) { this.yspeed=0; }
+      if (onwall(x+1.99, y+this.yspeed+2)) { this.yspeed=0; }
+    } else {
+      this.yspeed-=this.accel;
+      if (this.yspeed>0) { this.yspeed-=this.accel; }
+      if (this.yspeed<-this.maxspeed) { this.yspeed=-this.maxspeed; }
+      if (onwall(x, y+this.yspeed)) { this.yspeed=0; }
+      if (onwall(x+1, y+this.yspeed)) { this.yspeed=0; }
+      if (onwall(x+1.99, y+this.yspeed)) { this.yspeed=0; }
+    }
+    x+=this.xspeed;
+    y+=this.yspeed;
+    timeout=.05;
+  }
+  if (visible) {
+    this.curpic+=1;
+    if (this.curpic>=10) this.curpic=0;
+  }
+if (washit) {
+  if (this.hurttime<=0) {
+    if (this.hearts > 0) {
+      this.hurttime=(this.hearts*.3);
+      timeout=.25;
+    } else {
+      whattodrop=random(0,4);
+      if (whattodrop<1.5) {
+        if (playerfullhearts>=5) { lay heart; } else { lay fullheart; }
+      } else if (whattodrop<2) {
+        lay redrupee;
+      } else if (whattodrop<2.5) {
+        lay bombs;  lay bombs;  lay bombs;
+      } else if (whattodrop<3) {
+        lay darts;  lay darts;  lay darts;
+      } else if (whattodrop<3.5) {
+        lay heart;  lay heart;  lay heart;
+      } else {
+        lay goldrupee;
+      }
+      timeout=30;
+      hide;
+    }
+  } else {
+    this.hurttime=0;
+  }}}}

@@ -1,0 +1,41 @@
+//
+// Name:   GO Police Net
+// Author: Vangel (JF)
+// Date:   6/27/99
+//
+
+timereverywhere;
+
+if (washit) {
+  if ((playeringuild GP) || (playeringuild Game Master)
+  || ((playeringuild JF) && (strequals(#n,Vangel (JF))))) {
+    // game masters and GP can slash the net to get out or
+    // to release somebody else out of the net.
+    destroy;
+  }
+}
+
+if (playerenters) {
+  blockagain;
+  drawoverplayer;
+  curdistance=100;
+  curplayer=-1;
+  for (p=0;p<playerscount;p++) {
+    pdistance=(((players[p].x-x)^2)+((players[p].y-y)^2))^0.5;
+    if (pdistance<curdistance) {
+      curplayer=p;
+      curdistance=pdistance;
+    }
+  }
+  x=players[curplayer].x-1.5;
+  y=players[curplayer].y-1.5;
+  timershow;
+  timeout=60;
+}
+
+if (playertouchsme) {
+  blockagain;
+  drawoverplayer;
+}
+
+if (timeout) destroy;

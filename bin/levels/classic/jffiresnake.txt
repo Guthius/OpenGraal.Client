@@ -1,0 +1,104 @@
+// Jesus Freaks Fire Snake v1.0
+// ============================
+//
+//  dedicated to Jesus, for taking my
+//  place on that cross.  He died for
+//  you too, becase He loves you.
+//
+// ============================
+// This NPC has got to be the easiest NPC that
+// I've ever written.  Of course, it doesn't do
+// anything special, but it looks really cool and
+// they're dangerous in numbers.
+//
+// try playing with the max speed and
+// the accelleration variables to create a
+// snake with a slightly different attitude.
+//
+if (playerenters) {
+  drawoverplayer;
+  dontblock;
+  this.xspeed=0;
+  this.yspeed=0;
+  this.hearts=10;
+  this.hurttime=0;
+  this.maxspeed=1;
+  this.accel=.025;
+  timeout=.05;
+}
+if (timeout) {
+  if (this.hurttime>0) {
+    if (visible) { hide; } else { show; }
+    this.hurttime-=.25;
+    timeout=.25;
+  } else {
+    drawoverplayer;
+    dontblock;
+    if (!visible) { show; }
+    if (playerx>x) {
+      this.xspeed+=this.accel;
+      if (this.xspeed<0) { this.xspeed+=this.accel; }
+      if (this.xspeed>this.maxspeed) { this.xspeed=this.maxspeed; }
+      if (onwall(x+this.xspeed+2, y)) { this.xspeed=0; }
+      if (onwall(x+this.xspeed+2, y+1)) { this.xspeed=0; }
+      if (onwall(x+this.xspeed+2, y+1.99)) { this.xspeed=0; }
+    } else {
+      this.xspeed-=this.accel;
+      if (this.xspeed>0) { this.xspeed-=this.accel; }
+      if (this.xspeed<-this.maxspeed) { this.xspeed=-this.maxspeed; }
+      if (onwall(x+this.xspeed, y)) { this.xspeed=0; }
+      if (onwall(x+this.xspeed, y+1)) { this.xspeed=0; }
+      if (onwall(x+this.xspeed, y+1.99)) { this.xspeed=0; }
+    }
+    if (playery>y) {
+      this.yspeed+=this.accel;
+      if (this.yspeed<0) { this.yspeed+=this.accel; }
+      if (this.yspeed>this.maxspeed) { this.yspeed=this.maxspeed; }
+      if (onwall(x, y+this.yspeed+2)) { this.yspeed=0; }
+      if (onwall(x+1, y+this.yspeed+2)) { this.yspeed=0; }
+      if (onwall(x+1.99, y+this.yspeed+2)) { this.yspeed=0; }
+    } else {
+      this.yspeed-=this.accel;
+      if (this.yspeed>0) { this.yspeed-=this.accel; }
+      if (this.yspeed<-this.maxspeed) { this.yspeed=-this.maxspeed; }
+      if (onwall(x, y+this.yspeed)) { this.yspeed=0; }
+      if (onwall(x+1, y+this.yspeed)) { this.yspeed=0; }
+      if (onwall(x+1.99, y+this.yspeed)) { this.yspeed=0; }
+    }
+    x+=this.xspeed;
+    y+=this.yspeed;
+    putexplosion 1, x, y;
+    timeout=.05;
+  }
+}
+if (washit) {
+  if (this.hurttime<=0) {
+    this.hearts-=playerswordpower;
+    if (this.hearts > 0) {
+      blockagain;
+      canbecarried;
+      this.hurttime=(this.hearts*.3);
+      timeout=.25;
+    } else {
+      whattodrop=random(0,4);
+      if (whattodrop<1.5) {
+        if (playerfullhearts>=5) { lay heart; } else { lay fullheart; }
+      } else if (whattodrop<2) {
+        lay redrupee;
+      } else if (whattodrop<2.5) {
+        lay bombs;  lay bombs;  lay bombs;
+      } else if (whattodrop<3) {
+        lay darts;  lay darts;  lay darts;
+      } else if (whattodrop<3.5) {
+        lay heart;  lay heart;  lay heart;
+      } else {
+        lay goldrupee;
+      }
+      timeout=0;
+    }
+    hide;
+  } else {
+    putexplosion 3, x, y;
+    this.hurttime=0;
+  }
+}

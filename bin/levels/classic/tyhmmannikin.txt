@@ -1,0 +1,153 @@
+if (created) {
+  showcharacter;
+  setcharprop #3,head0.gif;
+  setcharprop #C0,orange;
+  setcharprop #C1,white;
+  setcharprop #C2,blue;
+  setcharprop #C3,red;
+  setcharprop #C4,black;
+  setcharprop #2,shield1.gif;
+  setcharprop #n,(Mannikin);
+  shieldpower = 1;
+  swordpower = 0;
+  dir = 2;
+  canbecarried;
+  hurtdx = 0;
+  hurtdy = 0;
+  hearts = 3;
+}
+
+if (playerenters || wasthrown) {
+  if(strequals(#n(-1),#n(0))){
+    this.poldx=playerx;
+    this.poldy=playery;
+  }
+  timeout = 0.05;
+  if (hearts<=0) {
+    this.mode = 5; // RESPAWN
+    this.runcounter = 0;
+    timeout = 5;
+  } else {
+    this.mode = 0;
+    this.runcounter = int(random(10,40));
+  }
+}
+
+if(tyhmmannikin&&this.inuse<1){
+  setcharprop #3,#3(0);
+  setcharprop #C0,#C0(0);
+  setcharprop #C1,#C1(0);
+  setcharprop #C2,#C2(0);
+  setcharprop #C3,#C3(0);
+  if(strequals(#C4(0),black)) {
+    setcharprop #C4,blue;
+  }else{
+    setcharprop #C4,black;
+  }
+  setcharprop #1,#1(0);
+  setcharprop #2,#2(0);
+  setcharprop #n,#n(0);
+  setcharprop #g,#g(0);
+  hearts=playerhearts;
+  ap=playerap;
+  unset tyhmmannikin;
+  this.inuse=1;
+  this.poldx=playerx;
+  this.poldy=playery;
+}else if(strequals(#n(-1),#n(0))&&!sprite==40&&hearts>0){
+  if(!playersprite==sprite){
+    if(!playersprite==39&&!playersprite==23&&!sprite==39) sprite=playersprite;
+    else sprite=0;
+  }
+  setcharprop #c,#c(0);
+  this.testdir=playerdir+2;
+  if(this.testdir>3) this.testdir-=4;
+  dir=this.testdir;
+  this.testx=x+(this.poldx-playerx);
+  this.testy=y+(this.poldy-playery);
+  if(!onwall(this.testx,this.testy)&&!onwall(this.testx+2,this.testy)&&!onwall(this.testx,this.testy+3)&&!onwall(this.testx+2,this.testy+3)){
+    x=this.testx;
+    y=this.testy;
+  }
+  this.poldx=playerx;
+  this.poldy=playery;
+}
+timeout=0.05;
+
+// Hurting stuff
+if (washit && this.mode!=1 && hearts>0) {
+  dx = x-playerx;
+  dy = y-playery;
+  len = (dx*dx+dy*dy)^0.5;
+  hurtdx = dx/len;
+  hurtdy = dy/len;
+  sprite = 39;
+  hearts -= playerswordpower/2;
+}
+if ((exploded || waspelt || wasshot) &&
+    this.mode!=1 && hearts>0 && isleader) {
+  hurtdx = -dirgo[dir*2]*0.2;
+  hurtdy = -dirgo[dir*2+1]*0.2;
+  sprite = 39;
+  if (peltwithsign || peltwithvase || peltwithstone || peltwithnpc) hearts -= 1;
+  else if (peltwithblackstone) hearts -= 1.5;
+  else hearts -= 0.5;
+}
+if ((hurtdx!=0 || hurtdy!=0) && isleader) {
+  this.hurtdx = hurtdx;
+  this.hurtdy = hurtdy;
+  hurtdx = 0;
+  hurtdy = 0;
+  this.mode = 1; // HURTED
+  this.runcounter = 20;
+  sprite = 39;
+  if (hearts<=0) {
+    this.mode = 4; // DYING
+    this.runcounter = 24;
+    sprite = 0;
+  }
+  timeout = 0.05;
+}
+if (timeout && this.mode==1) { // HURTED
+  this.runcounter--;
+  if (this.runcounter>10) {
+    testx = x + 1.5 + this.hurtdx*2;
+    testy = y + 2+ this.hurtdy*2;
+    if (!onwall(testx,testy)) {
+      x += this.hurtdx;
+      y += this.hurtdy;
+    }
+  }
+  if (this.runcounter<=0) {
+    if (swordpower>0) this.mode = 2; // HUNTING
+    else this.mode = 0; // WALKING
+    this.runcounter = 100;
+    sprite = 0;
+  }
+  timeout = 0.05;
+}
+if (timeout && (this.mode==4||hearts<=0)) { // DYING
+  cannotbecarried;
+  if (this.runcounter>0) {
+    message;
+    if ((this.runcounter%2)==0) dir = (dir+3)%4;
+    this.runcounter--;
+    if (this.runcounter<=0) {
+      sprite = 40;
+      play compudead.wav;
+      i = random(0,100);
+      if (i<10) lay greenrupee;
+      else if (i<15) lay bluerupee;
+      else if (i<30) lay heart;
+      destroy;
+    } else timeout = 0.05;
+  }
+}
+
+if(timeout){
+  this.fade++;
+  if(this.fade>200){
+    this.fade=0;
+    hearts-=0.5;
+  }
+}

@@ -1,0 +1,10 @@
+GR-V1.03@pÁE\D@pÁE\D@pÁE\D@pÁE\D@pÁE\D@pÁE\D@pÁE\D@pÁE\D@pÁE\D@pÁE\D@pÁE\D@pÁE\D@pÁE\D@pÁE\D@pÁE\D@pÁE\D#
+ÿÿÿ
+;*ccopen2.gif#timeout=.1;§if (timeout) {hideplayer 1;freezeplayer 1;playerx=x+18;playery=y+8}
+L9black.gif#if (playerenters) {message Many people perished in the war against the baddies. ;play stef61.mid}
+L;black.gif#if (playerenters) {timeout=.5;message ;timereverywhere}§if (timeout) {message The baddies have become extremely over-confident.}§
+L=black.gif#if (playerenters) {timeout=1;message ;timereverywhere}§if (timeout) {message Now there are only a few people left in the villages.}
+L?black.gif#if (playerenters) {timeout=1.5;message ;timereverywhere}§if (timeout) {message They need help, and it is your job to save Chaotica!;play stef61.mid}
+\8#if (playerenters) {timeout=8;timereverywhere;}§if (timeout) {setlevel cchouse3.graal }
+#
+#

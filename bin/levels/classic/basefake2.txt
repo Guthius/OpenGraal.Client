@@ -1,0 +1,12 @@
+if (playertouchsme) {
+toweapons #n's fake wall layer;
+destroy;
+}
+
+if (weaponfired) {
+if (playerdir==0) putnpc block.gif, basefake.txt, playerx+.5, playery-2;
+else if (playerdir==1) putnpc block.gif, basefake.txt, playerx-1.5, playery+.5;
+else if (playerdir==2) putnpc block.gif, basefake.txt, playerx+.5, playery+3;
+else if (playerdir==3) putnpc block.gif, basefake.txt, playerx+2.5, playery+.5;
+destroy;
+}

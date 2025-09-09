@@ -1,0 +1,16 @@
+if (playerenters)this.radius=10;
+if (playertouchsme) {toweapons Flame Spiral; set gotflamespiral;
+destroy}
+if(weaponfired&&playermp>=15&&magicendowed){playermp-=15;
+  freezeplayer 2; playersprite=24;timeout=.5;
+  this.radius=4;
+  if(playerdir=3)this.angle=(3*3.14)/2;
+  if(playerdir=0)this.angle=(3*3.14)/4;
+  if(playerdir=1)this.angle=3.14/2;
+  if(playerdir=2)this.angle=3.14/4;
+}
+if(timeout&&this.radius<10){timeout=.05;
+  this.x=playerx+.5+cos(this.angle)*this.radius;
+  this.y=playery+.5+sin(this.angle)*this.radius;
+  putexplosion 1,this.x,this.y;
+  this.radius+=.2; this.angle+=.314}

@@ -1,0 +1,241 @@
+// Graal v1.3 NPC by Stefan Knorr
+if (created) {
+  showcharacter;
+  setcharprop #3,head44.gif;
+  setcharprop #C0,lightgray;
+  setcharprop #C1,lightgray;
+  setcharprop #C2,gray;
+  setcharprop #C3,gray;
+  setcharprop #C4,gray;
+  setcharprop #2,;
+  shieldpower = 1;
+  dir = 2;
+  swordpower = 1;
+  hurtdx = 0;
+  hurtdy = 0;
+  hearts = 0.5;
+}
+if (playerenters || wasthrown) {
+  message;
+  this.huntspeed = 0.4;
+  setarray dirgo,8;
+  dirgo[1] = -1;
+  dirgo[2] = -1;
+  dirgo[5] = 1;
+  dirgo[6] = 1;
+  timeout = 0.05;
+  this.walkmode = 1;
+  if (wasthrown && this.walkmode>1) this.walkmode = 1;
+  this.x1 = 26;
+  this.x2 = 34;
+  this.y1 = 36;
+  this.y2 = 44;
+  this.speed = 0.3;
+  if (hearts<=0) {
+    this.mode = 5; // RESPAWN
+    this.runcounter = 0;
+    timeout = 5;
+  } else {
+    this.mode = 0;
+    this.runcounter = int(random(10,40));
+  }
+}
+
+// Walking stuff
+if (timeout && this.mode==0) { // WALKING
+  sprite = (sprite%8)+1;
+  newx = x + dirgo[dir*2] * this.speed;
+  newy = y + dirgo[dir*2+1] * this.speed;
+  this.runcounter--;
+  if (this.walkmode==1) { // RANDOM
+    if (this.runcounter>0) {
+      testx = newx + 1.5 + dirgo[dir*2];
+      testy = newy + 2+ dirgo[dir*2+1];
+      if (onwall(testx,testy)) {
+        dir = (dir+2)%4;
+        this.runcounter = int(random(0,60));
+      } else {
+        x = newx;
+        y = newy;
+      }
+    } else {
+      this.runcounter = int(random(10,40));
+      dir = (dir+1+int(random(0,2))*2)%4;
+    }
+  } else if (this.walkmode==2) { // LEFTRIGHT
+    if (dir!=1 && dir!=3) dir = 3;
+    else {
+      x = newx;
+      y = newy;
+      if ((dir==1 && x<=this.x1) || (dir==3 && x>=this.x2))
+        dir = (dir+2)%4;
+    }
+  } else if (this.walkmode==3) { // UPDOWN
+    if (dir!=0 && dir!=2) dir = 2;
+    else {
+      x = newx;
+      y = newy;
+      if ((dir==0 && y<=this.y1) || (dir==2 && y>=this.y2))
+        dir = (dir+2)%4;
+    }
+  } else if (this.walkmode==4) { // RECTANGLE
+    x = newx;
+    y = newy;
+    if ((dir==0 && y<=this.y1) || (dir==1 && x<=this.x1) ||
+        (dir==2 && y>=this.y2) || (dir==3 && x>=this.x2))
+      dir = (dir+3)%4;
+  }
+  if (this.walkmode>1 && this.runcounter<=0)
+    this.runcounter = 20;
+  message;
+  timeout = 0.05;
+}
+
+// Sword attacking stuff
+if (timeout && (this.mode==0 || this.mode==2)) {
+  // look for players
+  mindist = 1000;
+  for (i=0; i<playerscount; i++)
+      if (players[i].hearts>0) {
+    dx = players[i].x - x;
+    dy = players[i].y - y;
+    if (abs(dx)>abs(dy)) {
+      if (dx>0) pdir=3; else pdir=1;
+    } else {
+      if (dy>0) pdir=2; else pdir=0;
+    }
+    if (pdir==dir) {
+      dist = (dx*dx+dy*dy)^0.5;
+      if (dist<mindist) {
+        cansee = 1;
+        if (abs(dx)>abs(dy)) k = int(abs(dx));
+        else k = int(abs(dy));
+        for (j=0; j<=k-2; j++)
+          if (onwall(x+1.5+dx*j/k,y+2+dy*j/k)) cansee = 0;
+        if (cansee!=0) {
+          mindist = dist;
+          aimplayer = i;
+        }
+      }
+    }
+  }
+  if (mindist<=3) {
+    this.runcounter = 0;
+    this.mode = 3; // SLAYING
+    sprite = 9;
+    timeout = 0.05;
+  } else if (mindist<20) {
+    if (this.mode!=2) message Stop!;
+    this.runcounter = 100;
+    this.mode = 2; // HUNTING
+  } else timeout = 0.05;
+}
+if (timeout && this.mode==3) { // SLAYING
+  this.runcounter++;
+  if (this.runcounter>4) {
+    this.runcounter = 100;
+    this.mode = 2; // HUNTING
+    sprite = 0;
+  } else {
+    sprite = 9+this.runcounter;
+  }
+  message;
+  timeout = 0.05;
+}
+if (timeout && this.mode==2) { // HUNTING
+  sprite = (sprite%8)+1;
+  this.runcounter--;
+  if (this.runcounter>0 && aimplayer<playerscount) {
+    dx = players[aimplayer].x-x;
+    dy = players[aimplayer].y-y;
+    if (abs(dx)>abs(dy)) {
+      if (dx>0) dir=3; else dir=1;
+    } else {
+      if (dy>0) dir=2; else dir=0;
+    }
+    len = (dx*dx+dy*dy)^0.5;
+    addx = (dx/len)*this.huntspeed;
+    addy = (dy/len)*this.huntspeed;
+    testx = x + 1.5 + dirgo[dir*2];
+    testy = y + 2+ dirgo[dir*2+1];
+    if (!onwall(testx+addx,testy+addy)) {
+      x += addx;
+      y += addy;
+   } else if (!onwall(testx+addx,testy)) x += addx;
+    else if (!onwall(testx,testy+addy)) y += addy;
+  } else {
+    this.mode = 0; // WALKING
+    this.walkmode = 1; // RANDOM
+    this.runcounter = int(random(10,40));
+    sprite = 0;
+    dir = (dir+2)%4;
+    message;
+  }
+  timeout = 0.05;
+}
+if ((exploded || waspelt || wasshot) &&
+    this.mode!=1 && hearts>0 && isleader) {
+  hurtdx = -dirgo[dir*2]*0.2;
+  hurtdy = -dirgo[dir*2+1]*0.2;
+  sprite = 39;
+  if (peltwithsign || peltwithvase || peltwithstone || peltwithnpc) hearts -= 1;
+  else if (peltwithblackstone) hearts -= 1.5;
+  else hearts -= 0.5;
+}
+if ((hurtdx!=0 || hurtdy!=0) && isleader) {
+  this.hurtdx = hurtdx;
+  this.hurtdy = hurtdy;
+  hurtdx = 0;
+  hurtdy = 0;
+  this.mode = 1; // HURTED
+  this.runcounter = 20;
+  sprite = 39;
+  if (hearts<=0) {
+    dontblock;
+    this.mode = 4; // DYING
+    this.runcounter = 24;
+    sprite = 0;
+  }
+  timeout = 0.05;
+}
+if (timeout && this.mode==1) { // HURTED
+  this.runcounter--;
+  if (this.runcounter>10) {
+    testx = x + 1.5 + this.hurtdx*2;
+    testy = y + 2+ this.hurtdy*2;
+    if (!onwall(testx,testy)) {
+      x += this.hurtdx;
+      y += this.hurtdy;
+    }
+  }
+  if (this.runcounter<=0) {
+    if (swordpower>0) this.mode = 2; // HUNTING
+    else this.mode = 0; // WALKING
+    this.runcounter = 100;
+    sprite = 0;
+  }
+  timeout = 0.05;
+}
+if (timeout && this.mode==4) { // DYING
+  if (this.runcounter>0) {
+    message;
+    if ((this.runcounter%2)==0) dir = (dir+3)%4;
+    this.runcounter--;
+    if (this.runcounter<=0) {
+      sprite = 40;
+      play compudead.wav;
+      i = random(0,100);
+      if (i<10) lay greenrupee;
+      else if (i<15) lay bluerupee;
+      else if (i<30) lay heart;
+    } else timeout = 0.05;
+  }
+score--;
+putleaps 3,x,y;
+sleep 2;
+destroy;
+}
+
+if(score<1){
+destroy;
+}

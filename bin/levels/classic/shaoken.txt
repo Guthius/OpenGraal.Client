@@ -1,0 +1,89 @@
+if (playertouchsme) {
+  playerdarts += 2 ;
+  this.step = 0;
+  toweapons Shaoken;
+  hide;
+}
+if (weaponfired && playerdarts>=2 && this.step<=0) {
+  hideimg 1;
+  hidesword 0.3;
+  this.steplen = 1.5;
+
+  timeout = 0.05;
+  this.step = 0;
+  this.oldx = playerx;
+  this.oldy = playery;
+}
+if (timeout) {
+  this.step++;
+  timeout = 0.05;
+  if (this.step<6) {
+    if (playerdir==0 || playerdir==2) playersprite = 13;
+    else playersprite = 6;
+    if (playerdir==0) showimg 1,wshuri.gif,playerx-0.7,playery+1.4;
+    if (playerdir==1) showimg 1,wshuri.gif,playerx+1.9,playery+1.5;
+    if (playerdir==2) showimg 1,wshuri.gif,playerx+2.3,playery+0.7;
+    if (playerdir==3) showimg 1,wshuri.gif,playerx-0.2,playery+1.5;
+    if (this.step==2) freezeplayer 0.2;
+  } else if (this.step==6) {
+    playersprite = 0;
+    this.mx = 0;
+    this.my = 0;
+    if (playerx>this.oldx) this.mx++;
+    if (playerx<this.oldx) this.mx--;
+    if (playery>this.oldy) this.my++;
+    if (playery<this.oldy) this.my--;
+    if (this.mx!=0 && this.my!=0) {
+      this.mx*=0.714;
+      this.my*=0.714;
+    }
+    if (this.mx==0 && this.my==0) {
+      if (playerdir==0) this.my--;
+      if (playerdir==1) this.mx--;
+      if (playerdir==2) this.my++;
+      if (playerdir==3) this.mx++;
+    }
+    this.flyx = playerx+0.5;
+    this.flyy = playery+1;
+    if (playerdir==0) this.flyx--;
+    if (playerdir==2) this.flyx++;
+    if (playerdarts<2) playerdarts=0;
+    else playerdarts -= 2;
+  } else {
+    this.oldx = this.flyx;
+    this.oldy = this.flyy;
+    this.flyx += this.mx*this.steplen;
+    this.flyy += this.my*this.steplen;
+    showimg 1,wshuri.gif,this.flyx,this.flyy;
+    if (onwall(this.flyx+0.3,this.flyy+0.3)) {
+      putleaps 4,this.oldx-0.7,this.oldy-0.7;
+      hideimg 1;
+      this.step = 0;
+      destroy;
+      timeout = 0;
+    } else
+      this.testhurt = 1;
+  }
+}
+if (playerenters) {
+  hideimg 1;
+  this.step = 0;
+  timeout = 0;
+  show; 
+  sleep 10; 
+  destroy;
+}
+if (this.testhurt == 1) {
+  for (i=0; i<compuscount; i++) {
+    if (abs(this.flyx-compus[i].x)<=1 &&
+        abs(this.flyy-(compus[i].y-0.5))<=1.5 &&
+        compus[i].mode!=3)
+      hitcompu i,1,this.flyx+0.5,this.flyy+0.5;
+  }
+  for (i=1; i<playerscount; i++) {
+    if (abs((this.flyx+0.7)-(players[i].x+1.5))<=1 &&
+        abs((this.flyy+0.5)-(players[i].y+1.5))<=1.5)
+      hitplayer i,1,this.flyx+0.5,this.flyy+0.5;
+  }
+  this.testhurt = 0;
+}

@@ -1,0 +1,48 @@
+// Will-O-Wisp made by Ragnarok
+if(playerenters){
+timereverywhere;
+timeout=2;
+drawoverplayer;
+hearts=18;
+dontblock}
+if(timeout){timeout=.05; this.1++;this.3--;
+if (abs(playery-(y-3))<4 && abs(playerx-(x-2))<4) {
+//run away
+this.3=70;
+}
+//charge
+else if (this.3<60) {
+    if(x<playerx){x+=.25}
+    if(x>playerx){x-=.25}
+    if(y<playery){y+=.25}
+    if(y>playery){y-=.25}
+  }
+}
+if (this.3>60) {
+    if(x<playerx){x-=.25}
+    if(x>playerx){x+=.25}
+    if(y<playery){y-=.25}
+    if(y>playery){y+=.25}
+}
+  if(this.1=20){this.2=random(0,1);
+    if(this.2<.5){setgif shadoworb.gif}
+    else{setgif lightorb.gif}
+  }
+  if(this.1>20 && this.2<.5){shootball}
+  if(this.1=30){setgif crystalorb.gif; this.1=0;
+    if(this.2>=.5){shootfireblastup;shootfireblastleft;
+    shootfireblastright;shootfireblastdown}
+  }
+if (washit) {
+putleaps 2,x,y;
+hearts-=playerswordpower/2;
+}
+if (hearts<=0) {
+putexplosion 2,x+1,y+1;
+putexplosion 2,x-1,y-1;
+putexplosion 2,x+1,y-1;
+putexplosion 2,x-1,y+1;
+putexplosion 5,x,y;
+dead++;
+destroy;
+}

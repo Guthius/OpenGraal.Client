@@ -1,0 +1,225 @@
+if (created) {
+timereverywhere;
+save[0] = 0;
+save[2] = 10;
+save[3] = 0;
+save[4] = 0;
+}
+
+if (playertouchsme && save[0] == 0) {
+save[1] = players[0].id;
+message Base now belongs to #n, say (1)Help for commands;
+save[0] = 2;
+timeout = 2;
+}
+
+if ((playersays(1) || playersays(help)) && save[1]==players[0].id) {
+message (2)Buy buildings (3)Buy supplies (4)Check base;
+save[0] = 1;
+timeout = 5;
+}
+
+if ((playersays(2) || playersays(buy buildings)) && save[1]==players[0].id) {
+message Buy (5)Wall (6)Door (7)Mine (8)Freeze Trap (9)Fake Wall (10)Missile Turret;
+save[0] = 1;
+timeout = 5;
+}
+
+if ((playersays(3) || playersays(buy supplies)) && save[1]==players[0].id) {
+message Buy (11)5 arrows (12)5 bombs;
+timeout = 5;
+}
+
+if ((playersays(4) || playersays(check base)) && save[1]==players[0].id) {
+temphp = save[2];
+tempwood = save[4];
+tempmineral = save[3];
+message HP:#v(temphp) W:#v(tempwood) M:#v(tempmineral);
+timeout = 5;
+}
+
+if ((playersays(11) || playersays(5 arrows)) && save[1]==players[0].id && save[0] == 1) {
+if (save[4]>=3 && save[3]>=2) {
+save[4] = save[4] - 3;
+save[3] = save[3] - 2;
+playerdarts = playerdarts + 5;
+message Arrows built;
+save[0] = 2;
+}
+else message 3 wood and 2 mineral needed for 5 arrows;
+timeout = 5;
+}
+
+if ((playersays(12) || playersays(5 bombs)) && save[1]==players[0].id && save[0] == 1) {
+if (save[4]>=1 && save[3]>=3) {
+save[4] = save[4] - 1;
+save[3] = save[3] - 3;
+playerbombs = playerbombs + 5;
+message Bombs built;
+save[0] = 2;
+}
+else message 1 wood and 3 mineral needed for 5 bombs;
+timeout = 5;
+}
+
+if ((playersays(5) || playersays(wall)) && save[1]==players[0].id && save[0] == 1) {
+if (save[4]>=2 && save[3]>=2) {
+save[4] = save[4] - 2;
+save[3] = save[3] - 2;
+putnpc block.gif, basewall2.txt, x + 1, y + 4;
+message Wall built;
+save[0] = 2;
+}
+else message 2 wood and 2 mineral needed for wall;
+timeout = 5;
+}
+
+if ((playersays(6) || playersays(door)) && save[1]==players[0].id && save[0] == 1) {
+if (save[4]>=8 && save[3]>=2) {
+save[4] = save[4] - 8;
+save[3] = save[3] - 2;
+putnpc door.gif, basedoor2.txt, x + 1, y + 4;
+message Door built;
+save[0] = 2;
+}
+else message 8 wood and 2 mineral needed for door;
+timeout = 5;
+}
+
+if ((playersays(7) || playersays(mine)) && save[1]==players[0].id && save[0] == 1) {
+if (save[4]>=1 && save[3]>=7) {
+save[4] = save[4] - 1;
+save[3] = save[3] - 9;
+putnpc coin.gif, basemine2.txt, x + 1.5, y + 4;
+message Mine built;
+save[0] = 2;
+}
+else message 1 wood and 7 mineral  needed for mine;
+timeout = 5;
+}
+
+if ((playersays(8) || playersays(freeze trap)) && save[1]==players[0].id && save[0] == 1) {
+if (save[4]>=7 && save[3]>=7) {
+save[4] = save[4] - 7;
+save[3] = save[3] - 7;
+putnpc crystalorb.gif, basefreeze2.txt, x + 1, y + 4;
+message Freeze trap built;
+save[0] = 2;
+}
+else message 7 wood and 7 mineral  needed for freeze trap;
+timeout = 5;
+}
+
+if ((playersays(9) || playersays(fake wall)) && save[1]==players[0].id && save[0] == 1) {
+if (save[4]>=3 && save[3]>=10) {
+save[4] = save[4] - 3;
+save[3] = save[3] - 10;
+putnpc block.gif, basefake2.txt, x + 1, y + 4;
+message Fake wall built;
+save[0] = 2;
+}
+else message 3 wood and 10 mineral  needed for fake wall;
+timeout = 5;
+}
+
+if ((playersays(10) || playersays(missile turret)) && save[1]==players[0].id && save[0] == 1) {
+if (save[4]>=25 && save[3]>=25) {
+save[4] = save[4] - 25;
+save[3] = save[3] - 25;
+putnpc goldpillar.gif, baseturret2.txt, x + 1, y + 2;
+message Missile turret built;
+save[0] = 2;
+}
+else message 25 wood and 25 mineral  needed for missile turret;
+timeout = 5;
+}
+
+if (playertouchsme && save[1]==players[0].id) {
+if (!weaponsenabled && save[4]>=1 && save[3]>=1) {
+enableweapons;
+save[4] = save[4] - 1;
+save[3] = save[3] - 1;
+}
+canbecarried;
+}
+
+if (playertouchsme && !(save[1]==players[0].id)) {
+disableweapons;
+cannotbecarried;
+}
+
+if (waspelt) {
+if (peltwithbush) save[4] = save[4] + 2;
+if (peltwithstone) save[3] = save[3] + 1;
+if (peltwithblackstone) save[3] = save[3] + 3;
+message;
+}
+
+if (playertouchsme && carrying) {
+if (carrying && strequals(#6, block.gif)) {
+save[4] = save[4] + 2;
+save[3] = save[3] + 1;
+takeplayercarry;
+putleaps 2, playerx+.5, playery;
+play fire.wav;
+}
+if (carrying && strequals(#6, crystalorb.gif)) {
+save[4] = save[4] + 4;
+save[3] = save[3] + 4;
+takeplayercarry;
+putleaps 2, playerx+.5, playery;
+play fire.wav;
+}
+if (carrying && strequals(#6, door.gif)) {
+save[4] = save[4] + 4;
+save[3] = save[3] + 1;
+takeplayercarry;
+putleaps 2, playerx+.5, playery;
+play fire.wav;
+}
+if (carriesblackstone) {
+save[3] = save[3] + 3;
+takeplayercarry;
+putleaps 2, playerx+.5, playery;
+play fire.wav;
+}
+if (carriesbush) {
+save[4] = save[4] + 2;
+takeplayercarry;
+putleaps 0, playerx+.5, playery;
+play fire.wav;
+}
+if (carriesstone) {
+save[3] = save[3] + 1;
+takeplayercarry;
+putleaps 2, playerx+.5, playery;
+play fire.wav;
+}
+message;
+timeout = 5;
+}
+
+if (timeout) {
+if (save[2] < 10) save[2] = save[2] + 1;
+timeout = 5;
+save[0] = 1;
+message;
+}
+
+if (washit) {
+save[2] = save[2] - 1;
+disableweapons;
+temphp = save[2];
+message HP:#v(temphp);
+hide;
+sleep .5;
+show;
+timeout = 5;
+if (save[2]<=0) {
+putexplosion 2, x, y;
+putexplosion 2, x+2, y;
+putexplosion 2, x, y+2;
+putexplosion 2, x+2, y+2;
+destroy;
+}
+}

@@ -1,0 +1,25 @@
+//BrugaraBlock
+//By Bruges
+
+if (playerenters && !this.init=1) {
+ this.init=1;
+ timereverywhere;
+ drawunderplayer;
+ canbepushed;
+ canbepulled;
+ canbecarried;
+ timeout=6+(random(0,3));
+}
+if (wasthrown) {
+ cannotbecarried;
+}
+if (washit) {
+ cannotbecarried;
+ cannotbepushed;
+ cannotbepulled;
+}
+if (timeout) {
+ putleaps 2,x,y;
+ putexplosion 1,x,y;
+ destroy;
+}

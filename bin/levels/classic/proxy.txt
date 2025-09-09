@@ -1,0 +1,32 @@
+if (playerenters&&(this.explos==0)) {
+this.explos=1;
+setgif ion.gif;
+canbecarried;
+timereverywhere; timeout=3;
+}
+if (timeout&&(this.explos==1)){
+hide;
+for (this.i=0; this.i<compuscount; this.i++) {
+    if (abs(x-compus[this.i].x)<=1 &&
+        abs(y-(compus[this.i].y-0.5))<=1.5 &&
+        compus[this.i].mode!=3)
+      {putexplosion 2, x, y; destroy;}
+  }
+  for (this.i=0; this.i<playerscount; this.i++) {
+    if (abs((x+0.7)-(players[this.i].x+1.5))<=1 &&
+        abs((y+0.5)-(players[this.i].y+1.5))<=1.5)
+      {putexplosion 2, x, y; destroy;}
+  }
+timeout=.1;
+}
+
+
+if(exploded){
+putexplosion 1, x, y;
+hide;
+for(this.i=0;this.i<=15;this.i++){
+putexplosion 2, x+random(-6, 6), y+random(-6, 6);
+sleep .1;
+}
+destroy;
+}

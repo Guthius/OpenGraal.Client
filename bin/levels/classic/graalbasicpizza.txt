@@ -1,0 +1,9 @@
+// NPC made by <Exoknight>
+if (playerenters) {canbecarried;timeout=100;this.pplcount=this.pplcount+1
+}
+if (playertouchsme) {hurt -4;destroy;
+}
+if (wasthrown) {}
+if (timeout) {destroy;
+if (this.pplcount>=200){destroy}
+}

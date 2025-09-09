@@ -1,0 +1,15 @@
+GR-V1.03O …˜€PRx‚ „¨2j@*O d‚b
+RA)ˆu ˆ'(P²@°h, Ô€T ž A%ÈAÀ¢±8PRx‚U ‹Æb@Hâ	T‚L,ˆu ˆ'(P²@°h, Ô€T ž A%ÈAÀ¢±8PRx‚U ‹Æb@Hâ	T‚L,ˆu ˆ'(P²@°h, Ô€T ž A%ÈAÀ¢±8PRx‚U ‹Æb@Hâ	T‚L,ˆu ˆ'(P²@°h, Ô€T ž A%ÈAÀ¢±8PRx‚U ‹Æb@Hâ	T‚L,ˆu ˆ'(P²@°h, Ô€T ž A%ÈAÀ¢±8PRx‚U ‹Æb@Hâ	T‚L,ˆu ˆ'(P²@°h, Ô€T ž A%ÈAÀ¢±8PRx‚U ‹Æb@Hâ	T‚L,ˆu ˆ'(P²@°h, Ô€T ž A%ÈAÀ¢±8PRx‚U ‹Æb@Hâ	T‚L,ˆu ˆ'(P²@°h, Ô€T ž A%ÈAÀ¢±8PRx‚U ‹Æb@Hâ	T‚L,ˆu ˆ'(P²@°h, Ô€T ž A%ÈAÀ¢±8PRx‚U ‹Æb@Hâ	T‚L,ˆu ˆ'(P²@°h, Ô€T ž A%ÈAÀ¢±8PRx‚U ‹Æb@Hâ	T‚L,ˆu ˆ'(P²@°h, Ô€T ž A%ÈAÀ¢±8PRx‚U ‹Æb@Hâ	T‚L,ˆu ˆ'(P²@°h, Ô€T ž A%ÈAÀ¢±8PRx‚U ‹Æb@Hâ	T‚L,ˆu ˆ'(P²@°h, Ô€T ž A%ÈAÀ¢±8PRx‚U ‹Æb@Hâ	T‚L,ˆu ˆ'(P²@°h, Ô€T ž A%ÈAÀ¢±8PRx‚U ‹Æb@Hâ	T‚L,ˆu ˆ'(P²@°h, Ô€T ž A%ÈAÀ¢±8PRx‚U ˆ€¢°fØŒx€Ðb@Hâ	ä"º@ˆhÀ¢a4âÂ@èu ˆ'"
+:A(ˆjT«q5â	BAhâ	lizardden4.graal 33 62 2 1 19.5 5
+#
+6	\\
+&1\\
+-\\
+"\\
+$	\\
+\\
+ÿÿÿ
+A"bro2.gif#if (playerenters) {§if(!room1clear){hide}§if(room1clear){removecompus}§ }§if (playertouchsme) {say0; set playerhasjink}§if (playertouchsother) { }§if (playerlaysitem) { }§if (compusdied) {show; set room1clear }§if (playerendsreading) { }§if (exploded || washit || wasshooted || waspelt) { }§if (timeout) { }
+#
+#
+  '>RyF:GbyRHNyK>:EER€L:O>=yFRy:LL^y'>K>€A:O>yMABLyMABG@yBy?HNG=€=HPGyMA>yA:EEy;>?HK>€MA>L>y@NRLy:MM:<D>=a€#NGGHyPA:MyBMyBLaaa

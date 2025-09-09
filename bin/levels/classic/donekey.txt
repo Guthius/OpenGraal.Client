@@ -1,0 +1,1 @@
+if (playertouchsme) { toinventory donekey; hide;}

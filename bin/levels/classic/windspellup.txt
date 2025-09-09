@@ -1,0 +1,4 @@
+if(playerenters){timeout=.1;hide}
+if(timeout){this.1+=1;timeout=.1;
+if(y>playery&&x<playerx+2&&x>playerx-2&&!onwall(playerx,playery-.5)){playery-=.75}}
+if(this.1=20){destroy}

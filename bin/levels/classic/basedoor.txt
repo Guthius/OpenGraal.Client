@@ -1,0 +1,40 @@
+if (created) {
+save[0] = 0;
+save[1] = 10;
+save[2] = 0;
+timereverywhere;
+message Loading...;
+}
+
+if (playertouchsme && save[0] == 0) {
+save[0] = 1;
+save[1] = players[0].id;
+message;
+}
+
+if (playertouchsme && (save[1]==players[0].id)) {
+dontblock;
+}
+
+if (playertouchsme && !(save[1]==players[0].id)) {
+blockagain;
+}
+
+if (washit || wasshot || exploded) {
+if (save[2] == 0) {
+save[2] = 1;
+save[1] = save[1] - 1;
+temphp = save[1];
+message HP:#v(temphp);
+timeout = 2;
+if (save[1]<=0) {
+play crush.wav;
+destroy;
+}
+}
+}
+
+if (timeout) {
+save[2] = 0;
+message;
+}

@@ -1,0 +1,5 @@
+if(created&&GPWBomb){
+  message Placed by #a(0);
+  unset GPWBomb;
+}
+if(!strequals(#g,LAT)&&!strcontains(#g,GP)) setlevel2 police1.graal,32,32;

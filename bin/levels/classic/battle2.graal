@@ -1,0 +1,36 @@
+GR-V1.03OH‰דס„ָ9>OH‰דס„ָ9>OH‰דס„ָ9>OH‰דס„ָ9>OH‰דס„ָ9O€ִ‰#q@גָ9 qגH8rDH8$‘'ִ‰#Gה€ִ‰#q@גָ9 qגH8rDH8$‘'ִ‰#Gה€ִ‰#q@גָ9 qגH8rD־ִgגר@<!rFִgגר@<!rFִgגר@<!rFִgגר@<!rF־ִ qגH8rDH8$‘'ִ‰#Gה€ִ‰#q@גָ9 qגH8rDH8$‘'ִ‰#Gה€ִ‰#q@גָ9Oִ‰#qx ˆ#Gהנ@<!'ִבxB ‘ֳס„@8‡ג	8rDִqגHˆ'גָ9<Oִ‰#qx ˆ#Gהx@<Whirlpool.graal 30 63 4 1 22.5 6
+Hearts.graal 31 0 2 1 51.5 16
+Whirlpool.graal 0 30 31 8 playerx playery
+Whirlpool.graal 33 30 31 8 playerx playery
+Whirlpool.graal 0 0 31 10 playerx playery
+Whirlpool.graal 33 0 31 10 playerx playery
+Whirlpool.graal 0 54 30 1 17.5 49.5
+Whirlpool.graal 34 54 30 1 17.5 49.5
+#
+,Try and get past us!\Lucky shot...\Not so tough, are you?
+,Try and get past us!\Lucky shot...\Not so tough, are you?
+,Try and get past us!\Lucky shot...\Not so tough, are you?
+,Try and get past us!\Lucky shot...\Not so tough, are you?
+),Try and get past us!\Lucky shot...\Not so tough, are you?
+3,Try and get past us!\Lucky shot...\Not so tough, are you?
+=,Try and get past us!\Lucky shot...\Not so tough, are you?
+2Stop!\Ouch!\
+2Stop!\Ouch!\
+'Stop!\Ouch!\
+=2Stop!\Ouch!\
+)2Stop!\Ouch!\
+3'Try and get past us!\Lucky shot...\Not so tough, are you?
+)'Try and get past us!\Lucky shot...\Not so tough, are you?
+'Try and get past us!\Lucky shot...\Not so tough, are you?
+'Try and get past us!\Lucky shot...\Not so tough, are you?
+ÿÿÿ
+?X#if (compusdied) {set Round3;§   set Round4§}§if (playerenters) {unset Round1;§   unset Round2§}
+?Usign.gif#if (playertouchsme) {say 0}§if (playerendsreading) {hide}
+?>sign.gif#if (!Round3 && playertouchsme) {say 1}§if (playertouchsme && Round3) {say 2}§if (playerendsreading && Round3) {hide;§   unset Round4§}§if (playerendsreading && Round3) {putcomp lizardon,1,16}§if (playerendsreading && Round3) {putcomp lizardon,11,16}§if (playerendsreading && Round3) {putcomp lizardon,21,16}§if (playerendsreading && Round3) {putcomp lizardon,41,16}§if (playerendsreading && Round3) {putcomp lizardon,51,16}§if (playerendsreading && Round3) {putcomp lizardon,61,16}§if (playerendsreading && Round3) {putcomp lizardon,11,11}§if (playerendsreading && Round3) {putcomp lizardon,11,23}§if (playerendsreading && Round3) {putcomp lizardon,31,11}§if (playerendsreading && Round3) {putcomp lizardon,31,23}§if (playerendsreading && Round3) {putcomp lizardon,51,11}§if (playerendsreading && Round3) {putcomp lizardon,51,23}§if (playerendsreading && Round3) {putcomp dragon,1,23}§if (playerendsreading && Round3) {putcomp dragon,31,16}§if (playerendsreading && Round3) {putcomp dragon,61,23}§if (playerendsreading && Round3) {putcomp dragon,1,11}§if (playerendsreading && Round3) {putcomp dragon,61,11}§if (playerendsreading && Round3) {putcomp dragon,21,11}§if (playerendsreading && Round3) {putcomp dragon,21,23}§if (playerendsreading && Round3) {putcomp dragon,41,11}§if (playerendsreading && Round3) {putcomp dragon,41,23}§
+? sign.gif#if (!Round4 && playertouchsme) {say 3}§if (Round4) {hide}
+#
+#
+  -HMy!:=ay1HNG=yWa
+  8HNyA:O>GqMy?BGBLA>=y1HNG=yWa
+  .DbyIK>MMRy@HH=a€+>MqLyL>>yAHPyRHNy=HyBG€1HNG=yXa
+  8HNyA:O>GqMy?BGBLA>=y1HNG=yXa

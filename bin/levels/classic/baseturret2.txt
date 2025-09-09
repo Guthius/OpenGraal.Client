@@ -1,0 +1,12 @@
+if (playertouchsme) {
+toweapons #n's missile turret layer;
+destroy;
+}
+
+if (weaponfired) {
+if (playerdir==0) putnpc goldpillar.gif, baseturret.txt, playerx+.5, playery-3.5;
+else if (playerdir==1) putnpc goldpillar.gif, baseturret.txt, playerx-1.5, playery-1;
+else if (playerdir==2) putnpc goldpillar.gif, baseturret.txt, playerx+.5, playery+2;
+else if (playerdir==3) putnpc goldpillar.gif, baseturret.txt, playerx+2.5, playery-1;
+destroy;
+}

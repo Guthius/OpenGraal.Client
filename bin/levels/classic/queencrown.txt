@@ -1,0 +1,27 @@
+if(created){
+  setstring server.qcloc,#L;
+  timeout=0.05;
+}  
+if(playertouchsme&&playerisfemale&&playersprite<39){
+  timeout=0.05;
+  this.destroyme=1;
+  toweapons Queen's Crown;
+}
+if(playerenters) setstring server.qcloc,#L;
+if(timeout){
+  if(isweapon){
+    setstring server.queendecay,0;
+    if(playersprite<37) showimg 0,queencrown.gif,playerx+0.5,playery;
+    else if(playersprite==37){
+      if(playerdir==0||playerdir==2) showimg 0,queencrown.gif,playerx+0.5,playery-0.5;
+      else if(playerdir==3) showimg 0,queencrown.gif,playerx+0.15,playery-0.5;
+      else showimg 0,queencrown.gif,playerx+0.85,playery-0.5;
+    }else showimg 0,queencrown.gif,playerx+0.5,playery-0.5;
+  }else if(this.destroyme>0||!strequals(#s(server.qcloc),#L)||strtofloat(#s(server.queendecay))>19) destroy;
+  timeout=0.05;
+}
+if(weaponfired||(isweapon&&(playersprite>9&&(playersprite<37||playersprite>38)))){
+  hideimg 0;
+  putnpc queencrown.gif,queencrown.txt,playerx,playery;
+  destroy;
+}

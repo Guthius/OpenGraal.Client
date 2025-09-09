@@ -1,0 +1,50 @@
+if (playertouchsme) {
+toweapons Magic Cape;
+hide;
+set gotmagiccape;
+setplayerdir down;
+playersprite=24;
+freezeplayer 1.5;
+putnpc cape.gif,chestitem.txt,playerx+0.5,playery-1.5
+}
+
+if (timeout) {
+timeout=0.05;
+this.magic+=1;
+showimg 1,charshadow.gif,playerx+0.5,playery+1.5;
+}
+
+if (weaponfired&& playermp>0) {
+set magicon;
+this.magic=1
+}
+if (weaponfired&& magicon&& magicgoing) {
+unset magicon;
+hideimg 1;
+timeout=0;
+unset magicgoing;
+hideplayer 0.05;
+this.magic=6
+}
+
+if (magicon) {
+hideplayer 10000;
+timeout=0.05;
+showimg 1,charshadow.gif,playerx+0.5,playery+1.5;
+set magicgoing;
+}
+
+if (weaponfired&& playermp<0.05) {
+timeout=0
+}
+
+if (playermp<0.05&& magicon) {
+hideimg 1;
+hideplayer 0.05;
+timeout=0;
+unset magicon;
+unset magicgoing;
+this.magic=6
+}
+if (this.magic==5) {playermp-=1;
+this.magic=1}

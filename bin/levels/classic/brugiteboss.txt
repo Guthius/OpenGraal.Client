@@ -1,0 +1,182 @@
+//====== Brugite Warrior A.I.======
+//  written by Bruges, CEO Bruges Core
+//  gfx by Captain USA, Bruges Core
+//  and Bruges
+//                        (21/05/1999)
+//  email: Bruges@brugescore.8m.com
+//  http://come.to/BrugesCore
+//
+// Below are variables which modify
+// the baddie's behavior. Press PgDn
+// three times to view them all.
+//
+if (playerenters && !this.init=1) {
+ this.init=1;
+ this.sx=x;this.sy=y;
+ timereverywhere;
+ maxhearts=20;		//the number of hearts the baddie starts with
+ timeout=.1;     	//the delay before it apears and attacks
+ this.stepspeed=.1;   	//the speed the baddie takes steps at
+ this.stepdist=.5;	//the distance covered by each step
+ this.power=5;		//number of half hearts it drains when it touches the player
+ this.talkdelay=2;	//time speach is shown for
+ this.active=0;
+ this.BossReset=1;
+ this.hurtdel=5;
+}
+//do not edit anything below this
+//                            line!!
+//-----------------------------------
+if (timeout && this.BossReset=1) {
+ this.BossReset=0;
+ this.active=1; 
+ this.hearts=maxhearts;		//the number of hearts the baddie starts with
+ hearts=this.hearts;
+ x=this.sx;
+ y=this.sy;
+ show;
+ message Here, you shall die!;
+ this.talk=this.talkdelay;
+ this.lasthurt=0;
+ timeout=.1;     	//the delay before it apears and attacks
+}
+if (playertouchsme && this.active>0) {
+  hurt this.power;
+  if (x>playerx) {if (!onwall(x+.5,y)) x=x+.5;if (!onwall(x+.5,y)) x=x+.5;if (!onwall(x+.5,y)) x=x+.5;if (!onwall(x+.5,y)) x=x+.5;if (!onwall(x+.5,y)) x=x+.5;if (!onwall(x+.5,y)) x=x+.5;
+                             if (!onwall(playerx+.5-.5,playery+.5)) playerx=playerx-.5;if (!onwall(playerx+.5-.5,playery+.5)) playerx=playerx-.5;};
+  if (x<playerx) {if (!onwall(x-.5,y)) x=x-.5;if (!onwall(x-.5,y)) x=x-.5;if (!onwall(x-.5,y)) x=x-.5;if (!onwall(x-.5,y)) x=x-.5;if (!onwall(x-.5,y)) x=x-.5;if (!onwall(x-.5,y)) x=x-.5;
+                             if (!onwall(playerx+.5+.5,playery+.5)) playerx=playerx+.5;if (!onwall(playerx+.5+.5,playery+.5)) playerx=playerx+.5;};
+  if (y>playery) {if (!onwall(x,y+.5)) y=y+.5;if (!onwall(x,y+.5)) y=y+.5;if (!onwall(x,y+.5)) y=y+.5;if (!onwall(x,y+.5)) y=y+.5;if (!onwall(x,y+.5)) y=y+.5;if (!onwall(x,y+.5)) y=y+.5;
+                             if (!onwall(playerx+.5,playery+.5-.5)) playery=playery-.5;if (!onwall(playerx+.5,playery+.5-.5)) playery=playery-.5;};
+  if (y<playery) {if (!onwall(x,y-.5)) y=y-.5;if (!onwall(x,y-.5)) y=y-.5;if (!onwall(x,y-.5)) y=y-.5;if (!onwall(x,y-.5)) y=y-.5;if (!onwall(x,y-.5)) y=y-.5;if (!onwall(x,y-.5)) y=y-.5;
+                             if (!onwall(playerx+.5,playery+.5+.5)) playery=playery+.5;if (!onwall(playerx+.5,playery+.5+.5)) playery=playery+.5;};
+};
+if (x-playerx<1 && playerx-x<1 && y-playery<1 && playery-y<1 && this.active>0) {
+  hurt this.power;
+  if (x>playerx) {if (!onwall(x+.5,y)) x=x+.5;if (!onwall(x+.5,y)) x=x+.5;if (!onwall(x+.5,y)) x=x+.5;if (!onwall(x+.5,y)) x=x+.5;if (!onwall(x+.5,y)) x=x+.5;if (!onwall(x+.5,y)) x=x+.5;
+                             if (!onwall(playerx+.5-.5,playery+.5)) playerx=playerx-.5;if (!onwall(playerx+.5-.5,playery+.5)) playerx=playerx-.5;};
+  if (x<playerx) {if (!onwall(x-.5,y)) x=x-.5;if (!onwall(x-.5,y)) x=x-.5;if (!onwall(x-.5,y)) x=x-.5;if (!onwall(x-.5,y)) x=x-.5;if (!onwall(x-.5,y)) x=x-.5;if (!onwall(x-.5,y)) x=x-.5;
+                             if (!onwall(playerx+.5+.5,playery+.5)) playerx=playerx+.5;if (!onwall(playerx+.5+.5,playery+.5)) playerx=playerx+.5;};
+  if (y>playery) {if (!onwall(x,y+.5)) y=y+.5;if (!onwall(x,y+.5)) y=y+.5;if (!onwall(x,y+.5)) y=y+.5;if (!onwall(x,y+.5)) y=y+.5;if (!onwall(x,y+.5)) y=y+.5;if (!onwall(x,y+.5)) y=y+.5;
+                             if (!onwall(playerx+.5,playery+.5-.5)) playery=playery-.5;if (!onwall(playerx+.5,playery+.5-.5)) playery=playery-.5;};
+  if (y<playery) {if (!onwall(x,y-.5)) y=y-.5;if (!onwall(x,y-.5)) y=y-.5;if (!onwall(x,y-.5)) y=y-.5;if (!onwall(x,y-.5)) y=y-.5;if (!onwall(x,y-.5)) y=y-.5;if (!onwall(x,y-.5)) y=y-.5;
+                             if (!onwall(playerx+.5,playery+.5+.5)) playery=playery+.5;if (!onwall(playerx+.5,playery+.5+.5)) playery=playery+.5;};
+};
+if (exploded || washit || wasshooted || waspelt) if (this.active>0){
+ this.attacked=1;
+ if (exploded) this.heartshearts+=playerbombpower;
+ if (washit) this.heartshearts+=playerswordpower;
+ if (wasshooted) this.heartshearts+=playershootpower;
+ if (peltwithbush) this.heartshearts+=1;
+ if (peltwithsign || peltwithvase || peltwithstone) this.heartshearts+=2;
+ if (peltwithblackstone) this.heartshearts +=3;
+ if (this.heartshearts>maxhearts) this.heartshearts=maxhearts;
+ hearts=this.hearts;
+
+ if (this.hearts>0) {
+  if (x>playerx) {if (!onwall(x+.5,y)) x=x+.5;if (!onwall(x+.5,y)) x=x+.5;if (!onwall(x+.5,y)) x=x+.5;if (!onwall(x+.5,y)) x=x+.5;if (!onwall(x+.5,y)) x=x+.5;if (!onwall(x+.5,y)) x=x+.5;if (!onwall(x+.5,y)) x=x+.5;if (!onwall(x+.5,y)) x=x+.5;};
+  if (x<playerx) {if (!onwall(x-.5,y)) x=x-.5;if (!onwall(x-.5,y)) x=x-.5;if (!onwall(x-.5,y)) x=x-.5;if (!onwall(x-.5,y)) x=x-.5;if (!onwall(x-.5,y)) x=x-.5;if (!onwall(x-.5,y)) x=x-.5;if (!onwall(x-.5,y)) x=x-.5;if (!onwall(x-.5,y)) x=x-.5;};
+  if (y>playery) {if (!onwall(x,y+.5)) y=y+.5;if (!onwall(x,y+.5)) y=y+.5;if (!onwall(x,y+.5)) y=y+.5;if (!onwall(x,y+.5)) y=y+.5;if (!onwall(x,y+.5)) y=y+.5;if (!onwall(x,y+.5)) y=y+.5;if (!onwall(x,y+.5)) y=y+.5;if (!onwall(x,y+.5)) y=y+.5;}
+  if (y<playery) {if (!onwall(x,y-.5)) y=y-.5;if (!onwall(x,y-.5)) y=y-.5;if (!onwall(x,y-.5)) y=y-.5;if (!onwall(x,y-.5)) y=y-.5;if (!onwall(x,y-.5)) y=y-.5;if (!onwall(x,y-.5)) y=y-.5;if (!onwall(x,y-.5)) y=y-.5;if (!onwall(x,y-.5)) y=y-.5;}
+ }
+}
+if (timeout && this.active>0) {
+ {//SMART-ONLINE A.I.
+  this.icomp=1000000;
+  for(i=0;i<playerscount;i++) {
+   eval=abs(players[i].x-x)+abs(players[i].y-y);
+   if (eval<this.icomp) {this.icomp=eval; this.i=i;}
+  }
+  i=this.i;
+ }//END SMART-ONLINE A.I.
+ if (this.talk>0) {this.talk-=this.stepspeed; if (this.talk<=0) message ;}
+ if (this.hearts<1) {this.active=0;
+  swordcount=-1;
+  this.slp=0.1;
+  message Arghh!;
+  setgif BrugiteBossS1.gif;  sleep this.slp;
+  setgif BrugiteBoss2.gif;  sleep this.slp;
+  setgif BrugiteBossS1.gif;  sleep this.slp;
+  setgif BrugiteBoss2.gif;  sleep this.slp;
+  setgif BrugiteBossS1.gif;  sleep this.slp; 
+  this.slp*=2;
+  setgif BrugiteBoss2.gif;  sleep this.slp;
+  setgif BrugiteBossS1.gif;  sleep this.slp; 
+  setgif BrugiteBoss2.gif;  sleep this.slp;
+  setgif BrugiteBossS1.gif;  sleep this.slp; 
+  this.slp*=2;
+  setgif BrugiteBoss2.gif;  sleep this.slp;
+  setgif BrugiteBossS1.gif;  sleep this.slp; 
+  setgif BrugiteBoss2.gif;  
+  message No! The Judgites must have the Cane!;
+  sleep 2;
+  hide;
+  sleep .5;
+  timeout=.05;
+  this.BossReset=1;
+  playerx=31;
+  playery=52;
+  setlevel brugestowerprize.graal;
+  swordcount=0;
+
+ }
+
+ if (this.hearts>0) {
+  timeout=this.stepspeed;
+  if (this.imset=0) {this.imset=1;
+   if (x>=players[i].x && y>=players[i].y) { if (x-players[i].x>y-players[i].y) {setgif BrugiteBossW1.gif; this.dir=1}else{setgif BrugiteBossN1.gif; this.dir=0}}
+   else if (x<=players[i].x && y>=players[i].y) { if (players[i].x-x>y-players[i].y) {setgif BrugiteBossE1.gif; this.dir=3}else{setgif BrugiteBossN1.gif; this.dir=0}}
+   else if (x>=players[i].x && y<=players[i].y) { if (x-players[i].x>players[i].y-y) {setgif BrugiteBossW1.gif; this.dir=1}else{setgif BrugiteBossS1.gif; this.dir=2}}
+   else if (x<=players[i].x && y<=players[i].y) { if (players[i].x-x>players[i].y-y) {setgif BrugiteBossE1.gif; this.dir=3}else{setgif BrugiteBossS1.gif; this.dir=2}}
+  }else{this.imset=0;
+   if (x>=players[i].x && y>=players[i].y) { if (x-players[i].x>y-players[i].y) {setgif BrugiteBossW2.gif; this.dir=1}else{setgif BrugiteBossN2.gif; this.dir=0}}
+   else if (x<=players[i].x && y>=players[i].y) { if (players[i].x-x>y-players[i].y) {setgif BrugiteBossE2.gif; this.dir=3}else{setgif BrugiteBossN2.gif; this.dir=0}}
+   else if (x>=players[i].x && y<=players[i].y) { if (x-players[i].x>players[i].y-y) {setgif BrugiteBossW2.gif; this.dir=1}else{setgif BrugiteBossS2.gif; this.dir=2}}
+   else if (x<=players[i].x && y<=players[i].y) { if (players[i].x-x>players[i].y-y) {setgif BrugiteBossE2.gif; this.dir=3}else{setgif BrugiteBossS2.gif; this.dir=2}}
+  }
+  if (x>players[i].x-this.stepdist && !onwall(x-this.stepdist+.5,y+.5)) {x=x-this.stepdist};
+  if (x<players[i].x+this.stepdist && !onwall(x+this.stepdist+.5,y+.5)) {x=x+this.stepdist};
+  if (y>players[i].y-this.stepdist && !onwall(x+.5,y-this.stepdist+.5)) {y=y-this.stepdist};
+  if (y<players[i].y+this.stepdist && !onwall(x+.5,y+this.stepdist+.5)) {y=y+this.stepdist};
+
+  if (this.lasthurt>=this.hurtdel) {
+   this.hearts-=1;
+   this.lasthurt=0;
+   this.msg=int(random(0,9));
+   if (this.hearts=6) this.msg=10;else
+   if (this.hearts=5) this.msg=11;
+   if (this.hearts=4) this.msg=12;
+   if (this.hearts<4) this.msg=13;
+   if (this.hearts<=0) hearts=this.hearts;
+   if (this.msg=0) message Thought you could defeat me?;
+   if (this.msg=1) message Time to die!;
+   if (this.msg=2) message Mwa ha ha ha!;
+   if (this.msg=3) message Weakling!;
+   if (this.msg=4) message I'm enjoying this!;
+   if (this.msg=5) message Having fun?;
+   if (this.msg=6) message *gloats*;
+   if (this.msg=7) message Fool!;
+   if (this.msg=8) message Getting tired?;
+   if (this.msg=9) message Death is your only escape!;
+   if (this.msg=10) message To scared to attack me?;
+   if (this.msg=11) message Come on! Fight back!;
+   if (this.msg=12) message You time is nearly up!!;
+   if (this.msg=13) message DIE!!!;
+   this.talk=this.talkdelay;
+   if (playerscount>swordscount) {this.launchsword=1};
+  } else this.lasthurt+=this.stepspeed;
+  if (playerscount=0) this.BossReset=1;
+  if (this.launchsword=1) {
+   this.launchsword=0;
+   if (this.dir=0) putnpc BrugiteSwordN.gif,BrugiteSword.txt,x+2,y;
+   if (this.dir=1) putnpc BrugiteSwordE.gif,BrugiteSword.txt,x+2,y+2;
+   if (this.dir=2) putnpc BrugiteSwordS.gif,BrugiteSword.txt,x,y+2;
+   if (this.dir=3) putnpc BrugiteSwordW.gif,BrugiteSword.txt,x,y+2;
+   
+  }
+
+  //this.talk=this.talkdelay;
+ }
+}
+
+//=====================================================================

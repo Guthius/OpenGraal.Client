@@ -1,0 +1,10 @@
+GR-V1.01@à'@à'@à'@à'@à'@à'@à'@à'@à'@à'@à'@à'@à'@à'@à'@à'@à'@à'@à'@à'@à'à'7„+ø44B34È+ø0#0CêæÚ+<CÇx“.8Û,P#êQ#5S3êŒÚ,131È,œ‚,;”/$à'Ì‚/966b36È-ﬂ"Äﬂ2!#2#3êﬁÚ-:√.˝BÇx“.ÓÚ.p#êq#7scÄÊ"[8[¥’TNıT@tB∑/¸“/$à'Ì‚/ˇÇ,ô, ≤*˘*ÆÚ*W%\8\ƒ’U^ıUPuR∑.Ï“/$à'Ì‚/ˇÇ-ô-⁄≤+È*Ø‚*W%]8]‘’VËVvb∑.Ï“/$à'Ì‚.ÔÇ-ô-⁄≤+˘*ÆÚ*W5ê'q8qß/˚¬/˝BÇx“.ÓÚ.Ë"êÈ¢.À"êÆÚ*ÆrU9r"'Ä#'r˙≤/¸“/$à'Ì‚/ˇí*™Ú*Æí*™"êØ‚*Ø¢ÄW•/Î¬.˝BÇx“.ÓÚ.π¢+ÆÚ*π¢+È*Ø‚*˙≤/¸“/$à'Ì‚/ˇ≤-	È*Ø‚*óqÎ¬.˝BÇxB/ıb/€íêØ‚*ØÇr)w/¯í/$à'S0≥-	È*Ø‚*óqÉ0	CÇxB1c1€íêØ‚*ØÇr)w1ì1$à'$S2&≥-GÄwpÈ*Ø‚*óq'É2)CÇx“.ÓÚ.€Rqhq˜*EÄÂQÈ*ØÇr)∑/¸“/$à'Ì‚/ˇ≤-%'Ä&wt&wrÆ¬RÿR.5êØ‚*8ósÎ¬.˝BÇx“.ÓÚ.€Rshs7˜*,EÄ-ÂRÈ*Ø‚*˙≤/¸“/$à'Ì‚/ˇ≤-È*Ø‚*,EÄ-ÂR˘*ÆB,≈b,«≤.Ï“/$à'Ì‚.Ô≤-˘*ÆÚ*,EÄ-ÂRÈ*ØB-’b-◊≤/¸“/$à'Ì‚/ˇ≤-È*Ø‚*,EÄ-ÂR˘*ÆB-’b-◊≤.Ï“/$à'Ì‚.Ô≤-˘*ÆÚ*<EÄ=ÂSÈ*ØB-’b-◊≤/¸“/$à'Ì‚/ˇB7¯3‰"ÄÂr.Î¬.˝BÇx“.Óí4£0√0„0£0C3X36£0√0„0£0£0J√/˝BÇx“.H#ê≥1”1Û1≥1D#ÄEc4≥1”1Û1©1≥4˝BÇxr4π2*≥2,”2.Û2*≥2TS5Vs5*≥2,”2.Û2©2+£2LÑxÑxÑxÑxÑxÑxÑxÑxÑxÑxÑxÑxÑxÑxÑxÑxÑx"Åxdeathv1.graal 31 45 2 1 5.5 12
+#
+ˇˇˇ
+A:dbluebaddy.gif#if (playertouchsme) {ß  if (!PlayerHasMed && !DBHasMed){ß    say 0;ß}ß  if (DBHasMed &&!PlayerHasIZPKey) {ß    set PlayerHasIZPKey;ß    say2;ß}ß  if (DBHasMed && PlayerHasIZPKey) {ß    say3;ß  }ß  if (PlayerHasMed && !DBHasMed) {ß    say 1;ß    unset PlayerHasMed;ß    set DBHasMed;ß      }ß}ß
+#
+#
+  4GAAaaBy<:GqMyL>>byBy=K:GDÄLHF>MABG@yMA:MyP:LyHGÄMA>yM:;E>aaIE>:L>yA>EIyF>a
+  3A:GDyRHNbyBy<:GyL>>y:@:BGÄ(?yRHNyP:GMyBEEy@BO>yRHNy:yD>RÄBy?HNG=yBGyMA>y4G=>K@KHNG=Ä5BEE:@>aayCNLMy:LDyF>a
+  .DbyA>K>yBMyBLbyBFyGHMÄJNBM>yLNK>yPA:MyBMLy?HKÄMAHN@Aa
+  2Haay?BG=yHNMyPA:MyMA:MÄD>RLy?HKyR>M_

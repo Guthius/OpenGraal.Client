@@ -1,0 +1,55 @@
+if (playerenters) {ow = 1;
+superblast = x + .4;
+miniblast = y +.1;
+timeout=.05;
+timereverywhere}
+if (playertouchsme) {
+if (!youtouchedthis) {say 0; set youtouchedthis}
+canbecarried;
+ow = 1;
+superblast = x + .4;
+miniblast = y +.1;
+setgif explodeion2.gif}
+if (wasthrown) {superblast = x;
+miniblast = y}
+if (playersays (fight fire with fire 'up') && ow = 1) {shootfireball up;
+ow = 0;
+setgif explodeion1.gif;
+playerdarts-=2}
+if (playersays (fight fire with fire 'left') && ow = 1) {shootfireball left;
+ow = 0;
+setgif explodeion1.gif;
+playerdarts-=2}
+if (playersays (fight fire with fire 'right') && ow = 1) {shootfireball right;
+ow = 0;
+setgif explodeion1.gif;
+playerdarts-=2}
+if (playersays (fight fire with fire 'down') && ow = 1) {shootfireball down;
+ow = 0;
+setgif explodeion1.gif;
+playerdarts-=2}
+if (playersays (cannon fire) && ow = 1) {putexplosion 3, superblast, miniblast;
+ow = 0;
+setgif explodeion1.gif;
+playerbombs-=5}
+if (playersays (cannon fire 'up') && ow = 1) {shootfireblast up;
+ow = 0;
+setgif explodeion1.gif}
+if (playersays (cannon fire 'left') && ow = 1) {shootfireblast left;
+ow = 0;
+setgif explodeion1.gif;
+playerdarts-=2}
+if (playersays (cannon fire 'right') && ow = 1) {shootfireblast right;
+ow = 0;
+setgif explodeion1.gif;
+playerdarts-=2}
+if (playersays (cannon fire 'down') && ow = 1) {shootfireblast down;
+ow = 0;
+setgif explodeion1.gif;
+playerdarts-=2}
+if (timeout) {
+if (onwall(x+1.5,y)) {y+=1}
+if (onwall(x,y+1.5)) {x+=1}
+if (onwall(x+1.5,y+3)) {y-=1}
+if (onwall(x+3,y+1.5)) {x-=1}
+timeout=.05;}

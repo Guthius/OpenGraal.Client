@@ -1,0 +1,32 @@
+if (playerenters) {
+
+  //initialize the NPC
+  this.rotation=1;
+  timeout=.05;
+  followplayer;
+}
+
+if (timeout) {
+  if (!ArmaPermClothes) {
+    x=10; y=10;
+    destroy;
+  } else {
+    if (this.rotation==1) {
+      setskincolor pink;
+      setcoatcolor white;
+      setsleevecolor blue;
+      setshoecolor red;
+      setbeltcolor black;
+      this.rotation=2;
+    } else {
+      setskincolor black;
+      setcoatcolor blue;
+      setsleevecolor darkred;
+      setshoecolor green;
+      setbeltcolor purple;
+      this.rotation=1;
+    }
+    timeout=5;
+  }
+}
+

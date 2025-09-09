@@ -1,0 +1,81 @@
+if (playertouchsme) {
+  toweapons Joystick;	// Put this in the players weapons list
+  unset canplay;	// Start minigame initialization
+  play qkcourage.mid;	// Music please
+  score = 0; fbs = 5;
+  bp = 1; fp = 1;
+  lives = 5; enemycount = 0;
+  set playing;		// Tell the game that we're rolling!
+  destroy;		// Removes the weapon from the board, but not the weapons list :)
+}
+
+// Why this next line? This starts up the display
+if (playing && this.init == 0) { timeout = .05; this.init = 1; }
+
+if (timeout) {
+  y = 23;		// Display score
+  t1 = score;
+  for (i = 1; i < 6; i++) {
+    x = 24 - i;
+    if (t1 > 0 || i == 1) {
+      t2 = t1 % 10;
+      if (t2 == 0) showimg i,n0.gif,x,y;
+      if (t2 == 1) showimg i,n1.gif,x,y;
+      if (t2 == 2) showimg i,n2.gif,x,y;
+      if (t2 == 3) showimg i,n3.gif,x,y;
+      if (t2 == 4) showimg i,n4.gif,x,y;
+      if (t2 == 5) showimg i,n5.gif,x,y;
+      if (t2 == 6) showimg i,n6.gif,x,y;
+      if (t2 == 7) showimg i,n7.gif,x,y;
+      if (t2 == 8) showimg i,n8.gif,x,y;
+      if (t2 == 9) showimg i,n9.gif,x,y;
+      t1 = int(t1 / 10);
+    } else hideimg i;
+  }
+  t1 = fbs;		// Display fireballs remaining
+  for (i = 1; i < 3; i++) {
+    x = 33 - i;
+    if (t1 > 0 || i = 1) {
+      t2 = t1 % 10;
+      if (t2 == 0) showimg 5+i,n0.gif,x,y;
+      if (t2 == 1) showimg 5+i,n1.gif,x,y;
+      if (t2 == 2) showimg 5+i,n2.gif,x,y;
+      if (t2 == 3) showimg 5+i,n3.gif,x,y;
+      if (t2 == 4) showimg 5+i,n4.gif,x,y;
+      if (t2 == 5) showimg 5+i,n5.gif,x,y;
+      if (t2 == 6) showimg 5+i,n6.gif,x,y;
+      if (t2 == 7) showimg 5+i,n7.gif,x,y;
+      if (t2 == 8) showimg 5+i,n8.gif,x,y;
+      if (t2 == 9) showimg 5+i,n9.gif,x,y;
+      t1 = int(t1 / 10);
+    } else hideimg 5+i;
+  }
+  x = 27;		// Display bomb power
+  if (bp == 1) showimg 8,l1.gif,x,y;
+  if (bp == 2) showimg 8,l2.gif,x,y;
+  if (bp == 3) showimg 8,l3.gif,x,y;
+  x = 33;		// Display fireball power
+  if (fp == 1) showimg 9,l1.gif,x,y;
+  if (fp == 2) showimg 9,l2.gif,x,y;
+  if (fp == 3) showimg 9,l3.gif,x,y;
+  for (i = 1; i < 6; i++) {	// Display lives remaining
+    x = 41 - i;
+    if (lives >= i) showimg 9+i,normalheart.gif,x,y;
+    else hideimg 9+i;
+  }
+  showimg 15,smallbomb.gif,26,23;	// Display bomb and fireball icons
+  showimg 16,ballofire_still.gif,30,23;
+  timeout = .05;
+}
+
+// Game ended? Then get rid of this weapon
+if (playerendsreading && !playing && !canplay) {
+  for (i = 1; i < 17; i++) { hideimg i; }
+  destroy;
+}
+
+// If the player is a chicken...
+if (playersays(end)) set gameover;
+
+// Shoot a fireball (if the player has enough) when used
+if (weaponfired) set usedfball;

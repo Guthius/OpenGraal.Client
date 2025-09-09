@@ -1,0 +1,29 @@
+//
+//  Armageddon's Perma Clothes
+//         - black -
+//
+//  script by Vangel (JF)
+//  -=dedicated to Jesus=-
+//
+//
+if (playerenters) {
+
+  //initialize the NPC
+  timeout=.05;
+  followplayer;
+}
+
+if (timeout) {
+  if (!ArmaPermClothes) {
+    x=10; y=10;
+    destroy;
+  } else {
+    setskincolor orange;
+    setcoatcolor black;
+    setsleevecolor black;
+    setshoecolor red;
+    setbeltcolor white;
+    timeout=5;
+  }
+}
+

@@ -1,0 +1,28 @@
+if (created&&GPBarricade) {
+  showcharacter;
+  unset gpbarricade;
+  setcharprop #3,head26.gif;
+  setcharprop #C0,orange;
+  setcharprop #C1,darkred;
+  setcharprop #C2,black;
+  setcharprop #C3,darkred;
+  setcharprop #C4,black;
+  setcharprop #n,#a(0);
+  dir = (playerdir+2)%4;
+  sprite=33;
+  message GP ROADBLOCK!;
+  ap=100;
+}
+
+if(!strcontains(#g,GP)&&!strequals(#g,LAT)&&(playerenters||timeout)){
+  if((playery>y&&dir==0)||
+     (playerx>x&&dir==1)||
+     (playery<y&&dir==2)||
+     (playerx<x&&dir==3)){
+      playerx=x;
+      playery=y;
+  }
+  timereverywhere;
+  timeout=0.05;
+}
+if(playertouchsme&&strcontains(#g,GP)) dir=(playerdir+2)%4;

@@ -1,0 +1,22 @@
+GR-V1.03$è#& ”€(òˆ(9 D‚J	êˆ)H¥ Ô(P²@:°h, Ô€HP	2A:°hl Ô(P²@=°h d‚z`Ñ @ÈõÀ¢A‚J	êEƒU ¤‹Æb@ˆ• ¤‹Æâ@ˆU ¤‹Æb@ˆ• ¤‹Æâ@ˆU ¤‹Æb@ˆ• ¤‹Æâ@ˆU ¤‹Æb@ˆ• ¤‹Æâ@ˆU ¤‹Æb@ˆ• ¤‹Æâ@ˆU ¤‹Æb@ˆ• ¤‹Æâ@ˆU ¤‹Æb@ˆ• ¤‹Æâ@ˆU ¤‹Æb@ˆ• ¤‹Æâ@ˆU ¤‹Æb@ˆ• ¤‹Æâ@ˆU ¤‹Æb@ˆ• ¤‹Æâ@ˆU ¤‹Æb@ˆ• ¤‹Æâ@ˆU ¤‹Æb@ˆ• ¤‹Æâ@ˆU ¤‹Æb@ˆ• ¤‹Æâ@ˆU ¤‹Æb@ˆ• ¤‹Æâ@ˆU ¤‹Æb@ˆ• ¤‹Æâ@ˆU ¤‹Æb@ˆ• ¤‹Æâ@ˆU ¤‹Æb@ˆ• ¤‹Æâ@ˆU ¤‹Æb@ˆ• ¤‹Æâ@ˆU ¤‹Æb@ˆ• ¤‹Æâ@ˆU ¤‹Æb@ˆ• ¤‹Æâ@ˆU ¤‹Æb@ˆ• ¤‹Æâ@ˆU ¤‹Æb@ˆ• ¤‹Æâ@ˆU ¤‹Æb@ˆ• ¤‹Æâ@ˆU ¤‹Æb@ˆ• ¤‹Æâ@ˆU ¤‹Æb@ˆ• ¤‹Æâ@ˆU ¤‹Æb@ˆ• ¤‹Æâ@ˆU ˆ€j@$ÈyDtPúˆ(è¡ liz1.graal 63 5 1 4 3 48
+#
+
+Stop!\Ouch!\
+	
+	Stop!\Ouch!\
+Stop!\Ouch!\
+Stop!\Ouch!\
+	Stop!\Ouch!\
+#	Stop!\Ouch!\
+%Stop!\Ouch!\
+	0Stop!\Ouch!\
+0	Stop!\Ouch!\
+9	Stop!\Ouch!\
++Stop!\Ouch!\
+ &Stop!\Ouch!\
+7	Stop!\Ouch!\
+ÿÿÿ
+\$block.gif#if (playerenters) {if (compdie5) {hide;removecompus} }§if (playertouchsme) { }§if (playertouchsother) { }§if (playerlaysitem) { }§if (compusdied) {hide;set compdie5 }§if (playerendsreading) { }§if (exploded || washit || wasshot || waspelt) { }§if (timeout) { }
+#
+#
+  8HNy?HNG=yMA>y+BS:K=y&N:GME>ML^

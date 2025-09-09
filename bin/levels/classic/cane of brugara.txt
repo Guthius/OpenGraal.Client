@@ -1,0 +1,52 @@
+// Cane of Brugara
+// By Bruges
+//
+// This mystical cane (pronounced with a soft "g":
+// "Brujarah") was created by Lord Bruges of the
+// High Proton Knights, or Brugites.
+// It creates Brugaran Blocks. These Blocks are
+// highly unstable and tend to collape explosively
+// after only 6 to 8 seconds. Each may be lifted only
+// once after which it can only be pushed or pulled.
+// should a block be hit by a sword it magically
+// fixes itself to the floor, untill it explodes.
+
+if (playertouchsme) {
+  toweapons Cane of Brugara;
+  //hide;
+}
+if (weaponfired && this.used=0) {
+//&& this.del<=0
+ this.usedel=1;
+ this.d=1;
+ hideimg 1;
+ freezeplayer 0.2;
+ timeout=0.05;
+ this.put=1;
+ this.del=4;
+ this.used=2;
+}
+if (timeout) {
+ if (this.del>0) {
+  this.del--;
+  hidesword 0.1;
+  freezeplayer 0.1;
+  playersprite = 11;
+  this.bx=playerx;
+  this.by=playery;
+  if (playerdir=0) {showimg 1,BrugaraCaneN.gif,playerx+0.0,playery-1;this.bx+=.5;this.by-=(1+this.d);}
+  if (playerdir=1) {showimg 1,BrugaraCaneW.gif,playerx-1.2,playery+1.5;this.bx-=(1.2+this.d);this.by+=1;}
+  if (playerdir=2) {showimg 1,BrugaraCaneS.gif,playerx+1.5,playery+2.4;this.bx+=.5;this.by+=(2.4+this.d);}
+  if (playerdir=3) {showimg 1,BrugaraCaneE.gif,playerx+2.3,playery+1.5;this.bx+=(2.3+this.d);this.by+=1;}
+  if (this.put=1) {
+   this.put=0;
+   if (playermp>=5) {
+    playermp-=5;
+    putnpc BrugaraBlock.gif,BrugaraBlock.txt,this.bx,this.by;
+   }
+  }
+  timeout=.05;
+ }else
+ if (this.used=2) {hideimg 1;this.used=1; timeout=this.usedel}else
+ if (this.used=1) {this.used=0}
+}

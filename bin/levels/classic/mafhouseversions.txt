@@ -1,0 +1,14 @@
+v1.0.1
+Fixed warpring bug, used setlevel2, works great
+fixed some noticeable tile mismatches in bathroom.
+spiced up level44.graal looks a little bit more colorful.
+v1.0.1
+Fixed allot of tiles, added a warp ring,
+made inside of house bigger, noticeablly bigger.
+v1.0
+NPC Beers fixed. 
+NPC Maf House Key fixed.
+level41.graal door so I could enter the house when It was locked along with Hack Corps Members. 
+Changed bookshelf no more "hella" quote, added Sparring book by Kain.
+changed the Starter NPC andchanged a few of the steps NPC's so it would tell them how to get out if they were too stupid to read the message. 
+took away from some of the steps in the arena so they wouldn't get moved into the step accidently and be stuck

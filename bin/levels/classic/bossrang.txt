@@ -1,0 +1,61 @@
+if(visible){isthrown=1}
+if(playerenters){
+timeout=.05;
+this.dircheck=0;
+this.diagy=0;
+this.diagx=0;
+this.count=0;
+this.player=closeplay;
+}
+if(timeout){
+timeout=.05;
+this.count++;
+this.count2++;
+if(!this.dircheck==1){
+if(x<=players[this.player].x+3&&x>=players[this.player].x-3&&y>=players[this.player].y){rangdir=0}
+else if(x<=players[this.player].x+3&&x>=players[this.player].x-3&&y<=players[this.player].y){rangdir=2}
+else if(y<=players[this.player].y+3&&y>=players[this.player].y-3&&x<=players[this.player].x){rangdir=3}
+else if(y<=players[this.player].y+3&&y>=players[this.player].y-3&&x>=players[this.player].x){rangdir=1}
+else {rangdir=4}
+if(rangdir==4&&this.diagy==0&&this.diagx==0){
+if(players[this.player].y>bossy){this.diagy=2}
+if(players[this.player].y<bossy){this.diagy=1}
+if(players[this.player].x>bossx){this.diagx=2}
+if(players[this.player].x<bossx){this.diagx=1}
+}
+this.dircheck=1;
+}
+if(!this.dircheck==0){
+if(this.count2<=20){
+if(rangdir==0){y--}
+if(rangdir==1){x--}
+if(rangdir==2){y++}
+if(rangdir==3){x++}
+if(rangdir==4){
+if(this.diagy==1){y-=.5}
+if(this.diagy==2){y+=.5}
+if(this.diagx==1){x-=.5}
+if(this.diagx==2){x+=.5}
+}
+}
+if(this.count2>20){
+if(bossx>x){x+=.7}
+if(bossy>y){y+=.7}
+if(bossx<x){x-=.7}
+if(bossy<y){y-=.7}
+}
+}
+}
+if(this.count=4){
+this.dircheck=0;
+this.diagx=0;
+this.diagy=0;
+this.count=0;
+this.rangdir=5;
+}
+if(playertouchsme){hurt boomerangpower}
+if(x-bossx<1&&y-bossy<1&&bossy-y<1&&bossx-x<1&&this.count2>25){
+isthrown=0;
+destroy;
+}
+if (x-playerx<1 && playerx-x<1 && y-playery<1 && playery-y<1){hurt boomerangpower}

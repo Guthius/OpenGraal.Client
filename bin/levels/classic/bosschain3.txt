@@ -1,0 +1,14 @@
+if (playerenters && imyourdaddy){canbecarried}
+if (playertouchsme && !imyourdaddy){destroy;}
+if (wasthrown && !imyourdaddy){setgif bluelampani.gif;
+message I am the Lamp Of Salvation! Bow before me!;
+timeout=.5;}
+if (wasthrown && imyourdaddy){setgif bluelampani.gif;
+message I am the Lamp Of Salvation! Bow before me!;
+timeout=.5;}
+
+
+if (timeout && !imyourdaddy){
+hurt 40;destroy;}
+if (timeout && imyourdaddy){
+destroy;}

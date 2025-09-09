@@ -1,0 +1,36 @@
+GR-V1.03O ˆ˜€Pò€x‚ ‡¨2j@O d‚b
+RA)ˆu ˆ'(P²@°h@<±€Pâ€x‚• ä‹Æâ@hâ	
+T,,ˆ5 ˆ'HP	2A °hl Ô2 ž @È‰À¢±€PÂ€x‚• $‹Æâ@â	
+T,,ˆ5 ˆ'HP	2A"°hl Ô0 ž @È‰À¢±€PÂ€x‚• $‹Æâ@â	
+T,,ˆ5 ˆ'HP	2A"°hl Ô0 ž @È‰À¢±€PÂ€x‚• $‹Æâ@â	
+T,,ˆ5 ˆ'HP	2A"°hl Ô0 ž @È‰À¢±€PÂ€x‚• $‹Æâ@â	
+T,,ˆ5 ˆ'HP	2A"°hl Ô0 ž @È‰À¢±€PÂ€x‚• $‹Æâ@â	
+T,,ˆ5 ˆ'HP	2A"°hl Ô0 ž @È‰À¢±€PÂ€x‚• $‹Æâ@â	
+T,,ˆ5 ˆ'HP	2A"°hl Ô0 ž @È‰À¢±€PÂ€x‚• $‹Æâ@â	
+T,,ˆ5 ˆ'HP	2A"°hl Ô0 ž @È‰À¢±€PÂ€x‚• $‹Æâ@â	
+T,,ˆ5 ˆ'HP	2A"°hl Ô0 ž @È‰À¢±€PÂ€x‚• $‹Æâ@â	
+T,,ˆ5 ˆ'HP	2A"°hl Ô0 ž @È‰À¢±€PÂ€x‚• $‹Æâ@â	
+T,,ˆ5 ˆ'HP	2A"°hl Ô0 ž @È‰À¢±€PÂ€x‚• $‹Æâ@â	
+T,,ˆ5 ˆ'HP	2A"°hl Ô0 ž @È‰À¢±€PÂ€x‚• $‹Æâ@(â	
+T,,ˆ5 ˆ'HP	2A °hl Ô6 ž @ÈyÀ¢±€Pâ€x‚• ä‹Æâ@¨â	
+T,,ˆ5 ˆ'HP	2A°hl Ô> ž @ÈiÀ¢±€Px‚• ¤‹Æâ@â	
+T":@¨@<A‚<CÄ@èu ˆ'"
+:A(¨M@<#
+	\\
+\\
+7\\
+&7\\
+/	\\
+\\
+&\\
+)\\
+ \\
+%\\
+\\
+ \\
+'\\
+ÿÿÿ
+;"bigoct.gif#if (playerenters) { say 0;timeout = 1; }§if (timeout) {§    shootball;§     x=random(16,43);§    timeout = 2.5;§}§if (playertouchsme) {hurt 1}§if (compusdied) {playerx=33;playery=33;setlevel lizardden11.graal }§
+#
+#
+  ,NPAAA:A:yP>E<HF>yMH€RHNKy@K:O>^

@@ -1,0 +1,60 @@
+// Antago Gravity Boots
+// Created By the help of Vangel(JF)
+// ============================
+// Made for Antago and all his fanatics!
+// ============================
+//
+//  dedicated to Jesus, for taking my
+//  place on that cross.  He died for
+//  you too, becase He loves you.
+//
+// ============================
+//
+if (playertouchsme) {
+  toweapons Gravity Boots;
+  set gotgravityboots;
+  hide;
+}
+if (weaponfired) {
+  this.m=-.25;
+  this.oldx = playerx;
+  this.oldy = playery;
+  set invincibletime;
+  timeout=.05;
+  if (this.inuse=0) {
+
+    setgif gravityboots2.gif;
+this.inuse=1;
+    //hideplayer .05;
+    playerhearts=3;
+    timeout=.05;
+set gbootsrinuse;
+  } else {
+    setgif gravityboots.gif;
+    this.inuse=0;
+    unset invincibletime;
+unset gbootsrinuse;
+  }
+}
+if (timeout && this.inuse=1) {
+  this.mx=0; this.my=0;
+  if (playerx<this.oldx) this.mx=this.m;
+  if (playery<this.oldy) this.my=this.m;
+  if (playerx>this.oldx) this.mx=-1*this.m;
+  if (playery>this.oldy) this.my=-1*this.m;
+  this.dir=10*this.my+this.mx;
+
+  //HORIZONTAL  movement (X)
+  playerx-=this.mx;
+
+  //VERTICAL movement (Y)
+  playery-=this.my;
+
+  this.oldx = playerx;
+  this.oldy = playery;
+
+  //hideplayer .05;
+  timeout=.05;
+}
+if (timeout && invincibletime) { timeout=.05;
+playerhearts=1;}

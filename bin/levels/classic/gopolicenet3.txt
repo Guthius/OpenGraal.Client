@@ -1,0 +1,31 @@
+//
+// Name:   GO Police Net 3
+// Author: Vangel (JF)
+// Date:   11/05/99
+//
+
+timereverywhere;
+
+if (playerenters) {
+  timeout=30;
+  timershow;
+}
+
+if ((washit) || ((playerchats) && (playersays(destroy nets)))) {
+  if ((playeringuild GP) || (playeringuild Game Master) || (playeringuild Admin) || (playeringuild GP Chief)
+  || ((playeringuild Baddies) && (strequals(#n,Gandarian (Baddies))))
+  || ((playeringuild JF) && (strequals(#n,Vangel (JF))))
+  || ((playeringuild JF) && (strequals(#n,Klutz (JF))))
+  || ((playeringuild JF) && (strequals(#n,Bruges (JF))))
+  ) {
+    // game masters and GP can slash the net to get out or
+    // to release somebody else out of the net.
+    destroy;
+  }
+}
+
+if (playertouchsme) {
+  blockagain;
+  drawoverplayer;
+}
+

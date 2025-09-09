@@ -1,0 +1,19 @@
+// NPC made by Tyson
+if(playerenters){timereverywhere; timeout=.05; drawoverplayer;dontblock}
+if(timeout){timeout=.05; this.1+=1;
+  if(this.1<200){
+    if(x<playerx){x+=.25}
+    if(x>playerx){x-=.25}
+    if(y<playery){y+=.25}
+    if(y>playery){y-=.25}
+  }
+  if(this.1=20){this.2=random(0,1);
+    if(this.2<.5){setgif shadoworb.gif}
+    else{setgif lightorb.gif}
+  }
+  if(this.1>20 && this.2<.5){shootball}
+  if(this.1=30){setgif crystalorb.gif; this.1=0;
+    if(this.2>=.5){shootfireblastup;shootfireblastleft;
+    shootfireblastright;shootfireblastdown}
+  }
+}

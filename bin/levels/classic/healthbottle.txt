@@ -1,0 +1,2 @@
+if (playertouchsme) {toweapons Health Bottle; hide}
+if (weaponfired) {hurt -8; destroy}

@@ -1,0 +1,20 @@
+if (created){
+dontblock;
+this.id=lastid;
+set HasAnAirship;
+}
+
+if(playerid==this.id){
+x=playerx+0.5;
+y=playery-0.5;
+if (playerdir==0) setgif airshipn.gif;
+if (playerdir==1) setgif airshipw.gif;
+if (playerdir==2) setgif airships.gif;
+if (playerdir==3) setgif airshipe.gif;
+hideplayer 5;
+if(playersprite=19&&(DestSardon||DestMandi||DestChapel||DestZorbi||DestZorda||DestZol||DestAvalon)){
+set tyhmlandingready;
+destroy;
+}
+}
+timeout = 0.05;

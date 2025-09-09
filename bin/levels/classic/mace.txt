@@ -1,0 +1,95 @@
+if (playertouchsme) {
+  set gotmace;
+  toweapons Mace;
+  destroy;
+}
+if (playerenters) {
+  for (i=1; i<=4; i++) hideimg i;
+  this.step = 0;
+  timeout = 0;
+  show;
+}
+if (weaponfired && this.step<=0) {
+  this.steps = 20;
+  this.anglestep = 3.14/this.steps;
+  this.flylen = 10;
+
+  for (i=1; i<=4; i++) hideimg i;
+  timeout = 0.05;
+  this.step = 0;
+  this.angle = -3.14/4;
+  this.oldx = playerx;
+  this.oldy = playery;
+}
+if (timeout) {
+  timeout = 0.05;
+  this.step++;
+  if (this.step<4) {
+  } else if (this.step==4) {
+    freezeplayer this.steps*0.05;
+    hidesword this.steps*0.05;
+    playersprite = 0;
+    this.mx = 0;
+    this.my = 0;
+    if (playerx>this.oldx) this.mx++;
+    if (playerx<this.oldx) this.mx--;
+    if (playery>this.oldy) this.my++;
+    if (playery<this.oldy) this.my--;
+    if (this.mx!=0 && this.my!=0) {
+      this.mx*=0.714;
+      this.my*=0.714;
+    }
+    if (this.mx==0 && this.my==0) {
+      if (playerdir==0) this.my--;
+      if (playerdir==1) this.mx--;
+      if (playerdir==2) this.my++;
+      if (playerdir==3) this.mx++;
+    }
+  } else {
+    this.angle += this.anglestep;
+    if (this.angle>3.14/2 && this.angle<3.14 )
+      this.angle+=3.14;
+    if (this.angle<3.14/4) {
+      playersprite = 6;
+    }  else playersprite = 11;
+
+    if (this.angle>=3.14*7/4) {
+      for (i=1; i<=4; i++) hideimg i;
+      timeout = 0;
+      this.step = 0;
+    } else {
+      dist = cos(3.14/4) - cos(this.angle);
+      for (i=1; i<=4; i++) {
+        this.flyx = playerx+0.5+this.flylen*this.mx*dist*i/4;
+        this.flyy = playery+1+this.flylen*this.my*dist*i/4;
+        if (playerdir==0) this.flyx-=0.5;
+        if (playerdir==1) this.flyx+=0.5;
+        if (playerdir==2) this.flyx++;
+        if (i==4) showimg i,wmace.gif,this.flyx,this.flyy;
+        else showimg i,wmace0.gif,this.flyx+0.5,
+          this.flyy+0.5;
+      }
+      if (this.angle>3.14/4 && this.angle<3.14 &&
+          onwall(this.flyx+0.5,this.flyy+0.5)) {
+        putleaps 4,this.flyx,this.flyy;
+        this.angle = 3.14-this.angle;
+      }
+    }
+    this.testhurt = 1;
+  }
+}
+if (this.testhurt == 1) {
+  for (i=0; i<compuscount; i++) {
+    if (abs(this.flyx-compus[i].x)<=1 &&
+        abs(this.flyy-(compus[i].y-0.5))<=1.5 &&
+        compus[i].mode!=3 && 
+compus[i].mode!=5)
+      hitcompu i,1,this.flyx+0.5,this.flyy+0.5;
+  }
+  for (i=1; i<playerscount; i++) {
+    if (abs((this.flyx+0.7)-(players[i].x+1.5))<=1 &&
+        abs((this.flyy+0.5)-(players[i].y+1.5))<=1.5)
+      hitplayer i,1,this.flyx+0.5,this.flyy+0.5;
+  }
+  this.testhurt = 0;
+}

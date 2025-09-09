@@ -1,0 +1,59 @@
+//Dash Attack v2.0 by Gandarian of Graalonline
+if(playertouchsme){
+  set hasdash;
+  toweapons Dash;
+}
+if(weaponfired){
+  if(this.dashon==1) this.dashon=0;
+  else{
+    this.dashon=1;
+    timeout=.05;
+    }
+}
+if(timeout&&this.dashon==1&&!playeronhorse){
+  if(playersprite==9){
+   this.anima+=1;
+   this.animb=0;this.animc=0;
+   this.animd=0;this.anime=0;
+   }
+  if(playersprite==10){
+   this.anima=0;
+   this.animb+=1;this.animc=0;
+   this.animd=0;this.anime=0;
+   }
+  if(playersprite==11){
+   this.anima=0;
+   this.animb=0;this.animc+=1;
+   this.animd=0;this.anime=0;
+   }
+  if(playersprite==12){
+   this.anima=0;
+   this.animb=0;this.animc=0;
+   this.animd+=1;this.anime=0;
+   }
+  if(playersprite==13){
+   this.anima=0;
+   this.animb=0;this.animc=0;
+   this.animd=0;this.anime+=1;
+   }
+  if(this.anima+this.animb+this.animc+this.animd+this.anime<3){
+  if(playersprite>=9&&playersprite<=13){
+    if(playerdir==0&&!onwall(playerx, playery-1)&&!onwall(playerx+1.5, playery-
+1))playery-=1;
+    if(playerdir==1&&!onwall(playerx-1, playery)&&!onwall(playerx-1, 
+playery+2))playerx-=1;
+    if(playerdir==2&&!onwall(playerx, playery+3)&&!onwall(playerx+1.5, 
+playery+3))playery+=1;
+    if(playerdir==3&&!onwall(playerx+2.5, 
+playery)&&!onwall(playerx+2.5,playery+2))playerx+=1;
+    }
+  if(playersprite>10&&playersprite<=12)this.tag=1;
+  if(playersprite==13)this.tag=0;
+  if(playersprite>=9&&playersprite<=10&&this.tag==1){
+    this.tag=0;
+    freezeplayer .1;
+   }
+   }
+  timeout=.05;
+}
+

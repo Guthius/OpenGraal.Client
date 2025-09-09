@@ -1,0 +1,33 @@
+if (playertouchsme) {
+  toweapons Zol's Warp Ring;
+  set gotzolwarpring;
+  hide;
+}
+
+if (weaponfired) {
+  freezeplayer 2.4;
+  timeout=.1;
+  this.rotation=0;
+  r=int(random(0,50)); 
+  d=int(random(0,25));  
+  b=int(random(0,25));  
+  if (r<=playerrupees) playerrupees-=r; else playerrupees=0;
+  if (d<=playerdarts) playerdarts-=d; else playerdarts=0;
+  if (b<=playerbombs) playerbombs-=b; else playerbombs=0;
+}
+if (timeout) {
+  this.rotation++;
+  playerdir=(this.rotation%4);
+  if (this.rotation<=24) {
+    timeout=.1;
+  }
+  if (this.rotation=12) {
+    putleaps 5, playerx, playery;
+    playerx=34;
+    playery=36;
+    setlevel moffice2.graal;
+  }
+  if (this.rotation==13) putleaps 5, playerx, playery;
+}
+
+

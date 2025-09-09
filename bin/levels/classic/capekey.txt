@@ -1,0 +1,6 @@
+if (playertouchsme) {freezeplayer 1.5;
+setplayerdir down;
+playersprite=24;
+putnpc capekey.gif,chestitem.txt,playerx+1,playery-1.5;
+toinventory capekey;
+hide}

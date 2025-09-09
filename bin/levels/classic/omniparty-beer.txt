@@ -1,0 +1,9 @@
+// NPC made by Deviltrunks
+if (created) {canbecarried;}
+if (playertouchsme) {
+ freezeplayer 0.5;
+ playerhearts+=2;
+ destroy;
+}
+if (wasthrown) {timeout = 6;}
+if (timeout) {destroy;}
