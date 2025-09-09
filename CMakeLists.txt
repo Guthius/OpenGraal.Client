@@ -2,8 +2,13 @@ cmake_minimum_required(VERSION 3.26)
 project(OpenGraal)
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(raylib CONFIG REQUIRED)
+
+if (MINGW)
+    add_link_options(-static-libstdc++ -static-libgcc)
+endif()
 
 add_executable(OpenGraal
         src/main.cpp
