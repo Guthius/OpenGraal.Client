@@ -38,6 +38,15 @@ Suggested install methods for raylib:
     - `vcpkg install raylib:x64-windows`
     - Configure CMake with `-DCMAKE_TOOLCHAIN_FILE=<vcpkg_root>/scripts/buildsystems/vcpkg.cmake`
 
+## Screenshots
+
+<div align="center">
+
+[![c dark](.github/screenshot1-thumb.png)](.github/screenshot1.png)
+[![c dark](.github/screenshot2-thumb.png)](.github/screenshot2.png)
+
+</div>
+
 ## Disclaimer
 
 OpenGraal is a educational project designed to explore game programming patterns and legacy content pipelines. It is not associated with the original Graal Online. Please ensure you own the rights to any assets you use.
