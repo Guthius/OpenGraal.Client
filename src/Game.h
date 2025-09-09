@@ -1,17 +1,16 @@
 #pragma once
 
-#include "Level.h"
-#include "Tileset.h"
 #include "Actor.h"
+#include "Level.h"
 #include "Player.h"
 #include "Sign.h"
+#include "Tileset.h"
 
 class Game
 {
-private:
 	struct LevelInfo
 	{
-		LevelInfo(Level *level, Tileset *tileset, int x, int y)
+		LevelInfo(Level *level, Tileset *tileset, const int x, const int y)
 		{
 			Level = level;
 			Tileset = tileset;
@@ -27,33 +26,28 @@ private:
 public:
 	Game();
 
-public:
-	void Run();
+	void Run() const;
 
-	void ChangeLevel(const std::string &levelName);
-	Level *GetCurrentLevel() const { return _level->Level; }
-	bool OnWall(Rectangle rect) const;
-	TileType GetTileType(int x, int y) const;
-	void ShowSign(const std::string &str);
+	void ChangeLevel(const std::string &level_name) const;
+	auto GetCurrentLevel() const -> Level * { return level_->Level; }
+	auto OnWall(Rectangle rect) const -> bool;
+	auto GetTileType(int x, int y) const -> int;
+	void ShowSign(const std::string &str) const;
 
 private:
-	void Update();
+	void Update() const;
 
 	void Draw() const;
-
 	void DrawPlayer() const;
-
 	void DrawUI() const;
-	void DrawUI_Resource(Rectangle rect, Vector2 pos, const std::string& text) const;
+	void DrawUI_Resource(Rectangle rect, Vector2 pos, const std::string &text) const;
 
-private:
 	static void DrawDiagnostics();
 
-private:
-	Sign *_sign;
-	LevelInfo *_level;
-	Player *_player;
-	Texture2D _state{};
-	Font _font20{};
-	Font _font14{};
+	Sign *sign_;
+	LevelInfo *level_;
+	Player *player_;
+	Texture2D state_{};
+	Font font20_{};
+	Font font14_{};
 };

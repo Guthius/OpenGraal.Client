@@ -1,7 +1,7 @@
-#include "Game.h"
 #include "AnimationManager.h"
+#include "Game.h"
 
-constexpr const char *Title = "OpenGraal";
+constexpr auto Title = "OpenGraal";
 
 int main()
 {

@@ -8,7 +8,7 @@ typedef enum
 	DIR_RIGHT
 } Direction;
 
-static constexpr int GetOppositeDirection(int dir)
+static constexpr int GetOppositeDirection(const int dir)
 {
 	switch (dir)
 	{

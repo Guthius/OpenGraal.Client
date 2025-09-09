@@ -1,17 +1,16 @@
 #include "SoundManager.h"
-#include "FileManager.h"
 
 #include <boost/algorithm/string.hpp>
 
+#include "FileManager.h"
+
 SoundManager::SoundMap SoundManager::Sounds{};
 
-Sound SoundManager::Get(const std::string &fileName)
+auto SoundManager::Get(const std::string &fileName) -> Sound
 {
-	auto key = boost::to_lower_copy(fileName);
+	const auto key = boost::to_lower_copy(fileName);
 
-	auto it = Sounds.find(key);
-
-	if (it != Sounds.end())
+	if (const auto it = Sounds.find(key); it != Sounds.end())
 	{
 		return it->second;
 	}
@@ -19,9 +18,9 @@ Sound SoundManager::Get(const std::string &fileName)
 	return Load(key);
 }
 
-Sound SoundManager::Load(const std::string &key)
+auto SoundManager::Load(const std::string &key) -> Sound
 {
-	auto path = FileManager::GetPath(key);
+	const auto path = FileManager::GetPath(key);
 
 	if (path.empty())
 	{
@@ -30,7 +29,7 @@ Sound SoundManager::Load(const std::string &key)
 		return {};
 	}
 
-	auto sound = LoadSound(path.string().c_str());
+	const auto sound = LoadSound(path.string().c_str());
 
 	Sounds[key] = sound;
 

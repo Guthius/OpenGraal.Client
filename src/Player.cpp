@@ -1,7 +1,10 @@
 #include "Player.h"
+
+#include <raymath.h>
+
 #include "Game.h"
 #include "SoundManager.h"
-#include <raymath.h>
+#include "TextureManager.h"
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "UnreachableCode"
@@ -17,55 +20,55 @@ static constexpr float VY[4] = {-1, 0, 1, 0};
 
 static constexpr float JumpSpeed = 0.05f;
 static constexpr Vector2 JumpFrames[][8] =
-		{
-				{
-						{0,   -24},
-						{0,   -44},
-						{0,   -61},
-						{0,   -72},
-						{0,   -80},
-						{0,   -83},
-						{0,   -83},
-						{0,    -80}
-				},
-				{
-						{-16, -3},
-						{-32, -8},
-						{-48, 0},
-						{-61, 8},
-						{-72, 18},
-						{-83, 27},
-						{-93, 35},
-						{-104, 48}
-				},
-				{
-						{0,   -3},
-						{0,   3},
-						{0,   8},
-						{0,   24},
-						{0,   45},
-						{0,   64},
-						{0,   86},
-						{0,    112}
-				},
-				{
-						{16,  -3},
-						{32,  -8},
-						{48,  0},
-						{61,  8},
-						{72,  18},
-						{83,  27},
-						{93,  35},
-						{104,  48}
-				}
-		};
+{
+	{
+		{0, -24},
+		{0, -44},
+		{0, -61},
+		{0, -72},
+		{0, -80},
+		{0, -83},
+		{0, -83},
+		{0, -80}
+	},
+	{
+		{-16, -3},
+		{-32, -8},
+		{-48, 0},
+		{-61, 8},
+		{-72, 18},
+		{-83, 27},
+		{-93, 35},
+		{-104, 48}
+	},
+	{
+		{0, -3},
+		{0, 3},
+		{0, 8},
+		{0, 24},
+		{0, 45},
+		{0, 64},
+		{0, 86},
+		{0, 112}
+	},
+	{
+		{16, -3},
+		{32, -8},
+		{48, 0},
+		{61, 8},
+		{72, 18},
+		{83, 27},
+		{93, 35},
+		{104, 48}
+	}
+};
 
-static constexpr int GetDirectionKey(int direction)
+static constexpr auto GetDirectionKey(const int direction) -> int
 {
 	return MovementKeys[direction];
 }
 
-static constexpr int GetOppositeDirectionKey(int direction)
+static constexpr auto GetOppositeDirectionKey(const int direction) -> int
 {
 	switch (direction)
 	{
@@ -84,44 +87,44 @@ static constexpr int GetOppositeDirectionKey(int direction)
 
 Player::Player(Game *game)
 {
-	_game = game;
-	_sprites = TextureManager::Get("sprites.png");
-	_jumpSound = SoundManager::Get("jump.wav");
+	game_ = game;
+	sprites_ = TextureManager::Get("sprites.png");
+	jump_sound_ = SoundManager::Get("jump.wav");
 }
 
-static constexpr float GetSpeed(float dt, float speed)
+static constexpr auto GetSpeed(const float dt, const float speed) -> float
 {
 	return dt * speed * 70;
 }
 
-void Player::Update(float dt)
+void Player::Update(const float dt)
 {
 	auto position = GetPosition();
-	auto mode = _mode;
 
-	auto speed = GetSpeed(dt, _speed);
-	auto slideSpeed = GetSpeed(dt, _slideSpeed);
+	const auto mode = mode_;
+	const auto speed = GetSpeed(dt, speed_);
 
-	if (CheckJump(dt, position) ||
-		CheckMovement(position, speed, slideSpeed))
+	if (const auto slide_speed = GetSpeed(dt, slide_speed_);
+		CheckJump(dt, position) ||
+		CheckMovement(position, speed, slide_speed))
 	{
 		SetPosition(position);
 	}
 
 	CheckAttack(position);
 
-	if (_mode == Mode::Walk)
+	if (mode_ == Mode::Walk)
 	{
 		if (CheckForSignAt(position))
 		{
-			_mode = Mode::Idle;
+			mode_ = Mode::Idle;
 		}
 	}
 
 	CheckForLevelLinkAt(position);
 	CheckPushAndPull();
 
-	if (_mode != mode)
+	if (mode_ != mode)
 	{
 		UpdateAnimation();
 	}
@@ -131,43 +134,13 @@ void Player::Update(float dt)
 	UpdateOverlay(dt);
 }
 
-static float terrainSprite[][2] =
-		{
-				{0,  274},
-				{32, 274},
-				{0,  306},
-				{32, 306},
-		};
-
-void Player::UpdateOverlay(float dt)
+static float terrain_sprite[][2] =
 {
-	if (_overlay == OverlayType::None)
-	{
-		return;
-	}
-
-	if (_overlay == OverlayType::Grass ||
-		_overlay == OverlayType::GrassLava)
-	{
-		if (_mode != Mode::Walk)
-		{
-			return;
-		}
-	}
-
-	_overlayTimer -= dt;
-
-	if (_overlayTimer <= 0)
-	{
-		_overlayTimer = 0.1f;
-		_overlayFrame++;
-
-		if (_overlayFrame > 1)
-		{
-			_overlayFrame = 0;
-		}
-	}
-}
+	{0, 274},
+	{32, 274},
+	{0, 306},
+	{32, 306},
+};
 
 void Player::Draw() const
 {
@@ -176,41 +149,9 @@ void Player::Draw() const
 	DrawOverlay();
 }
 
-void Player::DrawOverlay() const
-{
-	if (_overlay == OverlayType::None)
-	{
-		return;
-	}
-
-	auto i = (int) _overlay;
-	auto sx = terrainSprite[i][0];
-	auto sy = terrainSprite[i][1];
-
-	sy += static_cast<float>(_overlayFrame) * 16;
-
-	auto pos = GetPosition();
-	auto x = pos.x - 1;
-	auto y = pos.y + 16 + 1;
-
-	DrawTextureRec(_sprites, {sx, sy, 32, 16}, {x, y}, WHITE);
-}
-
-void Player::SetOverlay(OverlayType overlay)
-{
-	if (_overlay == overlay)
-	{
-		return;
-	}
-
-	_overlay = overlay;
-	_overlayFrame = 0;
-	_overlayTimer = 0.1f;
-}
-
 void Player::ReturnIdle()
 {
-	if (_mode == Mode::Attack)
+	if (mode_ == Mode::Attack)
 	{
 		if (!GetAnimationState().Ended)
 		{
@@ -218,82 +159,80 @@ void Player::ReturnIdle()
 		}
 	}
 
-	if (_mode == Mode::Swim)
+	if (mode_ == Mode::Swim)
 	{
 		return;
 	}
 
-	if ((_mode == Mode::Pull || _mode == Mode::Grab) && IsKeyDown(KEY_A))
+	if ((mode_ == Mode::Pull || mode_ == Mode::Grab) && IsKeyDown(KEY_A))
 	{
 		return;
 	}
 
-	_mode = Mode::Idle;
+	mode_ = Mode::Idle;
 }
 
-bool Player::CheckForLevelLinkAt(Vector2 &position)
+auto Player::CheckForLevelLinkAt(const Vector2 &position) -> bool
 {
-	auto dir = (int) GetDirection();
-	auto x = static_cast<int>(position.x + 16 + (VX[dir] * 24));
-	auto y = static_cast<int>(position.y + 16 + (VY[dir] * 24));
+	const auto dir = GetDirection();
+	const auto x = static_cast<int>(position.x + 16 + VX[dir] * 24);
+	const auto y = static_cast<int>(position.y + 16 + VY[dir] * 24);
 
-	auto level = _game->GetCurrentLevel();
+	const auto level = game_->GetCurrentLevel();
 	if (level == nullptr)
 	{
 		return false;
 	}
 
-	auto link = level->GetLinkAt(x, y);
+	const auto link = level->GetLinkAt(x, y);
 	if (link == nullptr)
 	{
 		return false;
 	}
 
-	float dx, dy;
+	const auto dx = link->GetNewX() == "playerx" ? position.x : std::stof(link->GetNewX()) * 16 + 8;
+	const auto dy = link->GetNewY() == "playery" ? position.y : std::stof(link->GetNewY()) * 16 + 16;
 
-	dx = link->GetNewX() == "playerx" ? position.x : std::stof(link->GetNewX()) * 16 + 8;
-	dy = link->GetNewY() == "playery" ? position.y : std::stof(link->GetNewY()) * 16 + 16;
-
-	auto pos = Vector2{dx, dy};
+	const auto pos = Vector2{dx, dy};
 
 	SetPosition(pos);
 
-	_game->ChangeLevel(link->GetNewLevel());
+	game_->ChangeLevel(link->GetNewLevel());
 
 	return true;
 }
 
-bool Player::CheckForSignAt(Vector2 &position)
+auto Player::CheckForSignAt(const Vector2 &position) const -> bool
 {
-	if (_wall != (BLOCK_TILE1 | BLOCK_TILE2))
+	if (wall_ != (BLOCK_TILE1 | BLOCK_TILE2))
 	{
 		return false;
 	}
 
-	auto dir = (int) GetDirection();
-	auto x = static_cast<int>(position.x + 16 + (VX[dir] * 24));
-	auto y = static_cast<int>(position.y + 16 + (VY[dir] * 24));
+	const auto dir = GetDirection();
+	const auto x = static_cast<int>(position.x + 16 + VX[dir] * 24);
+	const auto y = static_cast<int>(position.y + 16 + VY[dir] * 24);
 
-	auto level = _game->GetCurrentLevel();
+	const auto level = game_->GetCurrentLevel();
 	if (level == nullptr)
 	{
 		return false;
 	}
 
-	auto sign = level->GetSignAt(x, y);
+	const auto sign = level->GetSignAt(x, y);
 	if (sign == nullptr)
 	{
 		return false;
 	}
 
-	_game->ShowSign(sign->GetText());
+	game_->ShowSign(sign->GetText());
 
 	return true;
 }
 
 void Player::CheckAttack(Vector2 &position)
 {
-	if (_mode != Mode::Walk && _mode != Mode::Idle)
+	if (mode_ != Mode::Walk && mode_ != Mode::Idle)
 	{
 		return;
 	}
@@ -303,19 +242,19 @@ void Player::CheckAttack(Vector2 &position)
 		return;
 	}
 
-	_mode = Mode::Attack;
+	mode_ = Mode::Attack;
 }
 
-bool Player::CheckMovement(Vector2 &position, float speed, float slideSpeed)
+auto Player::CheckMovement(Vector2 &position, const float speed, const float slide_speed) -> bool
 {
 	ReturnIdle();
 
-	if (_mode == Mode::Attack)
+	if (mode_ == Mode::Attack)
 	{
 		return false;
 	}
 
-	if (_mode == Mode::Grab || _mode == Mode::Pull)
+	if (mode_ == Mode::Grab || mode_ == Mode::Pull)
 	{
 		return false;
 	}
@@ -331,14 +270,14 @@ bool Player::CheckMovement(Vector2 &position, float speed, float slideSpeed)
 
 		if (dir != GetDirection())
 		{
-			_pushTimer = 0;
+			push_timer_ = 0;
 		}
 
 		SetDirection(dir);
 
-		_wall = CheckWall(dir, speed);
+		wall_ = CheckWall(dir, speed);
 
-		if (_wall == 0)
+		if (wall_ == 0)
 		{
 			position.x += VX[dir] * speed;
 			position.y += VY[dir] * speed;
@@ -348,118 +287,115 @@ bool Player::CheckMovement(Vector2 &position, float speed, float slideSpeed)
 		{
 			ClearGap(position, dir, speed);
 
-			if (_wall != (BLOCK_TILE1 | BLOCK_TILE2))
+			if (wall_ != (BLOCK_TILE1 | BLOCK_TILE2))
 			{
-				Slide(position, dir, slideSpeed);
+				Slide(position, dir, slide_speed);
 			}
 		}
 
-		_mode = Mode::Walk;
+		mode_ = Mode::Walk;
 	}
 
-	auto cx = static_cast<int>(position.x + 16);
-	auto cy = static_cast<int>(position.y + 16);
+	const auto cx = static_cast<int>(position.x + 16);
+	const auto cy = static_cast<int>(position.y + 16);
 
-	auto floor = _game->GetTileType(cx, cy);
-
-	if (floor & TileType::Chair)
+	if (const auto tile_type = game_->GetTileType(cx, cy); tile_type & TileType::Chair)
 	{
 		SetOverlay(OverlayType::None);
 
-		_mode = Mode::Sit;
+		mode_ = Mode::Sit;
 	}
-	else if (floor & TileType::Swamp)
+	else if (tile_type & TileType::Swamp)
 	{
 		SetOverlay(OverlayType::Grass);
 	}
-	else if (floor & TileType::WaterShallow)
+	else if (tile_type & TileType::WaterShallow)
 	{
 		SetOverlay(OverlayType::Water);
 	}
-	else if (floor & TileType::Water)
+	else if (tile_type & TileType::Water)
 	{
 		SetOverlay(OverlayType::None);
 
-		_mode = Mode::Swim;
+		mode_ = Mode::Swim;
 	}
 	else
 	{
 		SetOverlay(OverlayType::None);
 	}
-
 
 	return moved;
 }
 
 void Player::CheckPushAndPull()
 {
-	if (_mode == Mode::Attack)
+	if (mode_ == Mode::Attack)
 	{
 		return;
 	}
 
-	if (_mode == Mode::Jump)
+	if (mode_ == Mode::Jump)
 	{
 		return;
 	}
 
-	if (_mode == Mode::Swim || _wall != (BLOCK_TILE1 | BLOCK_TILE2))
+	if (mode_ == Mode::Swim || wall_ != (BLOCK_TILE1 | BLOCK_TILE2))
 	{
 		return;
 	}
 
-	auto dir = GetDirection();
+	const auto dir = GetDirection();
 
 	if (IsKeyDown(KEY_A))
 	{
 		if (IsKeyDown(GetOppositeDirectionKey(dir)))
 		{
-			_mode = Mode::Pull;
+			mode_ = Mode::Pull;
 		}
 		else
 		{
-			_mode = Mode::Grab;
+			mode_ = Mode::Grab;
 		}
 	}
 
 	if (IsKeyDown(GetDirectionKey(dir)))
 	{
-		if (_mode != Mode::Push)
+		if (mode_ != Mode::Push)
 		{
-			_pushTimer += GetFrameTime();
+			push_timer_ += GetFrameTime();
 
-			if (_pushTimer >= .75f)
+			if (push_timer_ >= .75f)
 			{
-				_mode = Mode::Push;
+				mode_ = Mode::Push;
 			}
 		}
 	}
 	else
 	{
-		_pushTimer = 0;
+		push_timer_ = 0;
 	}
 }
 
-int Player::CheckWall(int dir, float speed)
+auto Player::CheckWall(const int dir, const float speed) const -> int
 {
-	auto pos = GetPosition();
+	const auto pos = GetPosition();
 
-	auto ax = pos.x + VX[dir] * (dir < 2 ? speed : 32);
-	auto ay = pos.y + VY[dir] * (dir < 2 ? speed : 32);
-	auto bx = pos.x + 16 + VX[dir] * (dir < 2 ? speed + 16 : 16);
-	auto by = pos.y + 16 + VY[dir] * (dir < 2 ? speed + 16 : 16);
+	const auto ax = pos.x + VX[dir] * (dir < 2 ? speed : 32);
+	const auto ay = pos.y + VY[dir] * (dir < 2 ? speed : 32);
+	const auto bx = pos.x + 16 + VX[dir] * (dir < 2 ? speed + 16 : 16);
+	const auto by = pos.y + 16 + VY[dir] * (dir < 2 ? speed + 16 : 16);
 
-	auto w = ((dir == 1 || dir == 3) ? speed : 16);
-	auto h = ((dir == 0 || dir == 2) ? speed : 16);
+	const auto w = dir == 1 || dir == 3 ? speed : 16;
+	const auto h = dir == 0 || dir == 2 ? speed : 16;
 
 	char result = 0;
 
-	if (_game->OnWall((Rectangle) {ax, ay, w - 1, h - 1}))
+	if (game_->OnWall((Rectangle){ax, ay, w - 1, h - 1}))
 	{
 		result |= BLOCK_TILE1;
 	}
 
-	if (_game->OnWall((Rectangle) {bx, by, w - 1, h - 1}))
+	if (game_->OnWall((Rectangle){bx, by, w - 1, h - 1}))
 	{
 		result |= BLOCK_TILE2;
 	}
@@ -467,15 +403,13 @@ int Player::CheckWall(int dir, float speed)
 	return result;
 }
 
-void Player::ClearGap(Vector2 &position, int dir, float speed)
+void Player::ClearGap(Vector2 &position, const int dir, const float speed) const
 {
 	float dist = 0;
 
-	for (; dist < speed;)
+	while (dist < speed)
 	{
-		auto wall = CheckWall(dir, dist);
-
-		if (wall != 0)
+		if (const auto wall = CheckWall(dir, dist); wall != 0)
 		{
 			break;
 		}
@@ -505,25 +439,25 @@ void Player::ClearGap(Vector2 &position, int dir, float speed)
 	}
 }
 
-void Player::Slide(Vector2 &position, int dir, float speed)
+void Player::Slide(Vector2 &position, const int dir, const float speed)
 {
-	int slideDir;
+	int slide_dir;
 
-	if (_wall == BLOCK_TILE1)
+	if (wall_ == BLOCK_TILE1)
 	{
 		switch (dir)
 		{
 			case DIR_UP:
-				slideDir = DIR_RIGHT;
+				slide_dir = DIR_RIGHT;
 				break;
 			case DIR_LEFT:
-				slideDir = DIR_DOWN;
+				slide_dir = DIR_DOWN;
 				break;
 			case DIR_DOWN:
-				slideDir = DIR_RIGHT;
+				slide_dir = DIR_RIGHT;
 				break;
 			case DIR_RIGHT:
-				slideDir = DIR_DOWN;
+				slide_dir = DIR_DOWN;
 				break;
 			default:
 				return;
@@ -534,25 +468,23 @@ void Player::Slide(Vector2 &position, int dir, float speed)
 		switch (dir)
 		{
 			case DIR_UP:
-				slideDir = DIR_LEFT;
+				slide_dir = DIR_LEFT;
 				break;
 			case DIR_LEFT:
-				slideDir = DIR_UP;
+				slide_dir = DIR_UP;
 				break;
 			case DIR_DOWN:
-				slideDir = DIR_LEFT;
+				slide_dir = DIR_LEFT;
 				break;
 			case DIR_RIGHT:
-				slideDir = DIR_UP;
+				slide_dir = DIR_UP;
 				break;
 			default:
 				return;
 		}
 	}
 
-	auto blocked = CheckWall(slideDir, speed);
-
-	if (blocked != 0)
+	if (const auto blocked = CheckWall(slide_dir, speed); blocked != 0)
 	{
 		return;
 	}
@@ -561,12 +493,12 @@ void Player::Slide(Vector2 &position, int dir, float speed)
 	{
 		case DIR_UP:
 		case DIR_DOWN:
-			position.x += VX[slideDir] * speed;
+			position.x += VX[slide_dir] * speed;
 			break;
 
 		case DIR_LEFT:
 		case DIR_RIGHT:
-			position.y += VY[slideDir] * speed;
+			position.y += VY[slide_dir] * speed;
 			break;
 	}
 
@@ -575,7 +507,7 @@ void Player::Slide(Vector2 &position, int dir, float speed)
 
 void Player::UpdateAnimation()
 {
-	switch (_mode)
+	switch (mode_)
 	{
 		case Mode::Idle:
 			SetAnimation("idle");
@@ -614,19 +546,19 @@ void Player::UpdateAnimation()
 	}
 }
 
-int Player::GetTileFacing()
+auto Player::GetTileFacing() const -> int
 {
-	auto position = GetPosition();
-	auto dir = (int) GetDirection();
-	auto x = static_cast<int>(position.x + 16 + (VX[dir] * 24));
-	auto y = static_cast<int>(position.y + 16 + (VY[dir] * 24));
+	const auto position = GetPosition();
+	const auto dir = GetDirection();
+	const auto x = static_cast<int>(position.x + 16 + VX[dir] * 24);
+	const auto y = static_cast<int>(position.y + 16 + VY[dir] * 24);
 
-	return _game->GetTileType(x, y);
+	return game_->GetTileType(x, y);
 }
 
-bool Player::CheckJump(float dt, Vector2 &position)
+bool Player::CheckJump(const float dt, Vector2 &position)
 {
-	if (_mode == Mode::Jump)
+	if (mode_ == Mode::Jump)
 	{
 		return JumpUpdate(dt, position);
 	}
@@ -641,25 +573,23 @@ bool Player::CheckJump(float dt, Vector2 &position)
 	return true;
 }
 
-bool Player::CanJump(Vector2 &position)
+auto Player::CanJump(const Vector2 &position) const -> bool
 {
-	if (_mode != Mode::Push)
+	if (mode_ != Mode::Push)
 	{
 		return false;
 	}
 
-	auto tile = GetTileFacing();
-
-	if (!(tile & TileType::Jump))
+	if (const auto tile = GetTileFacing(); !(tile & TileType::Jump))
 	{
 		return false;
 	}
 
-	auto dir = GetDirection();
-	auto x = position.x + JumpFrames[dir][7].x;
-	auto y = position.y + JumpFrames[dir][7].y;
+	const auto dir = GetDirection();
+	const auto x = position.x + JumpFrames[dir][7].x;
+	const auto y = position.y + JumpFrames[dir][7].y;
 
-	if (_game->OnWall({x, y, 31, 31}))
+	if (game_->OnWall({x, y, 31, 31}))
 	{
 		return false;
 	}
@@ -669,49 +599,111 @@ bool Player::CanJump(Vector2 &position)
 
 void Player::Jump()
 {
-	auto dir = GetDirection();
+	const auto dir = GetDirection();
 
 	SetAnimation("walk");
 
-	PlaySound(_jumpSound);
+	PlaySound(jump_sound_);
 
-	_mode = Mode::Jump;
-	_jumpStep = 0;
-	_jumpTimer = 0;
+	mode_ = Mode::Jump;
+	jump_step_ = 0;
+	jump_timer_ = 0;
 	_jumpOrigin = GetPosition();
-	_jumpFrom = _jumpOrigin;
-	_jumpTo.x = _jumpFrom.x + JumpFrames[dir][_jumpStep].x;
-	_jumpTo.y = _jumpFrom.y + JumpFrames[dir][_jumpStep].y;
+	jump_from_ = _jumpOrigin;
+	jump_to_.x = jump_from_.x + JumpFrames[dir][jump_step_].x;
+	jump_to_.y = jump_from_.y + JumpFrames[dir][jump_step_].y;
 }
 
-bool Player::JumpUpdate(float dt, Vector2 &position)
+auto Player::JumpUpdate(const float dt, Vector2 &position) -> bool
 {
-	_jumpTimer += dt;
+	jump_timer_ += dt;
 
-	if (_jumpTimer >= JumpSpeed)
+	if (jump_timer_ >= JumpSpeed)
 	{
-		position = _jumpTo;
+		position = jump_to_;
 
-		_jumpTimer = 0;
-		_jumpStep++;
+		jump_timer_ = 0;
+		jump_step_++;
 
-		if (_jumpStep >= 8)
+		if (jump_step_ >= 8)
 		{
-			_mode = Mode::Idle;
+			mode_ = Mode::Idle;
 
 			return false;
 		}
 
-		auto dir = GetDirection();
+		const auto dir = GetDirection();
 
-		_jumpFrom = GetPosition();
-		_jumpTo.x = _jumpOrigin.x + JumpFrames[dir][_jumpStep].x;
-		_jumpTo.y = _jumpOrigin.y + JumpFrames[dir][_jumpStep].y;
+		jump_from_ = GetPosition();
+		jump_to_.x = _jumpOrigin.x + JumpFrames[dir][jump_step_].x;
+		jump_to_.y = _jumpOrigin.y + JumpFrames[dir][jump_step_].y;
 	}
 
-	position = Vector2Lerp(_jumpFrom, _jumpTo, _jumpTimer / JumpSpeed);
+	position = Vector2Lerp(jump_from_, jump_to_, jump_timer_ / JumpSpeed);
 
 	return true;
+}
+
+void Player::UpdateOverlay(const float dt)
+{
+	if (overlay_ == OverlayType::None)
+	{
+		return;
+	}
+
+	if (overlay_ == OverlayType::Grass ||
+	    overlay_ == OverlayType::GrassLava)
+	{
+		if (mode_ != Mode::Walk)
+		{
+			return;
+		}
+	}
+
+	overlay_timer_ -= dt;
+
+	if (overlay_timer_ <= 0)
+	{
+		overlay_timer_ = 0.1f;
+		overlay_frame_++;
+
+		if (overlay_frame_ > 1)
+		{
+			overlay_frame_ = 0;
+		}
+	}
+}
+
+void Player::DrawOverlay() const
+{
+	if (overlay_ == OverlayType::None)
+	{
+		return;
+	}
+
+	const auto i = static_cast<int>(overlay_);
+	const auto sx = terrain_sprite[i][0];
+	auto sy = terrain_sprite[i][1];
+
+	sy += static_cast<float>(overlay_frame_) * 16;
+
+	const auto pos = GetPosition();
+	const auto x = pos.x - 1;
+	const auto y = pos.y + 16 + 1;
+
+	DrawTextureRec(sprites_, {sx, sy, 32, 16}, {x, y}, WHITE);
+}
+
+void Player::SetOverlay(const OverlayType overlay)
+{
+	if (overlay_ == overlay)
+	{
+		return;
+	}
+
+	overlay_ = overlay;
+	overlay_frame_ = 0;
+	overlay_timer_ = 0.1f;
 }
 
 #pragma clang diagnostic pop

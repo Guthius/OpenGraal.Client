@@ -1,27 +1,28 @@
 #include "LevelSign.h"
+
 #include <sstream>
 
 static constexpr int SignWidth = 32;
 static constexpr int SignHeight = 16;
 
-const char * Text=
+auto Text =
 		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 		"0123456789!?-.,#>()#####\"####':/~&### <####;\n";
 
 LevelSign::LevelSign(float x, float y, const std::string &text)
-		: _rect{x, y, SignWidth, SignHeight}, _text(text)
+	: rect_{x, y, SignWidth, SignHeight}, text_(text)
 {
 }
 
-std::string LevelSign::Decode(const std::string &str)
+auto LevelSign::Decode(const std::string &str) -> std::string
 {
-	auto max = TextLength(Text);
+	const auto max = TextLength(Text);
 
 	std::stringstream ss;
 
-	for (const auto &c : str)
+	for (const auto &c: str)
 	{
-		auto index = ((unsigned char)c - 32);
+		const auto index = static_cast<unsigned char>(c) - 32;
 		if (index < 0 || index >= max)
 		{
 			continue;

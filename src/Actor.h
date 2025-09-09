@@ -15,25 +15,24 @@ public:
 		SetAnimation("idle");
 	}
 
-public:
-	virtual void Update(float dt);
+	virtual ~Actor() = default;
 
+	virtual void Update(float dt);
 	virtual void Draw() const;
 
-public:
-	[[nodiscard]] Vector2 GetPosition() const { return _position; }
-	[[nodiscard]] int GetDirection() const { return _dir; }
-	[[nodiscard]] const std::string &GetAnimation() const { return _animationName; }
-	[[nodiscard]] const AnimationState &GetAnimationState() const { return _animationState; }
+	[[nodiscard]] auto GetPosition() const -> Vector2 { return position_; }
+	[[nodiscard]] auto GetDirection() const -> int { return dir_; }
+	[[nodiscard]] auto GetAnimation() const -> const std::string & { return animation_name_; }
+	[[nodiscard]] auto GetAnimationState() const -> const AnimationState & { return animation_state_; }
 
-	void SetPosition(Vector2 &position) { _position = position; }
-	void SetDirection(int dir) { _dir = dir; }
+	void SetPosition(const Vector2 &position) { position_ = position; }
+	void SetDirection(const int dir) { dir_ = dir; }
 	void SetAnimation(const std::string &name);
 
 private:
-	Vector2 _position{0, 0};
-	int _dir = DIR_UP;
-	AnimationState _animationState{};
-	std::string _animationName{};
-	Animation *_animation = nullptr;
+	Vector2 position_{0, 0};
+	int dir_ = DIR_UP;
+	AnimationState animation_state_{};
+	std::string animation_name_{};
+	Animation *animation_ = nullptr;
 };

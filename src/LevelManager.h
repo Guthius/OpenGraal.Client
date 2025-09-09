@@ -1,18 +1,17 @@
 #pragma once
 
-#include "Level.h"
-
 #include <map>
 #include <string>
+
+#include "Level.h"
 
 class LevelManager
 {
 public:
-	static Level *Get(const std::string &name);
+	static auto Get(const std::string &name) -> Level *;
 
 private:
-	static Level *Load(const std::string &name, const std::string &key);
+	static auto Load(const std::string &name, const std::string &key) -> Level *;
 
-private:
 	static std::map<std::string, Level *> Levels;
 };

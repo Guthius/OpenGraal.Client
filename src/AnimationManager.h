@@ -1,20 +1,19 @@
 #pragma once
 
-#include "Animation.h"
+#include <filesystem>
 #include <map>
 #include <string>
-#include <filesystem>
-#include <boost/algorithm/string.hpp>
+
+#include "Animation.h"
 
 class AnimationManager
 {
 public:
-	static Animation *Get(const std::string &name);
+	static auto Get(const std::string &name) -> Animation *;
 	static void LoadFrom(const std::filesystem::path &path);
 
 private:
 	static void Load(const std::filesystem::path &path);
 
-private:
 	static std::map<std::string, Animation *> Animations;
 };

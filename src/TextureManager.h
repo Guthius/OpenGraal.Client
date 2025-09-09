@@ -1,20 +1,18 @@
 #pragma once
 
-#include <string>
-#include <vector>
 #include <map>
 #include <raylib.h>
+#include <string>
 
-class TextureManager {
-private:
-	typedef std::map<std::string, Texture2D> TextureMap;
+class TextureManager
+{
+	using TextureMap = std::map<std::string, Texture2D>;
 
 public:
-	static Texture2D Get(const std::string &fileName);
+	static auto Get(const std::string &fileName) -> Texture2D;
 
 private:
-	static Texture2D Load(const std::string &key);
+	static auto Load(const std::string &key) -> Texture2D;
 
-private:
 	static TextureMap _textures;
 };

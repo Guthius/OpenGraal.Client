@@ -1,17 +1,43 @@
 #include "Animation.h"
-#include "TextureManager.h"
-#include "Utils.h"
-#include "SoundManager.h"
 
 #include <fstream>
 #include <rlgl.h>
 #include <boost/algorithm/string.hpp>
 
-Animation::Animation()
-		: _defaultAttr1("hat0.png"),
-		  _defaultHead("head19.png"),
-		  _defaultBody("body.png")
+#include "Constants.h"
+#include "SoundManager.h"
+#include "TextureManager.h"
+#include "Utils.h"
+
+void AnimationState::Reset(size_t frame, const Animation *animation)
 {
+	if (animation == nullptr)
+	{
+		return;
+	}
+
+	if (const auto max_frame = animation->GetFrameCount() - 1; frame > max_frame)
+	{
+		frame = max_frame;
+	}
+
+	Frame = frame;
+	NextFrame = animation->GetFrameDuration(frame);
+	Ended = false;
+
+	animation->PlaySound(frame);
+}
+
+Animation::SpriteSource Animation::ParseSpriteSource(const std::string &str)
+{
+	if (str == "SPRITES") return SpriteSource::Sprites;
+	if (str == "SHIELD") return SpriteSource::Shield;
+	if (str == "SWORD") return SpriteSource::Sword;
+	if (str == "HEAD") return SpriteSource::Head;
+	if (str == "BODY") return SpriteSource::Body;
+	if (str == "ATTR1") return SpriteSource::Attr1;
+
+	return SpriteSource::File;
 }
 
 void Animation::ParseSprite(const std::vector<std::string> &tokens)
@@ -35,19 +61,7 @@ void Animation::ParseSprite(const std::vector<std::string> &tokens)
 		sprite.Texture = tokens[2];
 	}
 
-	_sprites[sprite.Id] = sprite;
-}
-
-Animation::SpriteSource Animation::ParseSpriteSource(const std::string &str)
-{
-	if (str == "SPRITES") return Animation::SpriteSource::Sprites;
-	if (str == "SHIELD") return Animation::SpriteSource::Shield;
-	if (str == "SWORD") return Animation::SpriteSource::Sword;
-	if (str == "HEAD") return Animation::SpriteSource::Head;
-	if (str == "BODY") return Animation::SpriteSource::Body;
-	if (str == "ATTR1") return Animation::SpriteSource::Attr1;
-
-	return Animation::SpriteSource::File;
+	sprites_[sprite.Id] = sprite;
 }
 
 void Animation::ParseAni(std::ifstream &stream)
@@ -66,7 +80,7 @@ void Animation::ParseAni(std::ifstream &stream)
 
 		frame.Duration = 0.06f;
 
-		if (_singleDirection)
+		if (single_direction_)
 		{
 			ParseSprites(line, frame.Sprites[0]);
 		}
@@ -90,7 +104,7 @@ void Animation::ParseAni(std::ifstream &stream)
 
 			if (line == "ANIEND")
 			{
-				_frames.push_back(frame);
+				frames_.push_back(frame);
 				return;
 			}
 
@@ -113,20 +127,20 @@ void Animation::ParseAni(std::ifstream &stream)
 			{
 				frame.PlaySound = tokens[1];
 				frame.PlaySoundAt =
-						{
-								std::stof(tokens[2]),
-								std::stof(tokens[3])
-						};
+				{
+					std::stof(tokens[2]),
+					std::stof(tokens[3])
+				};
 			}
 		}
 
-		_frames.push_back(frame);
+		frames_.push_back(frame);
 	}
 }
 
 void Animation::ParseSprites(std::string &line, std::vector<SpriteRef> &frame)
 {
-	std::vector<std::string> spriteInfos;
+	std::vector<std::string> sprite_infos;
 	std::vector<std::string> tokens;
 
 	boost::trim(line);
@@ -136,27 +150,27 @@ void Animation::ParseSprites(std::string &line, std::vector<SpriteRef> &frame)
 		return;
 	}
 
-	boost::split(spriteInfos, line, boost::is_any_of(","));
+	boost::split(sprite_infos, line, boost::is_any_of(","));
 
-	for (auto &spriteInfo: spriteInfos)
+	for (auto &sprite_info: sprite_infos)
 	{
-		boost::trim(spriteInfo);
+		boost::trim(sprite_info);
 
-		if (spriteInfo.empty())
+		if (sprite_info.empty())
 		{
 			continue;
 		}
 
-		boost::split(tokens, spriteInfo, boost::is_any_of(" "), boost::token_compress_on);
+		boost::split(tokens, sprite_info, boost::is_any_of(" "), boost::token_compress_on);
 		if (tokens.size() != 3)
 		{
 			continue;
 		}
 
 		auto id = std::stoi(tokens[0]);
-		auto sprite = _sprites.find(id);
+		auto sprite = sprites_.find(id);
 
-		if (sprite == _sprites.end())
+		if (sprite == sprites_.end())
 		{
 			continue;
 		}
@@ -207,27 +221,27 @@ void Animation::Load(const std::filesystem::path &path)
 		}
 		else if (tokens[0] == "SINGLEDIRECTION")
 		{
-			_singleDirection = true;
+			single_direction_ = true;
 		}
 		else if (tokens[0] == "CONTINUOUS")
 		{
-			_continuous = true;
+			continuous_ = true;
 		}
 		else if (tokens[0] == "SETBACKTO")
 		{
-			_setBackTo = line.substr(10);
+			set_back_to_ = line.substr(10);
 		}
 		else if (tokens[0] == "DEFAULTATTR1")
 		{
-			_defaultAttr1 = line.substr(13);
+			default_attr1_ = line.substr(13);
 		}
 		else if (tokens[0] == "DEFAULTHEAD")
 		{
-			_defaultHead = line.substr(12);
+			default_head_ = line.substr(12);
 		}
 		else if (tokens[0] == "DEFAULTBODY")
 		{
-			_defaultBody = line.substr(12);
+			default_body_ = line.substr(12);
 		}
 		else if (tokens[0] == "ANI")
 		{
@@ -236,53 +250,12 @@ void Animation::Load(const std::filesystem::path &path)
 	}
 }
 
-void AnimationState::Reset(size_t frame, Animation *animation)
+void Animation::Update(const float dt, AnimationState &state) const
 {
-	if (animation == nullptr)
-	{
-		return;
-	}
-
-	auto maxFrame = animation->GetFrameCount() - 1;
-
-	if (frame > maxFrame)
-	{
-		frame = maxFrame;
-	}
-
-	Frame = frame;
-	NextFrame = animation->GetFrameDuration(frame);
-	Ended = false;
-
-	animation->PlaySound(frame);
-}
-
-void Animation::PlaySound(size_t frame) const
-{
-	auto &sound = _frames[frame].PlaySound;
-
-	if (!sound.empty())
-	{
-		PlaySound(sound, {0, 0});
-	}
-}
-
-void Animation::PlaySound(const std::string &fileName, const Vector2 &position)
-{
-	auto sound = SoundManager::Get(fileName);
-
-	if (IsSoundValid(sound))
-	{
-		::PlaySound(sound);
-	}
-}
-
-void Animation::Update(float dt, AnimationState &state)
-{
-	if (state.Frame < 0 || state.Frame >= _frames.size())
+	if (state.Frame < 0 || state.Frame >= frames_.size())
 	{
 		state.Frame = 0;
-		state.NextFrame = _frames[0].Duration;
+		state.NextFrame = frames_[0].Duration;
 	}
 
 	state.NextFrame -= dt;
@@ -292,12 +265,12 @@ void Animation::Update(float dt, AnimationState &state)
 		return;
 	}
 
-	if (state.Frame < _frames.size() - 1)
+	if (state.Frame < frames_.size() - 1)
 	{
 		state.Frame++;
-		state.NextFrame = _frames[state.Frame].Duration;
+		state.NextFrame = frames_[state.Frame].Duration;
 
-		auto &sound = _frames[state.Frame].PlaySound;
+		auto &sound = frames_[state.Frame].PlaySound;
 		if (!sound.empty())
 		{
 			PlaySound(sound, {0, 0});
@@ -306,12 +279,12 @@ void Animation::Update(float dt, AnimationState &state)
 		return;
 	}
 
-	if (_continuous)
+	if (continuous_)
 	{
 		state.Frame = 0;
-		state.NextFrame = _frames[0].Duration;
+		state.NextFrame = frames_[0].Duration;
 
-		auto &sound = _frames[state.Frame].PlaySound;
+		auto &sound = frames_[state.Frame].PlaySound;
 		if (!sound.empty())
 		{
 			PlaySound(sound, {0, 0});
@@ -325,24 +298,23 @@ void Animation::Update(float dt, AnimationState &state)
 
 void Animation::Draw(float x, float y, int direction, const AnimationState &state) const
 {
-	if (_frames.empty())
+	if (frames_.empty())
 	{
 		return;
 	}
 
-	if (_singleDirection)
+	if (single_direction_)
 	{
 		direction = DIR_UP;
 	}
 
-	auto frameIndex = state.Frame;
-
-	if (frameIndex > _frames.size() - 1)
+	auto frame_index = state.Frame;
+	if (frame_index > frames_.size() - 1)
 	{
-		frameIndex = _frames.size() - 1;
+		frame_index = frames_.size() - 1;
 	}
 
-	auto &frame = _frames[frameIndex];
+	auto &frame = frames_[frame_index];
 	auto &sprites = frame.Sprites[direction];
 
 	if (sprites.empty())
@@ -352,56 +324,72 @@ void Animation::Draw(float x, float y, int direction, const AnimationState &stat
 
 	rlPushMatrix();
 	rlTranslatef(x, y, 0);
+
 	DrawSprites(state, sprites);
 
 	rlPopMatrix();
 }
 
-void Animation::DrawSprites(const AnimationState &state, const std::vector<SpriteRef> &sprites) const
+void Animation::PlaySound(const size_t frame) const
 {
-	for (const auto &spriteRef: sprites)
+	if (auto &sound = frames_[frame].PlaySound; !sound.empty())
 	{
-		if (spriteRef.Sprite == nullptr)
+		PlaySound(sound, {0, 0});
+	}
+}
+
+void Animation::PlaySound(const std::string &filename, const Vector2 &position)
+{
+	if (const auto sound = SoundManager::Get(filename); IsSoundValid(sound))
+	{
+		::PlaySound(sound);
+	}
+}
+
+void Animation::DrawSprites(const AnimationState &state, const std::vector<SpriteRef> &sprite_refs) const
+{
+	for (const auto &sprite_ref: sprite_refs)
+	{
+		if (sprite_ref.Sprite == nullptr)
 		{
 			continue;
 		}
 
-		auto textureName = GetTextureName(state, spriteRef);
-
-		if (textureName.empty())
+		auto texture_name = GetTextureName(state, sprite_ref);
+		if (texture_name.empty())
 		{
 			continue;
 		}
 
-		auto texture = TextureManager::Get(textureName);
+		const auto texture = TextureManager::Get(texture_name);
 
 		if (!IsTextureValid(texture))
 		{
 			continue;
 		}
 
-		auto sx = static_cast<float>(spriteRef.Sprite->X);
-		auto sy = static_cast<float>(spriteRef.Sprite->Y);
-		auto sw = static_cast<float>(spriteRef.Sprite->W);
-		auto sh = static_cast<float>(spriteRef.Sprite->H);
+		const auto sx = static_cast<float>(sprite_ref.Sprite->X);
+		const auto sy = static_cast<float>(sprite_ref.Sprite->Y);
+		const auto sw = static_cast<float>(sprite_ref.Sprite->W);
+		const auto sh = static_cast<float>(sprite_ref.Sprite->H);
 
-		auto dx = static_cast<float>(spriteRef.X);
-		auto dy = static_cast<float>(spriteRef.Y);
+		const auto dx = static_cast<float>(sprite_ref.X);
+		const auto dy = static_cast<float>(sprite_ref.Y);
 
 		DrawTextureRec(
-				texture,
-				{sx, sy, sw, sh},
-				{dx, dy},
-				WHITE);
+			texture,
+			{sx, sy, sw, sh},
+			{dx, dy},
+			WHITE);
 	}
 }
 
-std::string Animation::GetTextureName(const AnimationState &state, const SpriteRef &spriteRef) const
+std::string Animation::GetTextureName(const AnimationState &state, const SpriteRef &sprite_ref) const
 {
-	switch (spriteRef.Sprite->Source)
+	switch (sprite_ref.Sprite->Source)
 	{
 		case SpriteSource::File:
-			return spriteRef.Sprite->Texture;
+			return sprite_ref.Sprite->Texture;
 
 		case SpriteSource::Sprites:
 			return "sprites.png";
@@ -413,28 +401,28 @@ std::string Animation::GetTextureName(const AnimationState &state, const SpriteR
 			return state.Sword;
 
 		case SpriteSource::Head:
-		{
-			if (state.Head.empty())
 			{
-				return _defaultHead;
-			}
+				if (state.Head.empty())
+				{
+					return default_head_;
+				}
 
-			return state.Head;
-		}
+				return state.Head;
+			}
 
 		case SpriteSource::Body:
-		{
-			if (state.Body.empty())
 			{
-				return _defaultBody;
-			}
+				if (state.Body.empty())
+				{
+					return default_body_;
+				}
 
-			return state.Body;
-		}
+				return state.Body;
+			}
 
 		case SpriteSource::Attr1:
 			return state.Attr1;
 	}
 
-	return "";
+	return {};
 }

@@ -1,18 +1,19 @@
 #include "Actor.h"
 
 #include <rlgl.h>
+#include <boost/algorithm/string.hpp>
 
-void Actor::Update(float dt)
+void Actor::Update(const float dt)
 {
-	if (_animation != nullptr)
+	if (animation_ != nullptr)
 	{
-		_animation->Update(dt, _animationState);
+		animation_->Update(dt, animation_state_);
 	}
 }
 
 void Actor::Draw() const
 {
-	if (_animation == nullptr)
+	if (animation_ == nullptr)
 	{
 		return;
 	}
@@ -20,31 +21,31 @@ void Actor::Draw() const
 	rlPushMatrix();
 	rlTranslatef(-8, -16, 0);
 
-	_animation->Draw(
-			_position.x,
-			_position.y,
-			_dir,
-			_animationState);
+	animation_->Draw(
+		position_.x,
+		position_.y,
+		dir_,
+		animation_state_);
 
 	rlPopMatrix();
 }
 
 void Actor::SetAnimation(const std::string &name)
 {
-	auto animationName = boost::to_lower_copy(name);
+	const auto animation_name = boost::to_lower_copy(name);
 
-	if (animationName == _animationName)
+	if (animation_name == animation_name_)
 	{
 		return;
 	}
 
-	_animationName = animationName;
-	_animation = AnimationManager::Get(_animationName);
+	animation_name_ = animation_name;
+	animation_ = AnimationManager::Get(animation_name_);
 
-	if (_animation == nullptr)
+	if (animation_ == nullptr)
 	{
 		return;
 	}
 
-	_animationState.Reset(0, _animation);
+	animation_state_.Reset(0, animation_);
 }

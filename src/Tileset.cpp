@@ -1,49 +1,51 @@
 #include "Tileset.h"
 
-#include <fstream>
 #include <cstdint>
+#include <fstream>
 
-static constexpr uint32_t ToLE(uint32_t i)
+#include "TextureManager.h"
+
+static constexpr auto ToLE(const uint32_t i) -> uint32_t
 {
-	return ((i >> 24) & 0xFF) | ((i >> 8) & 0xFF00);
+	return i >> 24 & 0xFF | i >> 8 & 0xFF00;
 }
 
 static void SkipArray(std::ifstream &stream)
 {
 	uint32_t size;
 
-	stream.read((char *) &size, 4);
+	stream.read(reinterpret_cast<char *>(&size), 4);
 	if (!stream)
 	{
 		return;
 	}
 
-	auto arrayLength = ToLE(size);
+	const auto array_length = ToLE(size);
 
-	stream.seekg(arrayLength * 4, std::ios_base::cur);
+	stream.seekg(array_length * 4, std::ios_base::cur);
 }
 
-static void LoadArray(std::ifstream &stream, int *tiles, int tileCount, TileType type)
+static void LoadArray(std::ifstream &stream, int *tiles, const int tile_count, const int type)
 {
 	uint32_t size;
 
-	stream.read((char *) &size, 4);
+	stream.read(reinterpret_cast<char *>(&size), 4);
 	if (!stream)
 	{
 		return;
 	}
 
-	auto arrayLength = ToLE(size);
-	auto arrayData = new uint32_t[arrayLength];
+	const auto array_length = ToLE(size);
+	const auto array_data = new uint32_t[array_length];
 
-	stream.read((char *) arrayData, arrayLength * 4);
+	stream.read(reinterpret_cast<char *>(array_data), array_length * 4);
 
-	for (auto i = 0; i < arrayLength; ++i)
+	for (auto i = 0; i < array_length; ++i)
 	{
-		auto tileData = arrayData[i];
-		auto tile = ToLE(tileData);
+		const auto tile_data = array_data[i];
+		const auto tile = ToLE(tile_data);
 
-		if (tile >= tileCount)
+		if (tile >= tile_count)
 		{
 			continue;
 		}
@@ -58,53 +60,53 @@ static void LoadArray(std::ifstream &stream, int *tiles, int tileCount, TileType
 		}
 	}
 
-	delete[] arrayData;
+	delete[] array_data;
 }
 
-int *LoadArrays(int tileCount)
+auto LoadArrays(const int tile_count) -> int *
 {
 	std::ifstream stream("arrays.dat", std::ios::binary);
 
-	auto tiles = new int[tileCount];
-	for (auto i = 0; i < tileCount; ++i)
+	const auto tiles = new int[tile_count];
+	for (auto i = 0; i < tile_count; ++i)
 	{
 		tiles[i] = TileType::Wall;
 	}
 
-	LoadArray(stream, tiles, tileCount, TileType::Passable);
-	LoadArray(stream, tiles, tileCount, TileType::Water);
+	LoadArray(stream, tiles, tile_count, TileType::Passable);
+	LoadArray(stream, tiles, tile_count, TileType::Water);
 	SkipArray(stream);
 	SkipArray(stream);
-	LoadArray(stream, tiles, tileCount, TileType::Chair);
-	LoadArray(stream, tiles, tileCount, TileType::BedTop);
-	LoadArray(stream, tiles, tileCount, TileType::BedBottom);
-	LoadArray(stream, tiles, tileCount, TileType::WaterShallow);
-	LoadArray(stream, tiles, tileCount, TileType::Jump);
-	LoadArray(stream, tiles, tileCount, TileType::Swamp);
+	LoadArray(stream, tiles, tile_count, TileType::Chair);
+	LoadArray(stream, tiles, tile_count, TileType::BedTop);
+	LoadArray(stream, tiles, tile_count, TileType::BedBottom);
+	LoadArray(stream, tiles, tile_count, TileType::WaterShallow);
+	LoadArray(stream, tiles, tile_count, TileType::Jump);
+	LoadArray(stream, tiles, tile_count, TileType::Swamp);
 
 	stream.close();
 
 	return tiles;
 }
 
-Tileset::Tileset(const char *fileName) : _texture(TextureManager::Get(fileName))
+Tileset::Tileset(const char *filename) : texture_(TextureManager::Get(filename))
 {
-	_tileWidth = 16.0f / (float) _texture.width;
-	_tileHeight = 16.0f / (float) _texture.height;
+	tile_width_ = 16.0f / static_cast<float>(texture_.width);
+	tile_height_ = 16.0f / static_cast<float>(texture_.height);
 
-	auto tilesX = _texture.width / 16;
-	auto tilesY = _texture.height / 16;
+	const auto tiles_x = texture_.width / 16;
+	const auto tiles_y = texture_.height / 16;
 
-	_tileCount = tilesX * tilesY;
-	_tiles = (TileType *) LoadArrays(_tileCount);
+	tile_count_ = tiles_x * tiles_y;
+	tiles_ = LoadArrays(tile_count_);
 }
 
-TileType Tileset::GetType(int tileId) const
+auto Tileset::GetType(const int tile_id) const -> int
 {
-	if (_tiles == nullptr || tileId < 0 || tileId >= _tileCount)
+	if (tiles_ == nullptr || tile_id < 0 || tile_id >= tile_count_)
 	{
 		return TileType::Passable;
 	}
 
-	return _tiles[tileId];
+	return tiles_[tile_id];
 }

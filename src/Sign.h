@@ -6,7 +6,6 @@
 
 class Sign
 {
-private:
 	struct Letter
 	{
 		char ch;
@@ -19,7 +18,6 @@ private:
 public:
 	Sign();
 
-public:
 	void Show(const std::string &str);
 	void Draw(float width, float height) const;
 	void Update();
@@ -30,12 +28,11 @@ private:
 	void DrawLetter(char c, Vector2 &pos) const;
 
 public:
-	[[nodiscard]] bool IsOpen() const { return _open; }
+	[[nodiscard]] auto IsOpen() const -> bool { return _open; }
 
 private:
-	static bool IsNextKeyPressed();
+	static auto IsNextKeyPressed() -> bool;
 
-private:
 	Texture2D _texture{};
 	bool _open = false;
 	std::vector<std::string> _pages;

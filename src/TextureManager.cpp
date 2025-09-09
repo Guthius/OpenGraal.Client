@@ -1,15 +1,15 @@
 #include "TextureManager.h"
-#include "FileManager.h"
 
 #include <boost/algorithm/string.hpp>
 
+#include "FileManager.h"
+
 TextureManager::TextureMap TextureManager::_textures;
 
-Texture2D TextureManager::Get(const std::string &fileName)
+auto TextureManager::Get(const std::string &fileName) -> Texture2D
 {
-	auto key = boost::to_lower_copy(fileName);
-
-	auto it = _textures.find(key);
+	const auto key = boost::to_lower_copy(fileName);
+	const auto it = _textures.find(key);
 
 	if (it == _textures.end())
 	{
@@ -19,9 +19,9 @@ Texture2D TextureManager::Get(const std::string &fileName)
 	return it->second;
 }
 
-Texture2D TextureManager::Load(const std::string &key)
+auto TextureManager::Load(const std::string &key) -> Texture2D
 {
-	auto path = FileManager::GetPath(key);
+	const auto path = FileManager::GetPath(key);
 
 	if (path.empty())
 	{
@@ -30,7 +30,7 @@ Texture2D TextureManager::Load(const std::string &key)
 		return {};
 	}
 
-	auto texture = LoadTexture(path.string().c_str());
+	const auto texture = LoadTexture(path.string().c_str());
 
 	_textures[key] = texture;
 

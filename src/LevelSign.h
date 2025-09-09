@@ -1,21 +1,19 @@
 #pragma once
 
-#include <string>
 #include <raylib.h>
+#include <string>
 
 class LevelSign
 {
 public:
 	LevelSign(float x, float y, const std::string &text);
 
-public:
-	[[nodiscard]] const Rectangle &GetRectangle() const { return _rect; }
-	[[nodiscard]] const std::string &GetText() const { return _text; }
+	[[nodiscard]] auto GetRectangle() const -> const Rectangle & { return rect_; }
+	[[nodiscard]] auto GetText() const -> const std::string & { return text_; }
 
-public:
-	static std::string Decode(const std::string &str);
+	static auto Decode(const std::string &str) -> std::string;
 
 private:
-	Rectangle _rect;
-	std::string _text{};
+	Rectangle rect_;
+	std::string text_{};
 };

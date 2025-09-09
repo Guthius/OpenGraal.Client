@@ -6,15 +6,14 @@
 
 class FileManager
 {
-private:
-	typedef std::string FileKey;
-	typedef std::filesystem::path FilePath;
-	typedef std::map<FileKey, FilePath> FileMap;
+	using FileKey = std::string;
+	using FilePath = std::filesystem::path;
+	using FileMap = std::map<FileKey, FilePath>;
 
 public:
-	static void BuildFileTable(const std::string &dataPath);
+	static void BuildFileTable(const std::string &data_path);
 
-	static std::filesystem::path GetPath(const std::string &fileName);
+	static auto GetPath(const std::string &filename) -> std::filesystem::path;
 
 private:
 	static FileMap Files;

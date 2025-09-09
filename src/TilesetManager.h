@@ -6,11 +6,10 @@
 
 class TilesetManager
 {
-private:
-	typedef std::map<std::string, Tileset*> TilesetMap;
+	using TilesetMap = std::map<std::string, Tileset *>;
 
 public:
-	static Tileset *Get(const char *fileName);
+	static auto Get(const char *filename) -> Tileset *;
 
 private:
 	static TilesetMap Tilesets;

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Constants.h"
-
 #include <string>
 #include <vector>
 #include <map>
@@ -9,6 +7,7 @@
 #include <raylib.h>
 
 class Animation;
+
 struct AnimationState
 {
 	size_t Frame;
@@ -20,12 +19,11 @@ struct AnimationState
 	std::string Shield{"shield1.png"};
 	std::string Attr1{"hat0.png"};
 
-	void Reset(size_t frame, Animation *animation);
+	void Reset(size_t frame, const Animation *animation);
 };
 
 class Animation
 {
-private:
 	enum class SpriteSource
 	{
 		File,
@@ -60,38 +58,41 @@ private:
 	};
 
 public:
-	Animation();
+	Animation() = default;
 
 private:
+	static auto ParseSpriteSource(const std::string &str) -> SpriteSource;
+
 	void ParseSprite(const std::vector<std::string> &tokens);
-	static SpriteSource ParseSpriteSource(const std::string &str);
 	void ParseAni(std::ifstream &stream);
 	void ParseSprites(std::string &line, std::vector<SpriteRef> &frame);
 
 public:
 	void Load(const std::filesystem::path &path);
-	void Update(float dt, AnimationState &state);
+	void Update(float dt, AnimationState &state) const;
 	void Draw(float x, float y, int direction, const AnimationState &state) const;
-	[[nodiscard]] size_t GetFrameCount() const { return _frames.size(); }
-	[[nodiscard]] float GetFrameDuration(size_t frame) const { return _frames[frame].Duration; }
+
+	[[nodiscard]]
+	auto GetFrameCount() const -> size_t { return frames_.size(); }
+
+	[[nodiscard]]
+	auto GetFrameDuration(const size_t frame) const -> float { return frames_[frame].Duration; }
+
 	void PlaySound(size_t frame) const;
 
 private:
-	void DrawSprites(const AnimationState &state, const std::vector<SpriteRef> &sprites) const;
-	static void PlaySound(const std::string &fileName, const Vector2 &position);
+	static void PlaySound(const std::string &filename, const Vector2 &position);
 
+	void DrawSprites(const AnimationState &state, const std::vector<SpriteRef> &sprite_refs) const;
 
-private:
-	[[nodiscard]] std::string GetTextureName(const AnimationState &state, const SpriteRef &spriteRef) const;
+	[[nodiscard]] auto GetTextureName(const AnimationState &state, const SpriteRef &sprite_ref) const -> std::string;
 
-private:
-	std::string _setBackTo;
-	std::string _defaultAttr1;
-	std::string _defaultHead;
-	std::string _defaultBody;
-	bool _singleDirection = false;
-	bool _continuous = false;
-
-	std::map<int, Sprite> _sprites{};
-	std::vector<Frame> _frames{};
+	std::string set_back_to_;
+	std::string default_attr1_{"hat0.png"};
+	std::string default_head_{"head19.png"};
+	std::string default_body_{"body.png"};
+	bool single_direction_ = false;
+	bool continuous_ = false;
+	std::map<int, Sprite> sprites_{};
+	std::vector<Frame> frames_{};
 };

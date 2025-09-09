@@ -2,15 +2,15 @@
 
 TilesetManager::TilesetMap TilesetManager::Tilesets{};
 
-Tileset *TilesetManager::Get(const char *fileName)
+auto TilesetManager::Get(const char *filename) -> Tileset *
 {
-	auto it = Tilesets.find(fileName);
+	const auto it = Tilesets.find(filename);
 
 	if (it == Tilesets.end())
 	{
-		auto tileset = new Tileset(fileName);
+		const auto tileset = new Tileset(filename);
 
-		Tilesets[fileName] = tileset;
+		Tilesets[filename] = tileset;
 
 		return tileset;
 	}

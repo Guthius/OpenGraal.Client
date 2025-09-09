@@ -5,22 +5,22 @@
 
 FileManager::FileMap FileManager::Files{};
 
-void FileManager::BuildFileTable(const std::string &dataPath)
+void FileManager::BuildFileTable(const std::string &data_path)
 {
 	Files.clear();
 
-	auto path = std::filesystem::path(dataPath);
+	const auto path = std::filesystem::path(data_path);
 
 	if (!exists(path))
 	{
-		TraceLog(LOG_FATAL, "FILEMANAGER: [%s] Data path does not exist!", dataPath.c_str());
+		TraceLog(LOG_FATAL, "FILEMANAGER: [%s] Data path does not exist!", data_path.c_str());
 
 		return;
 	}
 
 	if (!is_directory(path))
 	{
-		TraceLog(LOG_FATAL, "FILEMANAGER: [%s] Data path is not a directory!", dataPath.c_str());
+		TraceLog(LOG_FATAL, "FILEMANAGER: [%s] Data path is not a directory!", data_path.c_str());
 
 		return;
 	}
@@ -40,19 +40,19 @@ void FileManager::BuildFileTable(const std::string &dataPath)
 	TraceLog(LOG_INFO, "FILEMANAGER: File table loaded successfully (%d files)", Files.size());
 }
 
-std::filesystem::path FileManager::GetPath(const std::string &fileName)
+auto FileManager::GetPath(const std::string &filename) -> std::filesystem::path
 {
-	if (fileName.empty())
+	if (filename.empty())
 	{
 		return {};
 	}
 
-	auto key = boost::to_lower_copy(fileName);
-	auto it = Files.find(key);
+	const auto key = boost::to_lower_copy(filename);
+	const auto it = Files.find(key);
 
 	if (it == Files.end())
 	{
-		TraceLog(LOG_WARNING, "FILEMANAGER: [%s] Could not locate file", fileName.c_str());
+		TraceLog(LOG_WARNING, "FILEMANAGER: [%s] Could not locate file", filename.c_str());
 
 		return {};
 	}

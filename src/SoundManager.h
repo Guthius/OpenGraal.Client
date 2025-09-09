@@ -1,20 +1,18 @@
 #pragma once
 
-#include <string>
 #include <map>
 #include <raylib.h>
+#include <string>
 
 class SoundManager
 {
-private:
-	typedef std::map<std::string, Sound> SoundMap;
+	using SoundMap = std::map<std::string, Sound>;
 
 public:
-	static Sound Get(const std::string &fileName);
+	static auto Get(const std::string &fileName) -> Sound;
 
 private:
-	static Sound Load(const std::string &key);
+	static auto Load(const std::string &key) -> Sound;
 
-private:
 	static SoundMap Sounds;
 };

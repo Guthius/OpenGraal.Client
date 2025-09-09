@@ -1,10 +1,12 @@
 #include "Game.h"
+
 #include <raylib.h>
 #include <rlgl.h>
 
 #include "Animation.h"
 #include "FileManager.h"
 #include "LevelManager.h"
+#include "TextureManager.h"
 #include "TilesetManager.h"
 
 #define SIGN_WIDTH 382
@@ -14,27 +16,25 @@ Game::Game()
 {
 	FileManager::BuildFileTable("levels");
 
-	Vector2 pos{512, 512};
+	constexpr Vector2 pos{512, 512};
 
-	_player = new Player(this);
-	_player->SetPosition(pos);
+	player_ = new Player(this);
+	player_->SetPosition(pos);
 
-	_level = new LevelInfo(
-			LevelManager::Get("onlinestartlocal.graal"),
-			TilesetManager::Get("pics1.png"),
-			0, 0);
+	level_ = new LevelInfo(
+		LevelManager::Get("onlinestartlocal.graal"),
+		TilesetManager::Get("pics1.png"),
+		0, 0);
 
-	_state = TextureManager::Get("state.png");
-	_font20 = LoadFontEx("levels/pixantiqua.ttf", 20, 0, 250);
-	_font14 = LoadFontEx("levels/pixantiqua.ttf", 16, 0, 250);
+	state_ = TextureManager::Get("state.png");
+	font20_ = LoadFontEx("levels/pixantiqua.ttf", 20, nullptr, 250);
+	font14_ = LoadFontEx("levels/pixantiqua.ttf", 16, nullptr, 250);
 
-	_sign = new Sign();
+	sign_ = new Sign();
 }
 
-void Game::Run()
+void Game::Run() const
 {
-	// SetTargetFPS(60);
-
 	Animation ani{};
 
 	while (!WindowShouldClose())
@@ -46,7 +46,7 @@ void Game::Run()
 		Draw();
 		DrawUI();
 
-		_sign->Draw(SIGN_WIDTH, SIGN_HEIGHT);
+		sign_->Draw(SIGN_WIDTH, SIGN_HEIGHT);
 
 		DrawDiagnostics();
 
@@ -56,89 +56,89 @@ void Game::Run()
 	}
 }
 
-void Game::ChangeLevel(const std::string &levelName)
+void Game::ChangeLevel(const std::string &level_name) const
 {
-	auto level = LevelManager::Get(levelName);
+	const auto level = LevelManager::Get(level_name);
 
 	if (level == nullptr)
 	{
 		return;
 	}
 
-	_level->Level = level;
+	level_->Level = level;
 }
 
-bool Game::OnWall(Rectangle rect) const
+auto Game::OnWall(const Rectangle rect) const -> bool
 {
-	if (_level->Level == nullptr)
+	if (level_->Level == nullptr)
 	{
 		return true;
 	}
 
-	return _level->Level->OnWall(_level->Tileset, rect);
+	return level_->Level->OnWall(level_->Tileset, rect);
 }
 
-TileType Game::GetTileType(int x, int y) const
+auto Game::GetTileType(const int x, const int y) const -> int
 {
-	if (_level->Level == nullptr)
+	if (level_->Level == nullptr)
 	{
 		return TileType::Passable;
 	}
 
-	return _level->Level->GetTileType(_level->Tileset, x, y);
+	return level_->Level->GetTileType(level_->Tileset, x, y);
 }
 
-void Game::ShowSign(const std::string &str)
+void Game::ShowSign(const std::string &str) const
 {
-	_sign->Show(str);
+	sign_->Show(str);
 }
 
-void Game::Update()
+void Game::Update() const
 {
-	if (_sign->IsOpen())
+	if (sign_->IsOpen())
 	{
-		_sign->Update();
+		sign_->Update();
 
 		return;
 	}
 
-	auto csx = static_cast<float>(GetScreenWidth()) / 2.0f;
-	auto csy = static_cast<float>(GetScreenHeight()) / 2.0f;
+	const auto csx = static_cast<float>(GetScreenWidth()) / 2.0f;
+	const auto csy = static_cast<float>(GetScreenHeight()) / 2.0f;
 
-	auto pos = _player->GetPosition();
-	auto cx = static_cast<int>(csx - 16 - pos.x);
-	auto cy = static_cast<int>(csy - 16 - pos.y);
+	const auto pos = player_->GetPosition();
+	const auto cx = static_cast<int>(csx - 16 - pos.x);
+	const auto cy = static_cast<int>(csy - 16 - pos.y);
 
 	rlPushMatrix();
 	rlTranslatef(
-			static_cast<float>(cx),
-			static_cast<float>(cy),
-			0);
+		static_cast<float>(cx),
+		static_cast<float>(cy),
+		0);
 
 
-	_player->Update(GetFrameTime());
+	player_->Update(GetFrameTime());
 
 	rlPopMatrix();
 }
 
 void Game::Draw() const
 {
-	auto csx = static_cast<float>(GetScreenWidth()) / 2.0f;
-	auto csy = static_cast<float>(GetScreenHeight()) / 2.0f;
+	const auto csx = static_cast<float>(GetScreenWidth()) / 2.0f;
+	const auto csy = static_cast<float>(GetScreenHeight()) / 2.0f;
 
-	auto pos = _player->GetPosition();
-	auto cx = static_cast<int>(csx - 16 - pos.x);
-	auto cy = static_cast<int>(csy - 16 - pos.y);
+	const auto pos = player_->GetPosition();
+	const auto cx = static_cast<int>(csx - 16 - pos.x);
+	const auto cy = static_cast<int>(csy - 16 - pos.y);
 
-	rlSetTexture(_level->Tileset->GetTexture().id);
+	rlSetTexture(level_->Tileset->GetTexture().id);
 
 	rlPushMatrix();
 	rlTranslatef(
-			static_cast<float>(cx),
-			static_cast<float>(cy),
-			0);
+		static_cast<float>(cx),
+		static_cast<float>(cy),
+		0);
 
-	_level->Level->Draw(_level->Tileset);
+	level_->Level->Draw(level_->Tileset);
 
 	rlSetTexture(0);
 
@@ -149,48 +149,46 @@ void Game::Draw() const
 
 void Game::DrawPlayer() const
 {
-	_player->Draw();
+	player_->Draw();
 }
 
 void Game::DrawUI() const
 {
-	DrawTextureRec(_state, {202, 0, 22, 30}, {15, 30}, WHITE);
-	DrawTextureRec(_state, {202, 0, 22, 30}, {80, 30}, WHITE);
-	DrawTextureRec(_state, {202, 0, 22, 30}, {145, 30}, WHITE);
+	DrawTextureRec(state_, {202, 0, 22, 30}, {15, 30}, WHITE);
+	DrawTextureRec(state_, {202, 0, 22, 30}, {80, 30}, WHITE);
+	DrawTextureRec(state_, {202, 0, 22, 30}, {145, 30}, WHITE);
 
-	DrawTextEx(_font20, "A", {15+4, 30+7}, _font20.baseSize, 0.0f, BLACK);
-	DrawTextEx(_font20, "S", {80+5, 30+7}, _font20.baseSize, 0.0f, BLACK);
-	DrawTextEx(_font20, "D", {145+5, 30+7}, _font20.baseSize, 0.0f, BLACK);
-	DrawTextEx(_font20, "A", {15+3, 30+6}, _font20.baseSize, 0.0f, WHITE);
-	DrawTextEx(_font20, "S", {80+4, 30+6}, _font20.baseSize, 0.0f, WHITE);
-	DrawTextEx(_font20, "D", {145+4, 30+6}, _font20.baseSize, 0.0f, WHITE);
-
+	DrawTextEx(font20_, "A", {15 + 4, 30 + 7}, font20_.baseSize, 0.0f, BLACK);
+	DrawTextEx(font20_, "S", {80 + 5, 30 + 7}, font20_.baseSize, 0.0f, BLACK);
+	DrawTextEx(font20_, "D", {145 + 5, 30 + 7}, font20_.baseSize, 0.0f, BLACK);
+	DrawTextEx(font20_, "A", {15 + 3, 30 + 6}, font20_.baseSize, 0.0f, WHITE);
+	DrawTextEx(font20_, "S", {80 + 4, 30 + 6}, font20_.baseSize, 0.0f, WHITE);
+	DrawTextEx(font20_, "D", {145 + 4, 30 + 6}, font20_.baseSize, 0.0f, WHITE);
 
 	/* Alignment */
-	DrawTextureRec(_state, {0, 97, 130, 22}, {15, 65}, WHITE);
-	DrawTextureRec(_state, {0, 119, 100, 10}, {37, 71}, WHITE);
-
+	DrawTextureRec(state_, {0, 97, 130, 22}, {15, 65}, WHITE);
+	DrawTextureRec(state_, {0, 119, 100, 10}, {37, 71}, WHITE);
 
 	DrawUI_Resource({80, 33, 16, 16}, {274, 30}, "754");
-	DrawUI_Resource({136, 33, 16, 16}, {274+56, 30}, "5");
-	DrawUI_Resource({184, 33, 16, 16}, {274+104, 30}, "0");
+	DrawUI_Resource({136, 33, 16, 16}, {274 + 56, 30}, "5");
+	DrawUI_Resource({184, 33, 16, 16}, {274 + 104, 30}, "0");
 }
 
-void Game::DrawUI_Resource(Rectangle rect, Vector2 pos, const std::string& text) const
+void Game::DrawUI_Resource(const Rectangle rect, const Vector2 pos, const std::string &text) const
 {
-	DrawTextureRec(_state, rect, pos, WHITE);
+	DrawTextureRec(state_, rect, pos, WHITE);
 
-	auto textStr = text.c_str();
-	auto textSize = MeasureTextEx(_font14, textStr, _font14.baseSize, 1);
+	const auto textStr = text.c_str();
+	const auto textSize = MeasureTextEx(font14_, textStr, font14_.baseSize, 1);
 
-	auto tx = pos.x + 8 - (textSize.x / 2);
-	auto ty = pos.y + rect.height;
+	const auto tx = pos.x + 8 - textSize.x / 2;
+	const auto ty = pos.y + rect.height;
 
-	DrawTextEx(_font14, textStr, {tx + 2, ty + 2}, _font14.baseSize, 1, BLACK);
-	DrawTextEx(_font14, textStr, {tx, ty}, _font14.baseSize, 1, WHITE);
+	DrawTextEx(font14_, textStr, {tx + 2, ty + 2}, font14_.baseSize, 1, BLACK);
+	DrawTextEx(font14_, textStr, {tx, ty}, font14_.baseSize, 1, WHITE);
 }
 
-static void DrawDiagnosticsText(const char *str, int y)
+static void DrawDiagnosticsText(const char *str, const int y)
 {
 	DrawText(str, 11, y + 1, 20, BLACK);
 	DrawText(str, 10, y, 20, WHITE);

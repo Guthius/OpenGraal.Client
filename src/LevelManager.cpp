@@ -1,14 +1,13 @@
 #include "LevelManager.h"
-#include "FileManager.h"
 
 #include <boost/algorithm/string.hpp>
 
-std::map<std::string, Level *> LevelManager::Levels{};
+#include "FileManager.h"
 
-Level *LevelManager::Get(const std::string &name)
+auto LevelManager::Get(const std::string &name) -> Level *
 {
-	auto key = boost::to_lower_copy(name);
-	auto it = Levels.find(key);
+	const auto key = boost::to_lower_copy(name);
+	const auto it = Levels.find(key);
 
 	if (it == Levels.end())
 	{
@@ -18,9 +17,9 @@ Level *LevelManager::Get(const std::string &name)
 	return it->second;
 }
 
-Level *LevelManager::Load(const std::string &name, const std::string &key)
+auto LevelManager::Load(const std::string &name, const std::string &key) -> Level *
 {
-	auto path = FileManager::GetPath(name);
+	const auto path = FileManager::GetPath(name);
 
 	if (path.empty())
 	{
@@ -31,7 +30,7 @@ Level *LevelManager::Load(const std::string &name, const std::string &key)
 		return nullptr;
 	}
 
-	auto level = Level::Load(path);
+	const auto level = Level::Load(path);
 
 	Levels[key] = level;
 
@@ -42,3 +41,5 @@ Level *LevelManager::Load(const std::string &name, const std::string &key)
 
 	return level;
 }
+
+std::map<std::string, Level *> LevelManager::Levels{};
