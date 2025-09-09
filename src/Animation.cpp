@@ -271,7 +271,7 @@ void Animation::PlaySound(const std::string &fileName, const Vector2 &position)
 {
 	auto sound = SoundManager::Get(fileName);
 
-	if (IsSoundReady(sound))
+	if (IsSoundValid(sound))
 	{
 		::PlaySound(sound);
 	}
@@ -375,7 +375,7 @@ void Animation::DrawSprites(const AnimationState &state, const std::vector<Sprit
 
 		auto texture = TextureManager::Get(textureName);
 
-		if (!IsTextureReady(texture))
+		if (!IsTextureValid(texture))
 		{
 			continue;
 		}
