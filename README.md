@@ -14,9 +14,9 @@ OpenGraal aims to load legacy assets (levels, tiles, animations, sounds) and pro
 
 - Cross-platform C++17 project using CMake + raylib
 - Basic game loop, rendering, and input handling
-- Level/tileset loading
+- Level/tileset loading (`.graal` and `.nw` level files)
 - Texture and sound resource management with simple caching
-- Animation system with support for legacy .gani files
+- Animation system with support for `.gani` files
 - Simple entity/actor system (player, NPCs, signs)
 - Example assets and a starter level for local testing
 
