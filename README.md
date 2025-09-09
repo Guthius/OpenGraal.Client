@@ -49,4 +49,4 @@ Suggested install methods for raylib:
 
 ## Disclaimer
 
-OpenGraal is a educational project designed to explore game programming patterns and legacy content pipelines. It is not associated with the original Graal Online. Please ensure you own the rights to any assets you use.
+OpenGraal is a educational project designed to explore game programming patterns. It is not associated with the original Graal Online. Please ensure you own the rights to any assets you use.
