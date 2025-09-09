@@ -1,6 +1,6 @@
 # OpenGraal
 
-![C++](https://img.shields.io/badge/C%2B%2B-17-blue?style=flat-square&logo=cplusplus)
+![C++](https://img.shields.io/badge/C%2B%2B-20-blue?style=flat-square&logo=cplusplus)
 ![Raylib](https://img.shields.io/badge/Raylib-5.5-white?style=flat-square&logo=raylib)
 ![GitHub License](https://img.shields.io/github/license/guthius/OpenGraal.Client)
 
@@ -12,7 +12,7 @@ OpenGraal aims to load legacy assets (levels, tiles, animations, sounds) and pro
 
 ## Features
 
-- Cross-platform C++17 project using CMake + raylib
+- Cross-platform C++20 project using CMake + raylib
 - Basic game loop, rendering, and input handling
 - Level/tileset loading (`.graal` and `.nw` level files)
 - Texture and sound resource management with simple caching
@@ -27,7 +27,7 @@ OpenGraal aims to load legacy assets (levels, tiles, animations, sounds) and pro
 
 ## Requirements
 
-- C++17-capable compiler (Clang, GCC, or MSVC)
+- C++20-capable compiler (Clang, GCC, or MSVC)
 - CMake 3.16+
 - raylib (installed via your preferred package manager or from source)
 
