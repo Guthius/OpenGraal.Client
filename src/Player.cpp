@@ -240,6 +240,9 @@ auto Player::CheckForLevelLinkAt(const Vector2 &position) -> bool
 
 	game_->ChangeLevel(link->GetNewLevel());
 
+	// Many levels will warp players partially on top of walls... nudge them off...
+	TryMoveFromWall(pos);
+
 	return true;
 }
 
@@ -442,6 +445,39 @@ auto Player::TryMove(Vector2 &position, const Vector2 direction, const float spe
 
 	return position.x != start_x ||
 	       position.y != start_y;
+}
+
+auto Player::TryMoveFromWall(Vector2 position) -> void
+{
+	auto collides = [&](const Vector2 &p) {
+		return game_->OnWall(Rectangle{p.x, p.y, 31.0f, 31.0f});
+	};
+
+	if (collides(position))
+	{
+		static constexpr Vector2 search_dirs[] = {{0, 0}, {1, 0}, {-1, 0}, {0, 1}, {0, -1}, {1, 1}, {-1, 1}, {1, -1}, {-1, -1}};
+
+		bool resolved = false;
+		for (int r = 1; r <= 16 && !resolved; ++r)
+		{
+			for (const auto &[x, y]: search_dirs)
+			{
+				Vector2 candidate = {
+					position.x + x * static_cast<float>(r),
+					position.y + y * static_cast<float>(r)
+				};
+
+				if (!collides(candidate))
+				{
+					position = candidate;
+					resolved = true;
+					break;
+				}
+			}
+		}
+
+		SetPosition(position);
+	}
 }
 
 void Player::CheckPushAndPull()

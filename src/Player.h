@@ -19,6 +19,7 @@ private:
 	void CheckAttack(Vector2 &position);
 	auto CheckMovement(Vector2 &position, float speed, float slide_speed) -> bool;
 	auto TryMove(Vector2& position, Vector2 direction, float speed) const -> bool;
+	auto TryMoveFromWall(Vector2 position) -> void;
 	void CheckPushAndPull();
 	auto CheckWall(Direction dir) const -> int;
 	void Slide(Vector2 &position, Direction dir, int wall, float speed);
