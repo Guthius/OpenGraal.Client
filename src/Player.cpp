@@ -12,14 +12,19 @@ static constexpr int Corner2 = 2;
 
 static auto IsGridAligned(const Vector2 &pos) -> bool
 {
-	static constexpr float grid_alignment_epsilon = 0.001f; // tolerance for float rounding issues
+	static constexpr float grid_alignment_epsilon = 0.01f; // tolerance for float rounding issues
 
-	const auto is_near = [](const float v, const float eps) {
-		return std::fabs(v - std::round(v)) <= eps;
+	const auto is_tile_aligned = [&](const float v) {
+		float m = std::fmod(v, 16.0f);
+		if (m < 0.0f)
+		{
+			m += 16.0f;
+		}
+
+		return m <= grid_alignment_epsilon || std::fabs(m - 16.0f) <= grid_alignment_epsilon;
 	};
 
-	return is_near(pos.x, grid_alignment_epsilon) &&
-	       is_near(pos.y, grid_alignment_epsilon);
+	return is_tile_aligned(pos.x) && is_tile_aligned(pos.y);
 }
 
 static constexpr auto GetDirectionVector(const Direction direction) -> Vector2
@@ -550,7 +555,7 @@ auto Player::CheckWall(const Direction dir) const -> int
 			break;
 
 		case Direction::DIR_DOWN:
-			v1 = {x + 1, y + 32};
+			v1 = {x, y + 32};
 			v2 = {x + 31, y + 32};
 			break;
 
@@ -626,10 +631,7 @@ void Player::Slide(Vector2 &position, const Direction dir, int wall, const float
 		return;
 	}
 
-	const auto [dirx, diry] = GetDirectionVector(slide_dir);
-
-	position.x += std::min(dirx * speed, 1.f);
-	position.y += std::min(diry * speed, 1.f);
+	TryMove(position, GetDirectionVector(slide_dir), speed);
 
 	SetPosition(position);
 }
