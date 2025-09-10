@@ -18,6 +18,8 @@ void Actor::Draw() const
 		return;
 	}
 
+	DrawRectangle(position_.x, position_.y, 32, 32, WHITE);
+
 	rlPushMatrix();
 	rlTranslatef(-8, -16, 0);
 

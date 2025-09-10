@@ -6,6 +6,8 @@
 #include <filesystem>
 #include <raylib.h>
 
+#include "Constants.h"
+
 class Animation;
 
 struct AnimationState
@@ -70,7 +72,7 @@ private:
 public:
 	void Load(const std::filesystem::path &path);
 	void Update(float dt, AnimationState &state) const;
-	void Draw(float x, float y, int direction, const AnimationState &state) const;
+	void Draw(float x, float y, Direction direction, const AnimationState &state) const;
 
 	[[nodiscard]]
 	auto GetFrameCount() const -> size_t { return frames_.size(); }

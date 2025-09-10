@@ -18,12 +18,13 @@ private:
 	auto CheckForSignAt(const Vector2 &position) const -> bool;
 	void CheckAttack(Vector2 &position);
 	auto CheckMovement(Vector2 &position, float speed, float slide_speed) -> bool;
+	auto TryMove(Vector2& position, Vector2 direction, float speed) const -> bool;
 	void CheckPushAndPull();
-	auto CheckWall(int dir, float speed) const -> int;
-	void ClearGap(Vector2 &position, int dir, float speed) const;
-	void Slide(Vector2 &position, int dir, float speed);
+	auto CheckWall(Direction dir) const -> int;
+	void Slide(Vector2 &position, Direction dir, int wall, float speed);
 	void UpdateAnimation();
 	auto GetTileFacing() const -> int;
+	auto IsFacingWall() const -> int;
 
 	auto CheckJump(float dt, Vector2 &position) -> bool;
 	auto CanJump(const Vector2 &position) const -> bool;
@@ -67,11 +68,10 @@ private:
 	float speed_ = 4.0f;
 	float slide_speed_ = 1.0f;
 	Texture2D sprites_{};
-	int wall_ = 0;
 	float push_timer_ = 0.0f;
 	float jump_timer_ = 0.0f;
 	int jump_step_ = 0;
-	Vector2 _jumpOrigin{};
+	Vector2 jump_origin_{};
 	Vector2 jump_from_{};
 	Vector2 jump_to_{};
 	Sound jump_sound_{};

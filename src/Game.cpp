@@ -30,6 +30,8 @@ Game::Game()
 	font20_ = LoadFontEx("levels/pixantiqua.ttf", 20, nullptr, 250);
 	font14_ = LoadFontEx("levels/pixantiqua.ttf", 16, nullptr, 250);
 
+	font_pixel_ = LoadFontEx("Fonts/Kenney Pixel.ttf", 24, nullptr, 0);
+
 	sign_ = new Sign();
 }
 
@@ -76,6 +78,16 @@ auto Game::OnWall(const Rectangle rect) const -> bool
 	}
 
 	return level_->Level->OnWall(level_->Tileset, rect);
+}
+
+auto Game::OnWall(const Vector2 pt) const -> bool
+{
+	if (level_->Level == nullptr)
+	{
+		return true;
+	}
+
+	return level_->Level->OnWall(level_->Tileset, pt);
 }
 
 auto Game::GetTileType(const int x, const int y) const -> int
@@ -188,13 +200,10 @@ void Game::DrawUI_Resource(const Rectangle rect, const Vector2 pos, const std::s
 	DrawTextEx(font14_, textStr, {tx, ty}, font14_.baseSize, 1, WHITE);
 }
 
-static void DrawDiagnosticsText(const char *str, const int y)
+void Game::DrawDiagnostics() const
 {
-	DrawText(str, 11, y + 1, 20, BLACK);
-	DrawText(str, 10, y, 20, WHITE);
-}
+	const auto str = TextFormat("FPS: %d", GetFPS());
 
-void Game::DrawDiagnostics()
-{
-	DrawDiagnosticsText(TextFormat("FPS: %d", GetFPS()), 10);
+	DrawTextEx(font_pixel_, str, {6, 6}, 24, 1, BLACK);
+	DrawTextEx(font_pixel_, str, {5, 5}, 24, 1, WHITE);
 }

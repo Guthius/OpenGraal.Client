@@ -1,25 +1,25 @@
 #pragma once
 
-typedef enum
+enum class Direction
 {
 	DIR_UP,
 	DIR_LEFT,
 	DIR_DOWN,
 	DIR_RIGHT
-} Direction;
+};
 
-static constexpr int GetOppositeDirection(const int dir)
+static constexpr Direction GetOppositeDirection(const Direction dir)
 {
 	switch (dir)
 	{
-		case DIR_UP:
-			return DIR_DOWN;
-		case DIR_LEFT:
-			return DIR_RIGHT;
-		case DIR_DOWN:
-			return DIR_UP;
-		case DIR_RIGHT:
-			return DIR_LEFT;
+		case Direction::DIR_UP:
+			return Direction::DIR_DOWN;
+		case Direction::DIR_LEFT:
+			return Direction::DIR_RIGHT;
+		case Direction::DIR_DOWN:
+			return Direction::DIR_UP;
+		case Direction::DIR_RIGHT:
+			return Direction::DIR_LEFT;
 		default:
 			return dir;
 	}

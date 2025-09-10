@@ -42,6 +42,7 @@ public:
 	[[nodiscard]] auto GetSignAt(int x, int y) const -> const LevelSign *;
 	[[nodiscard]] auto GetTileType(const Tileset *tileset, int x, int y) const -> int;
 	[[nodiscard]] auto OnWall(const Tileset *tileset, Rectangle rect) const -> bool;
+	[[nodiscard]] auto OnWall(const Tileset *tileset, Vector2 pt) const -> bool;
 
 	static auto Load(const std::filesystem::path &path) -> Level *;
 

@@ -1,25 +1,46 @@
 #include "Player.h"
 
+#include <cassert>
 #include <raymath.h>
 
 #include "Game.h"
 #include "SoundManager.h"
 #include "TextureManager.h"
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "UnreachableCode"
-#pragma ide diagnostic ignored "ConstantConditionsOC"
+static constexpr int Corner1 = 1;
+static constexpr int Corner2 = 2;
 
-#define BLOCK_TILE1 1
-#define BLOCK_TILE2 2
+static auto IsGridAligned(const Vector2 &pos) -> bool
+{
+	static constexpr float grid_alignment_epsilon = 0.001f; // tolerance for float rounding issues
 
-constexpr int MovementKeys[4] = {KEY_UP, KEY_LEFT, KEY_DOWN, KEY_RIGHT};
+	const auto is_near = [](const float v, const float eps) {
+		return std::fabs(v - std::round(v)) <= eps;
+	};
 
-static constexpr float VX[4] = {0, -1, 0, 1};
-static constexpr float VY[4] = {-1, 0, 1, 0};
+	return is_near(pos.x, grid_alignment_epsilon) &&
+	       is_near(pos.y, grid_alignment_epsilon);
+}
 
-static constexpr float JumpSpeed = 0.05f;
-static constexpr Vector2 JumpFrames[][8] =
+static constexpr auto GetDirectionVector(const Direction direction) -> Vector2
+{
+	switch (direction)
+	{
+		case Direction::DIR_UP:
+			return {0, -1};
+		case Direction::DIR_LEFT:
+			return {-1, 0};
+		case Direction::DIR_DOWN:
+			return {0, 1};
+		case Direction::DIR_RIGHT:
+			return {1, 0};
+		default:
+			return {};
+	}
+}
+
+static constexpr float jump_speed = 0.05f;
+static constexpr Vector2 jump_frames[][8] =
 {
 	{
 		{0, -24},
@@ -63,25 +84,37 @@ static constexpr Vector2 JumpFrames[][8] =
 	}
 };
 
-static constexpr auto GetDirectionKey(const int direction) -> int
-{
-	return MovementKeys[direction];
-}
-
-static constexpr auto GetOppositeDirectionKey(const int direction) -> int
+static constexpr auto GetDirectionKey(const Direction direction) -> int
 {
 	switch (direction)
 	{
+		case Direction::DIR_UP:
+			return KEY_UP;
+		case Direction::DIR_LEFT:
+			return KEY_LEFT;
+		case Direction::DIR_DOWN:
+			return KEY_DOWN;
+		case Direction::DIR_RIGHT:
+			return KEY_RIGHT;
 		default:
-			return direction;
-		case DIR_UP:
-			return MovementKeys[2];
-		case DIR_LEFT:
-			return MovementKeys[3];
-		case DIR_DOWN:
-			return MovementKeys[0];
-		case DIR_RIGHT:
-			return MovementKeys[1];
+			return KEY_NULL;
+	}
+}
+
+static constexpr auto GetOppositeDirectionKey(const Direction direction) -> int
+{
+	switch (direction)
+	{
+		case Direction::DIR_UP:
+			return KEY_DOWN;
+		case Direction::DIR_LEFT:
+			return KEY_RIGHT;
+		case Direction::DIR_DOWN:
+			return KEY_UP;
+		case Direction::DIR_RIGHT:
+			return KEY_LEFT;
+		default:
+			return KEY_NULL;
 	}
 }
 
@@ -175,8 +208,10 @@ void Player::ReturnIdle()
 auto Player::CheckForLevelLinkAt(const Vector2 &position) -> bool
 {
 	const auto dir = GetDirection();
-	const auto x = static_cast<int>(position.x + 16 + VX[dir] * 24);
-	const auto y = static_cast<int>(position.y + 16 + VY[dir] * 24);
+
+	const auto [dirx, diry] = GetDirectionVector(dir);
+	const auto x = static_cast<int>(position.x + 16 + dirx * 24);
+	const auto y = static_cast<int>(position.y + 16 + diry * 24);
 
 	const auto level = game_->GetCurrentLevel();
 	if (level == nullptr)
@@ -190,8 +225,14 @@ auto Player::CheckForLevelLinkAt(const Vector2 &position) -> bool
 		return false;
 	}
 
-	const auto dx = link->GetNewX() == "playerx" ? position.x : std::stof(link->GetNewX()) * 16 + 8;
-	const auto dy = link->GetNewY() == "playery" ? position.y : std::stof(link->GetNewY()) * 16 + 16;
+	const auto dx = link->GetNewX() == "playerx" ? position.x : std::stof(link->GetNewX()) * 16;
+	const auto dy = link->GetNewY() == "playery" ? position.y : std::stof(link->GetNewY()) * 16;
+
+	TraceLog(LOG_INFO, "Warp to %s @ %s, %s (%f, %f)",
+	         link->GetNewLevel().c_str(),
+	         link->GetNewX().c_str(),
+	         link->GetNewY().c_str(),
+	         dx, dy);
 
 	const auto pos = Vector2{dx, dy};
 
@@ -204,14 +245,16 @@ auto Player::CheckForLevelLinkAt(const Vector2 &position) -> bool
 
 auto Player::CheckForSignAt(const Vector2 &position) const -> bool
 {
-	if (wall_ != (BLOCK_TILE1 | BLOCK_TILE2))
+	if (!IsFacingWall())
 	{
 		return false;
 	}
 
 	const auto dir = GetDirection();
-	const auto x = static_cast<int>(position.x + 16 + VX[dir] * 24);
-	const auto y = static_cast<int>(position.y + 16 + VY[dir] * 24);
+
+	const auto [dirx, diry] = GetDirectionVector(dir);
+	const auto x = static_cast<int>(position.x + 16 + dirx * 24);
+	const auto y = static_cast<int>(position.y + 16 + diry * 24);
 
 	const auto level = game_->GetCurrentLevel();
 	if (level == nullptr)
@@ -247,6 +290,13 @@ void Player::CheckAttack(Vector2 &position)
 
 auto Player::CheckMovement(Vector2 &position, const float speed, const float slide_speed) -> bool
 {
+	static constexpr Direction directions[] = {
+		Direction::DIR_UP,
+		Direction::DIR_LEFT,
+		Direction::DIR_DOWN,
+		Direction::DIR_RIGHT,
+	};
+
 	ReturnIdle();
 
 	if (mode_ == Mode::Attack)
@@ -259,47 +309,59 @@ auto Player::CheckMovement(Vector2 &position, const float speed, const float sli
 		return false;
 	}
 
-	auto moved = false;
+	bool moved = false;
 
-	for (int dir = 0; dir < 4; ++dir)
+	Vector2 move_vector = {0, 0};
+
+	for (const auto dir: directions)
 	{
-		if (!IsKeyDown(MovementKeys[dir]))
+		if (IsKeyDown(GetDirectionKey(dir)))
 		{
-			continue;
-		}
+			move_vector += GetDirectionVector(dir);
 
-		if (dir != GetDirection())
-		{
-			push_timer_ = 0;
-		}
-
-		SetDirection(dir);
-
-		wall_ = CheckWall(dir, speed);
-
-		if (wall_ == 0)
-		{
-			position.x += VX[dir] * speed;
-			position.y += VY[dir] * speed;
-			moved = true;
-		}
-		else
-		{
-			ClearGap(position, dir, speed);
-
-			if (wall_ != (BLOCK_TILE1 | BLOCK_TILE2))
+			if (dir != GetDirection())
 			{
-				Slide(position, dir, slide_speed);
+				push_timer_ = 0;
 			}
-		}
 
-		mode_ = Mode::Walk;
+			SetDirection(dir);
+		}
 	}
 
-	const auto cx = static_cast<int>(position.x + 16);
-	const auto cy = static_cast<int>(position.y + 16);
+	move_vector = Vector2Normalize(move_vector);
+	if (move_vector.x != 0 || move_vector.y != 0)
+	{
+		if ((moved = TryMove(position, move_vector, speed)))
+		{
+			mode_ = Mode::Walk;
+		}
+	}
 
-	if (const auto tile_type = game_->GetTileType(cx, cy); tile_type & TileType::Chair)
+	// Attempt to slide along corners only if we tried to move but didn't,
+	// the player is facing a wall corner, and we're not perfectly grid-aligned.
+	if (!moved)
+	{
+		if (const auto wall = CheckWall(GetDirection());
+			IsKeyDown(GetDirectionKey(GetDirection())) &&
+			(wall == Corner1 || wall == Corner2) &&
+			!IsGridAligned(position))
+		{
+			const auto [x, y] = position;
+
+			Slide(position, GetDirection(), wall, slide_speed);
+
+			if (position.x != x || position.y != y)
+			{
+				moved = true;
+				mode_ = Mode::Walk;
+			}
+		}
+	}
+
+	const auto check_x = static_cast<int>(position.x + 16);
+	const auto check_y = static_cast<int>(position.y + 24);
+
+	if (const auto tile_type = game_->GetTileType(check_x, check_y); tile_type & TileType::Chair)
 	{
 		SetOverlay(OverlayType::None);
 
@@ -327,6 +389,61 @@ auto Player::CheckMovement(Vector2 &position, const float speed, const float sli
 	return moved;
 }
 
+auto Player::TryMove(Vector2 &position, const Vector2 direction, const float speed) const -> bool
+{
+	auto collides = [&](const float nx, const float ny) -> bool {
+		return game_->OnWall(Rectangle{nx, ny, 31.0f, 31.0f});
+	};
+
+	auto check_x = [&](float &x, const float delta) {
+		const float step_sign = delta > 0.0f ? 1.0f : -1.0f;
+		auto remaining = std::fabs(delta);
+		while (remaining > 0.0f)
+		{
+			const float step = std::min(1.0f, remaining);
+
+			if (collides(x + step_sign * step, position.y))
+			{
+				break;
+			}
+
+			x += step_sign * step;
+
+			remaining -= step;
+		}
+	};
+
+	auto check_y = [&](float &y, const float delta) {
+		const float step_sign = delta > 0.0f ? 1.0f : -1.0f;
+		auto remaining = std::fabs(delta);
+		while (remaining > 0.0f)
+		{
+			const float step = std::min(1.0f, remaining);
+
+			if (collides(position.x, y + step_sign * step))
+			{
+				break;
+			}
+
+			y += step_sign * step;
+
+			remaining -= step;
+		}
+	};
+
+	const auto start_x = position.x;
+	const auto start_y = position.y;
+
+	const auto delta_x = direction.x * speed;
+	const auto delta_y = direction.y * speed;
+
+	if (delta_x != 0.0f) check_x(position.x, delta_x);
+	if (delta_y != 0.0f) check_y(position.y, delta_y);
+
+	return position.x != start_x ||
+	       position.y != start_y;
+}
+
 void Player::CheckPushAndPull()
 {
 	if (mode_ == Mode::Attack)
@@ -339,7 +456,7 @@ void Player::CheckPushAndPull()
 		return;
 	}
 
-	if (mode_ == Mode::Swim || wall_ != (BLOCK_TILE1 | BLOCK_TILE2))
+	if (mode_ == Mode::Swim || !IsFacingWall())
 	{
 		return;
 	}
@@ -376,88 +493,72 @@ void Player::CheckPushAndPull()
 	}
 }
 
-auto Player::CheckWall(const int dir, const float speed) const -> int
+auto Player::CheckWall(const Direction dir) const -> int
 {
-	const auto pos = GetPosition();
+	auto [x, y] = GetPosition();
 
-	const auto ax = pos.x + VX[dir] * (dir < 2 ? speed : 32);
-	const auto ay = pos.y + VY[dir] * (dir < 2 ? speed : 32);
-	const auto bx = pos.x + 16 + VX[dir] * (dir < 2 ? speed + 16 : 16);
-	const auto by = pos.y + 16 + VY[dir] * (dir < 2 ? speed + 16 : 16);
+	// x += 8;
+	// y += 16;
 
-	const auto w = dir == 1 || dir == 3 ? speed : 16;
-	const auto h = dir == 0 || dir == 2 ? speed : 16;
+	Vector2 v1, v2;
+	switch (dir)
+	{
+		case Direction::DIR_UP:
+			v1 = {x, y - 1};
+			v2 = {x + 31, y - 1};
+			break;
+
+		case Direction::DIR_LEFT:
+			v1 = {x - 1, y};
+			v2 = {x - 1, y + 31};
+			break;
+
+		case Direction::DIR_DOWN:
+			v1 = {x + 1, y + 32};
+			v2 = {x + 31, y + 32};
+			break;
+
+		case Direction::DIR_RIGHT:
+			v1 = {x + 32, y};
+			v2 = {x + 32, y + 31};
+			break;
+
+		default:
+			return 0;
+	}
 
 	char result = 0;
 
-	if (game_->OnWall((Rectangle){ax, ay, w - 1, h - 1}))
-	{
-		result |= BLOCK_TILE1;
-	}
-
-	if (game_->OnWall((Rectangle){bx, by, w - 1, h - 1}))
-	{
-		result |= BLOCK_TILE2;
-	}
+	if (game_->OnWall(v1)) result |= Corner1;
+	if (game_->OnWall(v2)) result |= Corner2;
 
 	return result;
 }
 
-void Player::ClearGap(Vector2 &position, const int dir, const float speed) const
+void Player::Slide(Vector2 &position, const Direction dir, int wall, const float speed)
 {
-	float dist = 0;
-
-	while (dist < speed)
-	{
-		if (const auto wall = CheckWall(dir, dist); wall != 0)
-		{
-			break;
-		}
-
-		dist++;
-	}
-
-	if (dist == 0)
+	if (IsGridAligned(position))
 	{
 		return;
 	}
 
-	switch (dir)
-	{
-		default:
-			break;
+	Direction slide_dir;
 
-		case DIR_UP:
-		case DIR_DOWN:
-			position.y += VX[dir] * dist;
-			break;
-
-		case DIR_LEFT:
-		case DIR_RIGHT:
-			position.x += VY[dir] * dist;
-			break;
-	}
-}
-
-void Player::Slide(Vector2 &position, const int dir, const float speed)
-{
-	int slide_dir;
-
-	if (wall_ == BLOCK_TILE1)
+	if (wall == Corner1)
 	{
 		switch (dir)
 		{
-			case DIR_UP:
-				slide_dir = DIR_RIGHT;
+			case Direction::DIR_UP:
+				slide_dir = Direction::DIR_RIGHT;
 				break;
-			case DIR_LEFT:
-				slide_dir = DIR_DOWN;
+			case Direction::DIR_LEFT:
+				slide_dir = Direction::DIR_DOWN;
 				break;
-			case DIR_DOWN:
-				slide_dir = DIR_RIGHT;
+			case Direction::DIR_DOWN:
+				slide_dir = Direction::DIR_RIGHT;
 				break;
-			case DIR_RIGHT:
-				slide_dir = DIR_DOWN;
+			case Direction::DIR_RIGHT:
+				slide_dir = Direction::DIR_DOWN;
 				break;
 			default:
 				return;
@@ -467,40 +568,32 @@ void Player::Slide(Vector2 &position, const int dir, const float speed)
 	{
 		switch (dir)
 		{
-			case DIR_UP:
-				slide_dir = DIR_LEFT;
+			case Direction::DIR_UP:
+				slide_dir = Direction::DIR_LEFT;
 				break;
-			case DIR_LEFT:
-				slide_dir = DIR_UP;
+			case Direction::DIR_LEFT:
+				slide_dir = Direction::DIR_UP;
 				break;
-			case DIR_DOWN:
-				slide_dir = DIR_LEFT;
+			case Direction::DIR_DOWN:
+				slide_dir = Direction::DIR_LEFT;
 				break;
-			case DIR_RIGHT:
-				slide_dir = DIR_UP;
+			case Direction::DIR_RIGHT:
+				slide_dir = Direction::DIR_UP;
 				break;
 			default:
 				return;
 		}
 	}
 
-	if (const auto blocked = CheckWall(slide_dir, speed); blocked != 0)
+	if (const auto blocked = CheckWall(slide_dir); blocked != 0)
 	{
 		return;
 	}
 
-	switch (dir)
-	{
-		case DIR_UP:
-		case DIR_DOWN:
-			position.x += VX[slide_dir] * speed;
-			break;
+	const auto [dirx, diry] = GetDirectionVector(slide_dir);
 
-		case DIR_LEFT:
-		case DIR_RIGHT:
-			position.y += VY[slide_dir] * speed;
-			break;
-	}
+	position.x += std::min(dirx * speed, 1.f);
+	position.y += std::min(diry * speed, 1.f);
 
 	SetPosition(position);
 }
@@ -548,15 +641,49 @@ void Player::UpdateAnimation()
 
 auto Player::GetTileFacing() const -> int
 {
-	const auto position = GetPosition();
-	const auto dir = GetDirection();
-	const auto x = static_cast<int>(position.x + 16 + VX[dir] * 24);
-	const auto y = static_cast<int>(position.y + 16 + VY[dir] * 24);
+	const auto [x, y] = GetPosition();
+	const auto [dirx, diry] = GetDirectionVector(GetDirection());
 
-	return game_->GetTileType(x, y);
+	const auto lx = static_cast<int>(x + 16 + dirx * 24);
+	const auto ly = static_cast<int>(y + 16 + diry * 24);
+
+	return game_->GetTileType(lx, ly);
 }
 
-bool Player::CheckJump(const float dt, Vector2 &position)
+auto Player::IsFacingWall() const -> int
+{
+	auto [x, y] = GetPosition();
+
+	Vector2 v1, v2;
+
+	switch (GetDirection())
+	{
+		default: return false;
+		case Direction::DIR_UP:
+			v1 = {x + 8, y - 1};
+			v2 = {x + 31 - 8, y - 1};
+			break;
+
+		case Direction::DIR_LEFT:
+			v1 = {x - 1, y + 8};
+			v2 = {x - 1, y + 31 - 8};
+			break;
+
+		case Direction::DIR_DOWN:
+			v1 = {x + 8, y + 32};
+			v2 = {x + 31 - 8, y + 32};
+			break;
+
+		case Direction::DIR_RIGHT:
+			v1 = {x + 32, y + 8};
+			v2 = {x + 32, y + 31 - 8};
+			break;
+	}
+
+	return game_->OnWall(v1) || game_->OnWall(v2);
+}
+
+auto Player::CheckJump(const float dt, Vector2 &position) -> bool
 {
 	if (mode_ == Mode::Jump)
 	{
@@ -586,8 +713,8 @@ auto Player::CanJump(const Vector2 &position) const -> bool
 	}
 
 	const auto dir = GetDirection();
-	const auto x = position.x + JumpFrames[dir][7].x;
-	const auto y = position.y + JumpFrames[dir][7].y;
+	const auto x = position.x + jump_frames[static_cast<int>(dir)][7].x;
+	const auto y = position.y + jump_frames[static_cast<int>(dir)][7].y;
 
 	if (game_->OnWall({x, y, 31, 31}))
 	{
@@ -608,17 +735,17 @@ void Player::Jump()
 	mode_ = Mode::Jump;
 	jump_step_ = 0;
 	jump_timer_ = 0;
-	_jumpOrigin = GetPosition();
-	jump_from_ = _jumpOrigin;
-	jump_to_.x = jump_from_.x + JumpFrames[dir][jump_step_].x;
-	jump_to_.y = jump_from_.y + JumpFrames[dir][jump_step_].y;
+	jump_origin_ = GetPosition();
+	jump_from_ = jump_origin_;
+	jump_to_.x = jump_from_.x + jump_frames[static_cast<int>(dir)][jump_step_].x;
+	jump_to_.y = jump_from_.y + jump_frames[static_cast<int>(dir)][jump_step_].y;
 }
 
 auto Player::JumpUpdate(const float dt, Vector2 &position) -> bool
 {
 	jump_timer_ += dt;
 
-	if (jump_timer_ >= JumpSpeed)
+	if (jump_timer_ >= jump_speed)
 	{
 		position = jump_to_;
 
@@ -635,11 +762,11 @@ auto Player::JumpUpdate(const float dt, Vector2 &position) -> bool
 		const auto dir = GetDirection();
 
 		jump_from_ = GetPosition();
-		jump_to_.x = _jumpOrigin.x + JumpFrames[dir][jump_step_].x;
-		jump_to_.y = _jumpOrigin.y + JumpFrames[dir][jump_step_].y;
+		jump_to_.x = jump_origin_.x + jump_frames[static_cast<int>(dir)][jump_step_].x;
+		jump_to_.y = jump_origin_.y + jump_frames[static_cast<int>(dir)][jump_step_].y;
 	}
 
-	position = Vector2Lerp(jump_from_, jump_to_, jump_timer_ / JumpSpeed);
+	position = Vector2Lerp(jump_from_, jump_to_, jump_timer_ / jump_speed);
 
 	return true;
 }
@@ -687,11 +814,11 @@ void Player::DrawOverlay() const
 
 	sy += static_cast<float>(overlay_frame_) * 16;
 
-	const auto pos = GetPosition();
-	const auto x = pos.x - 1;
-	const auto y = pos.y + 16 + 1;
+	const auto [x, y] = GetPosition();
+	const auto dx = x;
+	const auto dy = y + 16;
 
-	DrawTextureRec(sprites_, {sx, sy, 32, 16}, {x, y}, WHITE);
+	DrawTextureRec(sprites_, {sx, sy, 32, 16}, {dx, dy}, WHITE);
 }
 
 void Player::SetOverlay(const OverlayType overlay)
@@ -705,5 +832,3 @@ void Player::SetOverlay(const OverlayType overlay)
 	overlay_frame_ = 0;
 	overlay_timer_ = 0.1f;
 }
-
-#pragma clang diagnostic pop

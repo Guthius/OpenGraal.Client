@@ -31,6 +31,7 @@ public:
 	void ChangeLevel(const std::string &level_name) const;
 	auto GetCurrentLevel() const -> Level * { return level_->Level; }
 	auto OnWall(Rectangle rect) const -> bool;
+	auto OnWall(Vector2 pt) const -> bool;
 	auto GetTileType(int x, int y) const -> int;
 	void ShowSign(const std::string &str) const;
 
@@ -41,8 +42,7 @@ private:
 	void DrawPlayer() const;
 	void DrawUI() const;
 	void DrawUI_Resource(Rectangle rect, Vector2 pos, const std::string &text) const;
-
-	static void DrawDiagnostics();
+	void DrawDiagnostics() const;
 
 	Sign *sign_;
 	LevelInfo *level_;
@@ -50,4 +50,5 @@ private:
 	Texture2D state_{};
 	Font font20_{};
 	Font font14_{};
+	Font font_pixel_{};
 };

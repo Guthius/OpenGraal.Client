@@ -1,5 +1,6 @@
 #include "Level.h"
 
+#include <cmath>
 #include <rlgl.h>
 #include <boost/algorithm/string.hpp>
 
@@ -162,27 +163,32 @@ auto Level::GetTileType(const Tileset *tileset, const int x, const int y) const 
 
 auto Level::OnWall(const Tileset *tileset, const Rectangle rect) const -> bool
 {
-	const auto sx = static_cast<int>(rect.x / 16);
-	const auto sy = static_cast<int>(rect.y / 16);
-	auto dx = static_cast<int>((rect.x + rect.width) / 16);
-	auto dy = static_cast<int>((rect.y + rect.height) / 16);
-
-	if (sx < 0 || sx > 63 || sy < 0 || sy > 63)
+	if (constexpr float map_size = 64.0f * 16.0f;
+		rect.x >= map_size ||
+		rect.y >= map_size ||
+		rect.x + rect.width <= 0.0f ||
+		rect.y + rect.height <= 0.0f)
 	{
-		return false;
+		return true;
 	}
 
-	dx = std::max(sx, std::min(dx, 63));
-	dy = std::max(sy, std::min(dy, 63));
+	auto sx = static_cast<int>(std::floor(rect.x / 16.0f));
+	auto sy = static_cast<int>(std::floor(rect.y / 16.0f));
+	auto dx = static_cast<int>(std::floor((rect.x + rect.width - 0.001f) / 16.0f));
+	auto dy = static_cast<int>(std::floor((rect.y + rect.height - 0.001f) / 16.0f));
 
-	for (auto y = sy; y <= dy; ++y)
+	sx = std::max(0, std::min(63, sx));
+	sy = std::max(0, std::min(63, sy));
+	dx = std::max(0, std::min(63, dx));
+	dy = std::max(0, std::min(63, dy));
+
+	for (int y = sy; y <= dy; ++y)
 	{
-		for (auto x = sx; x <= dx; ++x)
+		for (int x = sx; x <= dx; ++x)
 		{
-			const auto tileIndex = y * 64 + x;
-			const auto tileId = _board[tileIndex];
+			const int tile_index = y * 64 + x;
 
-			if (tileset->GetType(tileId) & TileType::Wall)
+			if (const auto tile_id = _board[tile_index]; tileset->GetType(tile_id) & TileType::Wall)
 			{
 				return true;
 			}
@@ -190,6 +196,24 @@ auto Level::OnWall(const Tileset *tileset, const Rectangle rect) const -> bool
 	}
 
 	return false;
+}
+
+auto Level::OnWall(const Tileset *tileset, const Vector2 pt) const -> bool
+{
+	if (constexpr float map_size = 64.0f * 16.0f;
+		pt.x < 0.0f || pt.y < 0.0f ||
+		pt.x >= map_size || pt.y >= map_size)
+	{
+		return true;
+	}
+
+	const auto x = static_cast<int>(pt.x / 16.0f);
+	const auto y = static_cast<int>(pt.y / 16.0f);
+
+	const auto tile_index = y * 64 + x;
+	const auto tile_id = _board[tile_index];
+
+	return (tileset->GetType(tile_id) & TileType::Wall) != 0;
 }
 
 auto Level::Load(const std::filesystem::path &path) -> Level *
