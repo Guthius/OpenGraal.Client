@@ -210,8 +210,8 @@ auto Player::CheckForLevelLinkAt(const Vector2 &position) -> bool
 	const auto dir = GetDirection();
 
 	const auto [dirx, diry] = GetDirectionVector(dir);
-	const auto x = static_cast<int>(position.x + 16 + dirx * 24);
-	const auto y = static_cast<int>(position.y + 16 + diry * 24);
+	const auto x = static_cast<int>(position.x + 16 + dirx * 17);
+	const auto y = static_cast<int>(position.y + 16 + diry * 17);
 
 	const auto level = game_->GetCurrentLevel();
 	if (level == nullptr)
@@ -225,8 +225,8 @@ auto Player::CheckForLevelLinkAt(const Vector2 &position) -> bool
 		return false;
 	}
 
-	const auto dx = link->GetNewX() == "playerx" ? position.x : std::stof(link->GetNewX()) * 16;
-	const auto dy = link->GetNewY() == "playery" ? position.y : std::stof(link->GetNewY()) * 16;
+	const auto dx = link->GetNewX() == "playerx" ? position.x : (std::stof(link->GetNewX()) + 0.5f) * 16;
+	const auto dy = link->GetNewY() == "playery" ? position.y : (std::stof(link->GetNewY()) + 1.0f) * 16;
 
 	TraceLog(LOG_INFO, "Warp to %s @ %s, %s (%f, %f)",
 	         link->GetNewLevel().c_str(),

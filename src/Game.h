@@ -40,8 +40,8 @@ private:
 
 	void Draw() const;
 	void DrawPlayer() const;
-	void DrawUI() const;
-	void DrawUI_Resource(Rectangle rect, Vector2 pos, const std::string &text) const;
+	void DraWHud() const;
+	void DrawHudResource(Rectangle rect, Vector2 pos, const std::string &text) const;
 	void DrawDiagnostics() const;
 
 	Sign *sign_;

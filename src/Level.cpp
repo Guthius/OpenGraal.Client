@@ -88,7 +88,7 @@ void Level::Draw(const Tileset *tileset) const
 		}
 	}
 
-	// DrawEditorHints();
+	DrawEditorHints();
 
 	rlEnd();
 }

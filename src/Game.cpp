@@ -30,7 +30,7 @@ Game::Game()
 	font20_ = LoadFontEx("levels/pixantiqua.ttf", 20, nullptr, 250);
 	font14_ = LoadFontEx("levels/pixantiqua.ttf", 16, nullptr, 250);
 
-	font_pixel_ = LoadFontEx("Fonts/Kenney Pixel.ttf", 24, nullptr, 0);
+	font_pixel_ = LoadFontEx("Fonts/Kenney Pixel.ttf", 12, nullptr, 0);
 
 	sign_ = new Sign();
 }
@@ -46,7 +46,7 @@ void Game::Run() const
 		ClearBackground(BLACK);
 
 		Draw();
-		DrawUI();
+		DraWHud();
 
 		sign_->Draw(SIGN_WIDTH, SIGN_HEIGHT);
 
@@ -164,7 +164,7 @@ void Game::DrawPlayer() const
 	player_->Draw();
 }
 
-void Game::DrawUI() const
+void Game::DraWHud() const
 {
 	DrawTextureRec(state_, {202, 0, 22, 30}, {15, 30}, WHITE);
 	DrawTextureRec(state_, {202, 0, 22, 30}, {80, 30}, WHITE);
@@ -181,12 +181,12 @@ void Game::DrawUI() const
 	DrawTextureRec(state_, {0, 97, 130, 22}, {15, 65}, WHITE);
 	DrawTextureRec(state_, {0, 119, 100, 10}, {37, 71}, WHITE);
 
-	DrawUI_Resource({80, 33, 16, 16}, {274, 30}, "754");
-	DrawUI_Resource({136, 33, 16, 16}, {274 + 56, 30}, "5");
-	DrawUI_Resource({184, 33, 16, 16}, {274 + 104, 30}, "0");
+	DrawHudResource({80, 33, 16, 16}, {274, 30}, "754");
+	DrawHudResource({136, 33, 16, 16}, {274 + 56, 30}, "5");
+	DrawHudResource({184, 33, 16, 16}, {274 + 104, 30}, "0");
 }
 
-void Game::DrawUI_Resource(const Rectangle rect, const Vector2 pos, const std::string &text) const
+void Game::DrawHudResource(const Rectangle rect, const Vector2 pos, const std::string &text) const
 {
 	DrawTextureRec(state_, rect, pos, WHITE);
 
@@ -204,6 +204,6 @@ void Game::DrawDiagnostics() const
 {
 	const auto str = TextFormat("FPS: %d", GetFPS());
 
-	DrawTextEx(font_pixel_, str, {6, 6}, 24, 1, BLACK);
-	DrawTextEx(font_pixel_, str, {5, 5}, 24, 1, WHITE);
+	DrawTextEx(font_pixel_, str, {6, 6}, 12, 1, BLACK);
+	DrawTextEx(font_pixel_, str, {5, 5}, 12, 1, WHITE);
 }
