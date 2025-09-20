@@ -24,3 +24,15 @@ static constexpr Direction GetOppositeDirection(const Direction dir)
 			return dir;
 	}
 }
+
+static constexpr Vector2 GetDirectionVector(const Direction dir)
+{
+	switch (dir)
+	{
+		case Direction::DIR_UP: return {0, -1};
+		case Direction::DIR_DOWN: return {0, 1};
+		case Direction::DIR_LEFT: return {-1, 0};
+		case Direction::DIR_RIGHT: return {1, 0};
+		default: return {0, 0};
+	}
+}

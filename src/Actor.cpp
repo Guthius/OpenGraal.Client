@@ -3,8 +3,15 @@
 #include <rlgl.h>
 #include <boost/algorithm/string.hpp>
 
+#include "TextureManager.h"
+
 void Actor::Update(const float dt)
 {
+	if (sprites_.id == 0)
+	{
+		sprites_ = TextureManager::Get("sprites.png");
+	}
+
 	if (animation_ != nullptr)
 	{
 		animation_->Update(dt, animation_state_);
@@ -28,6 +35,40 @@ void Actor::Draw() const
 		animation_state_);
 
 	rlPopMatrix();
+
+	auto draw_carried_object_at = [&](const Vector2 src, const Vector2 dst) {
+		DrawTextureRec(sprites_, {src.x, src.y, 32, 32}, dst, WHITE);
+	};
+
+	if (carried_object_ != CarriedItem::None && sprites_.id != 0)
+	{
+		const Vector2 dest{position_.x, position_.y - 40};
+
+		switch (carried_object_)
+		{
+			case CarriedItem::Bush:
+				draw_carried_object_at({0.0f, 338.0f}, dest);
+				break;
+
+			case CarriedItem::Sign:
+				draw_carried_object_at({32.0f, 338.0f}, dest);
+				break;
+
+			case CarriedItem::Pot:
+				draw_carried_object_at({64.0f, 338.0f}, dest);
+				break;
+
+			case CarriedItem::Stone:
+				draw_carried_object_at({96.0f, 338.0f}, dest);
+				break;
+
+			case CarriedItem::BlackStone:
+				draw_carried_object_at({96.0f, 370.0f}, dest);
+				break;
+
+			default: break;
+		}
+	}
 }
 
 void Actor::SetAnimation(const std::string &name)

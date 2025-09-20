@@ -6,6 +6,7 @@
 #include "Animation.h"
 #include "FileManager.h"
 #include "LevelManager.h"
+#include "SoundManager.h"
 #include "TextureManager.h"
 #include "TilesetManager.h"
 
@@ -20,6 +21,7 @@ Game::Game()
 
 	player_ = new Player(this);
 	player_->SetPosition(pos);
+	player_->SetCarriedItem(Actor::CarriedItem::Bush);
 
 	level_ = new LevelInfo(
 		LevelManager::Get("onlinestartlocal.graal"),
@@ -33,6 +35,8 @@ Game::Game()
 	font_pixel_ = LoadFontEx("Fonts/Kenney Pixel.ttf", 12, nullptr, 0);
 
 	sign_ = new Sign();
+
+	sprites_ = TextureManager::Get("sprites.png");
 }
 
 void Game::Run() const
@@ -107,6 +111,11 @@ void Game::ShowSign(const std::string &str) const
 
 void Game::Update() const
 {
+	const auto dt = GetFrameTime();
+
+	UpdateThrownItems(dt);
+	UpdateLeaps(dt);
+
 	if (sign_->IsOpen())
 	{
 		sign_->Update();
@@ -114,23 +123,36 @@ void Game::Update() const
 		return;
 	}
 
-	const auto csx = static_cast<float>(GetScreenWidth()) / 2.0f;
-	const auto csy = static_cast<float>(GetScreenHeight()) / 2.0f;
-
-	const auto pos = player_->GetPosition();
-	const auto cx = static_cast<int>(csx - 16 - pos.x);
-	const auto cy = static_cast<int>(csy - 16 - pos.y);
-
-	rlPushMatrix();
-	rlTranslatef(
-		static_cast<float>(cx),
-		static_cast<float>(cy),
-		0);
-
-
 	player_->Update(GetFrameTime());
+}
 
-	rlPopMatrix();
+void Game::UpdateThrownItems(const float dt) const
+{
+	for (auto &item: thrown_items_)
+	{
+		item.Update(dt);
+
+		if (!item.IsAlive())
+		{
+			SpawnLeaps(LeapType::Grass, item.GetPosition());
+		}
+	}
+
+	std::erase_if(thrown_items_, [](const ThrownItem &item) {
+		return !item.IsAlive();
+	});
+}
+
+void Game::UpdateLeaps(const float dt) const
+{
+	for (auto &leap: leaps_)
+	{
+		leap.Update(dt);
+	}
+
+	std::erase_if(leaps_, [](const Leap &item) {
+		return !item.IsAlive();
+	});
 }
 
 void Game::Draw() const
@@ -156,6 +178,9 @@ void Game::Draw() const
 
 	DrawPlayer();
 
+	DrawThrownItems();
+	DrawLeaps();
+
 	rlPopMatrix();
 }
 
@@ -164,12 +189,32 @@ void Game::DrawPlayer() const
 	player_->Draw();
 }
 
-void DrawHudKey(const Texture &texture, const Font &font, const Vector2 position, const char* key)
+void DrawHudKey(const Texture &texture, const Font &font, const Vector2 position, const char *key)
 {
 	DrawTextureRec(texture, {202, 0, 22, 30}, position, WHITE);
 
 	DrawTextEx(font, key, {position.x + 3, position.y + 4}, 24, 0.0f, BLACK);
 	DrawTextEx(font, key, {position.x + 2, position.y + 3}, 24, 0.0f, WHITE);
+}
+
+void Game::SpawnThrownItem(const Actor::CarriedItem type, const Vector2 origin, const Direction dir) const
+{
+	if (type == Actor::CarriedItem::None)
+	{
+		return;
+	}
+
+	thrown_items_.emplace_back(type, origin, dir);
+}
+
+void Game::SpawnLeaps(LeapType type, Vector2 origin) const
+{
+	if (const auto sound = SoundManager::Get("crush.wav"); IsSoundValid(sound))
+	{
+		PlaySound(sound);
+	}
+
+	leaps_.emplace_back(type, origin);
 }
 
 void Game::DraWHud() const
@@ -208,4 +253,20 @@ void Game::DrawDiagnostics() const
 
 	DrawTextEx(font_pixel_, str, {6, 6}, 12, 1, BLACK);
 	DrawTextEx(font_pixel_, str, {5, 5}, 12, 1, WHITE);
+}
+
+void Game::DrawThrownItems() const
+{
+	for (const auto &item: thrown_items_)
+	{
+		item.Draw();
+	}
+}
+
+void Game::DrawLeaps() const
+{
+	for (const auto &leap: leaps_)
+	{
+		leap.Draw();
+	}
 }

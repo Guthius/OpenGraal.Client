@@ -12,7 +12,7 @@ static constexpr int Corner2 = 2;
 
 static auto IsGridAligned(const Vector2 &pos) -> bool
 {
-	static constexpr float grid_alignment_epsilon = 0.01f; // tolerance for float rounding issues
+	static constexpr float grid_alignment_epsilon = 0.01f;
 
 	const auto is_tile_aligned = [&](const float v) {
 		float m = std::fmod(v, 16.0f);
@@ -25,23 +25,6 @@ static auto IsGridAligned(const Vector2 &pos) -> bool
 	};
 
 	return is_tile_aligned(pos.x) && is_tile_aligned(pos.y);
-}
-
-static constexpr auto GetDirectionVector(const Direction direction) -> Vector2
-{
-	switch (direction)
-	{
-		case Direction::DIR_UP:
-			return {0, -1};
-		case Direction::DIR_LEFT:
-			return {-1, 0};
-		case Direction::DIR_DOWN:
-			return {0, 1};
-		case Direction::DIR_RIGHT:
-			return {1, 0};
-		default:
-			return {};
-	}
 }
 
 static constexpr float jump_speed = 0.05f;
@@ -164,6 +147,11 @@ void Player::Update(const float dt)
 
 	if (mode_ != mode)
 	{
+		if (mode_ != Mode::Idle && mode_ != Mode::Walk)
+		{
+			DropCarriedItem();
+		}
+
 		UpdateAnimation();
 	}
 
@@ -290,6 +278,13 @@ void Player::CheckAttack(Vector2 &position)
 
 	if (!IsKeyPressed(KEY_S))
 	{
+		return;
+	}
+
+	if (DropCarriedItem())
+	{
+		UpdateAnimation();
+
 		return;
 	}
 
@@ -641,11 +636,25 @@ void Player::UpdateAnimation()
 	switch (mode_)
 	{
 		case Mode::Idle:
-			SetAnimation("idle");
+			if (IsCarrying())
+			{
+				SetAnimation("carrystill");
+			}
+			else
+			{
+				SetAnimation("idle");
+			}
 			break;
 
 		case Mode::Walk:
-			SetAnimation("walk");
+			if (IsCarrying())
+			{
+				SetAnimation("carry");
+			}
+			else
+			{
+				SetAnimation("walk");
+			}
 			break;
 
 		case Mode::Swim:
@@ -719,6 +728,22 @@ auto Player::IsFacingWall() const -> int
 	}
 
 	return game_->OnWall(v1) || game_->OnWall(v2);
+}
+
+auto Player::DropCarriedItem() -> bool
+{
+	if (!IsCarrying())
+	{
+		return false;
+	}
+
+	const auto [x, y] = GetPosition();
+
+	game_->SpawnThrownItem(GetCarriedItem(), {x, y - 40.0f}, GetDirection());
+
+	SetCarriedItem(CarriedItem::None);
+
+	return true;
 }
 
 auto Player::CheckJump(const float dt, Vector2 &position) -> bool

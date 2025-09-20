@@ -42,7 +42,11 @@ add_executable(OpenGraal WIN32
         src/TilesetManager.cpp
         src/TilesetManager.h
         src/Sign.cpp
-        src/Sign.h)
+        src/Sign.h
+        src/ThrownItem.h
+        src/ThrownItem.cpp
+        src/Leaps.h
+        src/Leaps.cpp)
 
 target_sources(OpenGraal PRIVATE game.rc)
 target_link_libraries(OpenGraal PRIVATE raylib)

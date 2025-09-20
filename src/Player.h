@@ -27,6 +27,7 @@ private:
 	auto GetTileFacing() const -> int;
 	auto IsFacingWall() const -> int;
 
+	auto DropCarriedItem() -> bool;
 	auto CheckJump(float dt, Vector2 &position) -> bool;
 	auto CanJump(const Vector2 &position) const -> bool;
 	void Jump();
@@ -66,7 +67,7 @@ private:
 
 	Game *game_;
 	Mode mode_ = Mode::Idle;
-	float speed_ = 3.0f;
+	float speed_ = 3.5f;
 	float slide_speed_ = 1.0f;
 	Texture2D sprites_{};
 	float push_timer_ = 0.0f;

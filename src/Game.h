@@ -5,6 +5,11 @@
 #include "Player.h"
 #include "Sign.h"
 #include "Tileset.h"
+#include "ThrownItem.h"
+
+#include <vector>
+
+#include "Leaps.h"
 
 class Game
 {
@@ -34,15 +39,23 @@ public:
 	auto OnWall(Vector2 pt) const -> bool;
 	auto GetTileType(int x, int y) const -> int;
 	void ShowSign(const std::string &str) const;
+	void SpawnThrownItem(Actor::CarriedItem type, Vector2 origin, Direction dir) const;
+	void SpawnLeaps(LeapType type, Vector2 origin) const;
 
 private:
 	void Update() const;
+	void UpdateThrownItems(float dt) const;
+	void UpdateLeaps(float dt) const;
 
 	void Draw() const;
 	void DrawPlayer() const;
 	void DraWHud() const;
 	void DrawHudResource(Rectangle rect, Vector2 pos, const std::string &text) const;
 	void DrawDiagnostics() const;
+
+	void DrawThrownItems() const;
+	void DrawLeaps() const;
+
 
 	Sign *sign_;
 	LevelInfo *level_;
@@ -51,4 +64,7 @@ private:
 	Font font20_{};
 	Font font14_{};
 	Font font_pixel_{};
+	mutable std::vector<ThrownItem> thrown_items_{};
+	mutable std::vector<Leap> leaps_{};
+	mutable Texture2D sprites_{};
 };

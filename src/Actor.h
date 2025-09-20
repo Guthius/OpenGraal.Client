@@ -10,6 +10,16 @@
 class Actor
 {
 public:
+	enum class CarriedItem
+	{
+		None,
+		Bush,
+		Sign,
+		Pot,
+		Stone,
+		BlackStone
+	};
+
 	Actor()
 	{
 		SetAnimation("idle");
@@ -24,10 +34,13 @@ public:
 	[[nodiscard]] auto GetDirection() const -> Direction { return dir_; }
 	[[nodiscard]] auto GetAnimation() const -> const std::string & { return animation_name_; }
 	[[nodiscard]] auto GetAnimationState() const -> const AnimationState & { return animation_state_; }
+	[[nodiscard]] auto GetCarriedItem() const -> CarriedItem { return carried_object_; }
+	[[nodiscard]] auto IsCarrying() const -> bool { return carried_object_ != CarriedItem::None; }
 
 	void SetPosition(const Vector2 &position) { position_ = position; }
 	void SetDirection(const Direction dir) { dir_ = dir; }
 	void SetAnimation(const std::string &name);
+	void SetCarriedItem(const CarriedItem item) { carried_object_ = item; }
 
 protected:
 	Vector2 position_{0, 0};
@@ -35,4 +48,6 @@ protected:
 	AnimationState animation_state_{};
 	std::string animation_name_{};
 	Animation *animation_ = nullptr;
+	Texture2D sprites_{};
+	CarriedItem carried_object_ = CarriedItem::None;
 };
