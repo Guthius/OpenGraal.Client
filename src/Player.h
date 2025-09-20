@@ -66,7 +66,7 @@ private:
 
 	Game *game_;
 	Mode mode_ = Mode::Idle;
-	float speed_ = 4.0f;
+	float speed_ = 3.0f;
 	float slide_speed_ = 1.0f;
 	Texture2D sprites_{};
 	float push_timer_ = 0.0f;
