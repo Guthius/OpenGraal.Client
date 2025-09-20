@@ -27,8 +27,8 @@ Game::Game()
 		0, 0);
 
 	state_ = TextureManager::Get("state.png");
-	font20_ = LoadFontEx("levels/pixantiqua.ttf", 20, nullptr, 250);
-	font14_ = LoadFontEx("levels/pixantiqua.ttf", 16, nullptr, 250);
+	font20_ = LoadFontEx("Fonts/LiberationSans-Bold.ttf", 24, nullptr, 250);
+	font14_ = LoadFontEx("Fonts/LiberationSans-Regular.ttf", 18, nullptr, 250);
 
 	font_pixel_ = LoadFontEx("Fonts/Kenney Pixel.ttf", 12, nullptr, 0);
 
@@ -164,18 +164,20 @@ void Game::DrawPlayer() const
 	player_->Draw();
 }
 
+void DrawHudKey(const Texture &texture, const Font &font, const Vector2 position, const char* key)
+{
+	DrawTextureRec(texture, {202, 0, 22, 30}, position, WHITE);
+
+	DrawTextEx(font, key, {position.x + 3, position.y + 4}, 24, 0.0f, BLACK);
+	DrawTextEx(font, key, {position.x + 2, position.y + 3}, 24, 0.0f, WHITE);
+}
+
 void Game::DraWHud() const
 {
-	DrawTextureRec(state_, {202, 0, 22, 30}, {15, 30}, WHITE);
-	DrawTextureRec(state_, {202, 0, 22, 30}, {80, 30}, WHITE);
-	DrawTextureRec(state_, {202, 0, 22, 30}, {145, 30}, WHITE);
-
-	DrawTextEx(font20_, "A", {15 + 4, 30 + 7}, font20_.baseSize, 0.0f, BLACK);
-	DrawTextEx(font20_, "S", {80 + 5, 30 + 7}, font20_.baseSize, 0.0f, BLACK);
-	DrawTextEx(font20_, "D", {145 + 5, 30 + 7}, font20_.baseSize, 0.0f, BLACK);
-	DrawTextEx(font20_, "A", {15 + 3, 30 + 6}, font20_.baseSize, 0.0f, WHITE);
-	DrawTextEx(font20_, "S", {80 + 4, 30 + 6}, font20_.baseSize, 0.0f, WHITE);
-	DrawTextEx(font20_, "D", {145 + 4, 30 + 6}, font20_.baseSize, 0.0f, WHITE);
+	/* Buttons */
+	DrawHudKey(state_, font20_, {15, 30}, "A");
+	DrawHudKey(state_, font20_, {80, 30}, "S");
+	DrawHudKey(state_, font20_, {145, 30}, "D");
 
 	/* Alignment */
 	DrawTextureRec(state_, {0, 97, 130, 22}, {15, 65}, WHITE);

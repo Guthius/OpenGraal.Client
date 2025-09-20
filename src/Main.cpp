@@ -11,7 +11,7 @@ int main()
 
 	AnimationManager::LoadFrom("levels/ganis");
 
-	InitWindow(640, 480, Title);
+	InitWindow(1280, 720, Title);
 
 	auto game = Game();
 
