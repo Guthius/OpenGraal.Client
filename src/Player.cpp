@@ -289,7 +289,27 @@ void Player::CheckAttack(Vector2 &position)
 	}
 
 	mode_ = Mode::Attack;
+
+	TryDestroyObjectFacing(position);
 }
+
+void Player::TryDestroyObjectFacing(const Vector2 &position) const
+{
+	auto [ax, ay] = position + Vector2(16, 16) + GetDirectionVector(GetDirection()) * 32;
+
+	const auto [leap_type, leap_x, leap_y] =
+			game_->GetCurrentLevel()->DestroyObjectAt(
+				static_cast<int>(ax),
+				static_cast<int>(ay));
+
+	if (leap_type != LeapType::None)
+	{
+		game_->SpawnLeaps(leap_type, Vector2(
+			                  static_cast<float>(leap_x),
+			                  static_cast<float>(leap_y)));
+	}
+}
+
 
 auto Player::CheckMovement(Vector2 &position, const float speed, const float slide_speed) -> bool
 {

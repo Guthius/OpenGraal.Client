@@ -4,8 +4,24 @@
 #include <fstream>
 #include <vector>
 
+#include "Leaps.h"
 #include "LevelSign.h"
 #include "Tileset.h"
+
+enum class LevelObjectType
+{
+	None,
+	Bush,
+	Grass
+};
+
+struct LevelObjectMatch
+{
+	LevelObjectType Type;
+	int X, Y;
+	short Replacement[4];
+	LeapType LeapType;
+};
 
 class LevelLink
 {
@@ -41,8 +57,12 @@ public:
 	[[nodiscard]] auto GetLinkAt(int x, int y) const -> const LevelLink *;
 	[[nodiscard]] auto GetSignAt(int x, int y) const -> const LevelSign *;
 	[[nodiscard]] auto GetTileType(const Tileset *tileset, int x, int y) const -> int;
+	[[nodiscard]] auto GetTileId(int x, int y) const -> int;
 	[[nodiscard]] auto OnWall(const Tileset *tileset, Rectangle rect) const -> bool;
 	[[nodiscard]] auto OnWall(const Tileset *tileset, Vector2 pt) const -> bool;
+	[[nodiscard]] auto MatchObjectAt(int x, int y) const -> LevelObjectMatch;
+
+	auto DestroyObjectAt(int x, int y) -> std::tuple<LeapType, int, int>;
 
 	static auto Load(const std::filesystem::path &path) -> Level *;
 

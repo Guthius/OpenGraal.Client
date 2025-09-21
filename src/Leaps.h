@@ -14,7 +14,9 @@ using LeapFrameSet = std::vector<LeapFrame>;
 
 enum class LeapType
 {
-	Grass
+	None,
+	Leaves,
+	Grass,
 };
 
 class Leap
@@ -30,6 +32,7 @@ private:
 	Texture2D texture_;
 	LeapType type_;
 	Vector2 position_;
+	LeapFrameSet frame_set_;
 	float frame_time_{0.0f};
 	int frame_{0};
 	bool alive_{true};

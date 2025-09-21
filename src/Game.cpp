@@ -123,6 +123,31 @@ void Game::Update() const
 		return;
 	}
 
+	// Handle left mouse click: print tile ID at clicked position
+	if (level_ != nullptr && level_->Level != nullptr && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+	{
+		// Compute camera translation (same as in Draw)
+		const auto csx = static_cast<float>(GetScreenWidth()) / 2.0f;
+		const auto csy = static_cast<float>(GetScreenHeight()) / 2.0f;
+		const auto pos = player_->GetPosition();
+		const auto cx = static_cast<int>(csx - 16 - pos.x);
+		const auto cy = static_cast<int>(csy - 16 - pos.y);
+
+		const auto mouse = GetMousePosition();
+		// Convert screen coordinates to world coordinates by reversing the translation
+		const int worldX = static_cast<int>(mouse.x - static_cast<float>(cx));
+		const int worldY = static_cast<int>(mouse.y - static_cast<float>(cy));
+
+		const int tx = worldX / 16;
+		const int ty = worldY / 16;
+
+		const int tileId = level_->Level->GetTileId(worldX, worldY);
+		TraceLog(LOG_INFO, "Clicked tile (%d,%d) world(%d,%d) id=%d", tx, ty, worldX, worldY, tileId);
+
+		const auto x = level_->Level->MatchObjectAt(worldX, worldY);
+		TraceLog(LOG_INFO, "Pattern = %d as %d,%d", x.Type, x.X, x.Y);
+	}
+
 	player_->Update(GetFrameTime());
 }
 
@@ -134,7 +159,7 @@ void Game::UpdateThrownItems(const float dt) const
 
 		if (!item.IsAlive())
 		{
-			SpawnLeaps(LeapType::Grass, item.GetPosition());
+			SpawnLeaps(LeapType::Leaves, item.GetPosition());
 		}
 	}
 

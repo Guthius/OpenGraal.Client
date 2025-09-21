@@ -13,6 +13,19 @@
 #define COLOR_SIGN2     CLITERAL(Color){ 192, 0, 0, 255 }
 #define COLOR_SIGN3     CLITERAL(Color){ 128, 0, 0, 255 }
 
+struct LevelObjectPattern
+{
+	const LevelObjectType Type;
+	const short Tiles[4];
+	const short Replacement[4];
+	LeapType LeapType;
+};
+
+static const std::vector<LevelObjectPattern> object_patterns = {
+	{LevelObjectType::Bush, {2, 3, 18, 19}, {677, 678, 693, 694}, LeapType::Leaves},
+	{LevelObjectType::Grass, {420, 421, 436, 437}, {679, 680, 695, 696}, LeapType::Grass},
+};
+
 LevelLink::LevelLink(const std::string &data)
 {
 	std::vector<std::string> tokens;
@@ -88,7 +101,7 @@ void Level::Draw(const Tileset *tileset) const
 		}
 	}
 
-	DrawEditorHints();
+	// DrawEditorHints();
 
 	rlEnd();
 }
@@ -161,6 +174,20 @@ auto Level::GetTileType(const Tileset *tileset, const int x, const int y) const 
 	return tileset->GetType(tileId);
 }
 
+auto Level::GetTileId(const int x, const int y) const -> int
+{
+	const auto tx = x / 16;
+	const auto ty = y / 16;
+
+	if (tx < 0 || tx > 63 || ty < 0 || ty > 63)
+	{
+		return -1;
+	}
+
+	const auto tileIndex = ty * 64 + tx;
+	return _board[tileIndex];
+}
+
 auto Level::OnWall(const Tileset *tileset, const Rectangle rect) const -> bool
 {
 	if (constexpr float map_size = 64.0f * 16.0f;
@@ -214,6 +241,91 @@ auto Level::OnWall(const Tileset *tileset, const Vector2 pt) const -> bool
 	const auto tile_id = _board[tile_index];
 
 	return (tileset->GetType(tile_id) & TileType::Wall) != 0;
+}
+
+auto Level::MatchObjectAt(const int x, const int y) const -> LevelObjectMatch
+{
+	constexpr auto in_bounds = [&](const int dx, const int dy) -> bool {
+		return dx >= 0 && dx < 64 && dy >= 0 && dy < 64;
+	};
+
+	const auto match_pattern_at = [&](const int dx, const int dy, const short tile_ids[4]) -> bool {
+		for (auto yy = 0; yy < 2; yy++)
+		{
+			for (auto xx = 0; xx < 2; xx++)
+			{
+				const auto tx = dx + xx;
+				const auto ty = dy + yy;
+
+				if (!in_bounds(tx, ty))
+				{
+					return false;
+				}
+
+				if (tile_ids[yy * 2 + xx] != _board[ty * 64 + tx])
+				{
+					return false;
+				}
+			}
+		}
+
+		return true;
+	};
+
+	const auto tx = x / 16;
+	const auto ty = y / 16;
+
+	for (const auto &[object_type, tile_ids, replacement_tile_ids, leap_type]: object_patterns)
+	{
+		for (auto dy = ty - 1; dy <= ty; dy++)
+		{
+			for (auto dx = tx - 1; dx <= tx; dx++)
+			{
+				if (match_pattern_at(dx, dy, tile_ids))
+				{
+					return {
+						.Type = object_type,
+						.X = dx, .Y = dy,
+						.Replacement = {
+							replacement_tile_ids[0],
+							replacement_tile_ids[1],
+							replacement_tile_ids[2],
+							replacement_tile_ids[3]
+						},
+						.LeapType = leap_type
+					};
+				}
+			}
+		}
+	}
+
+	return {LevelObjectType::None};
+}
+
+auto Level::DestroyObjectAt(const int x, const int y) -> std::tuple<LeapType, int, int>
+{
+	const auto replace_tiles_at = [&](const int dx, const int dy, const short tile_ids[4]) {
+		for (auto yy = 0; yy < 2; yy++)
+		{
+			for (auto xx = 0; xx < 2; xx++)
+			{
+				const auto tx = dx + xx;
+				const auto ty = dy + yy;
+
+				_board[ty * 64 + tx] = tile_ids[yy * 2 + xx];
+			}
+		}
+	};
+
+	const auto [object_type, dx, dy, replacement_tile_ids, leap_type] = MatchObjectAt(x, y);
+	if (object_type == LevelObjectType::None)
+	{
+		return {LeapType::None, 0, 0};
+	}
+
+	replace_tiles_at(dx, dy, replacement_tile_ids);
+
+	return {leap_type, dx * 16, dy * 16};
 }
 
 auto Level::Load(const std::filesystem::path &path) -> Level *
@@ -350,7 +462,7 @@ auto Level::LoadGraal(std::ifstream &stream, const int bits, const size_t code_m
 				continue;
 			}
 
-			const short tile2 = static_cast<short>(code);
+			const auto tile2 = static_cast<short>(code);
 
 			for (auto i = 0; i < count && boardIndex < boardSize - 1; ++i)
 			{

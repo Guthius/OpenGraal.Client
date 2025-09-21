@@ -27,7 +27,8 @@ static constexpr Rectangle sprites[] = {
 	/* 21 */ {56, 32, 8, 14},
 	/* 22 */ {0, 448, 16, 8},
 	/* 23 */ {0, 456, 16, 8},
-	/* 24 */ {19, 10, 5, 4},
+
+	/* 24 */ {35, 8, 9, 8},
 
 	/* 25 */ {44, 0, 16, 16},
 	/* 26 */ {60, 0, 16, 16},
@@ -64,11 +65,32 @@ LeapFrameSet frame_set = {
 	{{26, -8, 4}, {25, -2, -16}, {26, 10, 22}, {26, 10, 25}},
 };
 
+LeapFrameSet frame_set_2 = {
+	{{24, 0, 8}, {24, 8, 0}, {24, 12, 8}},
+	{{24, -2, 8}, {24, 8, -2}, {24, 14, 8}},
+	{{24, -4, 8}, {24, 8, -4}, {24, 16, 8}},
+	{{24, -6, 8}, {24, 8, -6}, {24, 18, 8}},
+};
+
 static constexpr auto frame_duration = 0.05f;
+
+static const LeapFrameSet &get_frame_set(const LeapType type)
+{
+	switch (type)
+	{
+		default:
+		case LeapType::Leaves:
+			return frame_set;
+
+		case LeapType::Grass:
+			return frame_set_2;
+	}
+}
 
 Leap::Leap(const LeapType type, const Vector2 position)
 	: texture_(TextureManager::Get("sprites.png")),
-	  type_(type), position_(position)
+	  type_(type), position_(position),
+	  frame_set_(get_frame_set(type))
 {
 }
 
@@ -83,7 +105,7 @@ void Leap::Update(const float dt)
 	if (frame_time_ >= frame_duration)
 	{
 		frame_++;
-		if (frame_ >= frame_set.size())
+		if (frame_ >= frame_set_.size())
 		{
 			alive_ = false;
 			return;
@@ -95,7 +117,7 @@ void Leap::Update(const float dt)
 
 void Leap::Draw() const
 {
-	for (const auto &[sprite, x, y]: frame_set[frame_])
+	for (const auto &[sprite, x, y]: frame_set_[frame_])
 	{
 		const float dx = position_.x + (x * 2);
 		const float dy = position_.y + (y * 2);

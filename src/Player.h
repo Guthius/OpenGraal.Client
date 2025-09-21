@@ -17,6 +17,7 @@ private:
 	auto CheckForLevelLinkAt(const Vector2 &position) -> bool;
 	auto CheckForSignAt(const Vector2 &position) const -> bool;
 	void CheckAttack(Vector2 &position);
+	void TryDestroyObjectFacing(const Vector2 &position) const;
 	auto CheckMovement(Vector2 &position, float speed, float slide_speed) -> bool;
 	auto TryMove(Vector2& position, Vector2 direction, float speed) const -> bool;
 	auto TryMoveFromWall(Vector2 position) -> void;
