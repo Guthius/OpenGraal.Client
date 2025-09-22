@@ -155,7 +155,7 @@ void Game::UpdateThrownItems(const float dt) const
 
 		if (!item.IsAlive())
 		{
-			SpawnLeaps(LeapType::Leaves, item.GetPosition());
+			SpawnLeaps(item.GetLeapType(), item.GetPosition());
 		}
 	}
 

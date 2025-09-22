@@ -17,6 +17,8 @@ enum class LeapType
 	None,
 	Leaves,
 	Grass,
+	Stone,
+	Wood
 };
 
 class Leap

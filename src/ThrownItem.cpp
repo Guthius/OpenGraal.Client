@@ -1,5 +1,6 @@
 #include "ThrownItem.h"
 
+#include "Actor.h"
 #include "TextureManager.h"
 
 constexpr auto carry_height = 40.0f;
@@ -19,9 +20,22 @@ static constexpr Rectangle GetSpriteRect(const Actor::CarriedItem type)
 	}
 }
 
+static constexpr LeapType GetLeapType(Actor::CarriedItem type)
+{
+	switch (type)
+	{
+		case Actor::CarriedItem::Bush: return LeapType::Leaves;
+		case Actor::CarriedItem::Vase: return LeapType::Stone;
+		case Actor::CarriedItem::Sign: return LeapType::Wood;
+		default:
+			return LeapType::None;
+	}
+}
+
 ThrownItem::ThrownItem(const Actor::CarriedItem type, const Vector2 origin, const Direction dir)
 	: type_(type), start_(origin), position_(origin), dir_(dir),
-	  sprites_(TextureManager::Get("sprites.png"))
+	  sprites_(TextureManager::Get("sprites.png")),
+	  leap_type_(::GetLeapType(type))
 {
 	const auto [dir_X, dir_y] = GetDirectionVector(dir);
 

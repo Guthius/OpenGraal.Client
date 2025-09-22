@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Actor.h"
+#include "Leaps.h"
 
 class ThrownItem final
 {
@@ -8,6 +9,7 @@ public:
 	ThrownItem(Actor::CarriedItem type, Vector2 origin, Direction dir);
 
 	auto GetType() const -> Actor::CarriedItem { return type_; }
+	auto GetLeapType() const -> LeapType { return leap_type_; }
 	auto GetPosition() const -> const Vector2 & { return position_; }
 	auto IsAlive() const -> bool { return alive_; }
 	void Update(float dt);
@@ -25,4 +27,5 @@ private:
 	Direction dir_{Direction::DIR_DOWN};
 	bool alive_{true};
 	mutable Texture2D sprites_{};
+	LeapType leap_type_;
 };
