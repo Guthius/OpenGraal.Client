@@ -21,7 +21,6 @@ Game::Game()
 
 	player_ = new Player(this);
 	player_->SetPosition(pos);
-	player_->SetCarriedItem(Actor::CarriedItem::Bush);
 
 	level_ = new LevelInfo(
 		LevelManager::Get("onlinestartlocal.graal"),
@@ -50,7 +49,7 @@ void Game::Run() const
 		ClearBackground(BLACK);
 
 		Draw();
-		DraWHud();
+		DrawHud();
 
 		sign_->Draw(SIGN_WIDTH, SIGN_HEIGHT);
 
@@ -143,9 +142,6 @@ void Game::Update() const
 
 		const int tileId = level_->Level->GetTileId(worldX, worldY);
 		TraceLog(LOG_INFO, "Clicked tile (%d,%d) world(%d,%d) id=%d", tx, ty, worldX, worldY, tileId);
-
-		const auto x = level_->Level->MatchObjectAt(worldX, worldY);
-		TraceLog(LOG_INFO, "Pattern = %d as %d,%d", x.Type, x.X, x.Y);
 	}
 
 	player_->Update(GetFrameTime());
@@ -242,7 +238,7 @@ void Game::SpawnLeaps(LeapType type, Vector2 origin) const
 	leaps_.emplace_back(type, origin);
 }
 
-void Game::DraWHud() const
+void Game::DrawHud() const
 {
 	/* Buttons */
 	DrawHudKey(state_, font20_, {15, 30}, "A");

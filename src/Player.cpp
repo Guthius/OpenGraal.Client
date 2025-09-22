@@ -512,7 +512,7 @@ void Player::CheckPushAndPull()
 		return;
 	}
 
-	if (mode_ == Mode::Swim || !IsFacingWall())
+	if (mode_ == Mode::Swim || !IsFacingWall() || IsCarrying())
 	{
 		return;
 	}
@@ -521,6 +521,11 @@ void Player::CheckPushAndPull()
 
 	if (IsKeyDown(KEY_A))
 	{
+		if (TryPickupItem())
+		{
+			return;
+		}
+
 		if (IsKeyDown(GetOppositeDirectionKey(dir)))
 		{
 			mode_ = Mode::Pull;
@@ -529,6 +534,8 @@ void Player::CheckPushAndPull()
 		{
 			mode_ = Mode::Grab;
 		}
+
+		return;
 	}
 
 	if (IsKeyDown(GetDirectionKey(dir)))
@@ -547,6 +554,31 @@ void Player::CheckPushAndPull()
 	{
 		push_timer_ = 0;
 	}
+}
+
+auto Player::TryPickupItem() -> bool
+{
+	auto [ax, ay] = position_ + Vector2(16, 16) + GetDirectionVector(GetDirection()) * 32;
+
+	const auto carried_item = game_->GetCurrentLevel()->LiftObjectAt(ax, ay);
+	if (carried_item == CarriedItem::None)
+	{
+		return false;
+	}
+
+	SetAnimation("pull");
+
+	if (const auto sound = SoundManager::Get("lift.wav"); IsSoundValid(sound))
+	{
+		PlaySound(sound);
+	}
+
+	mode_ = Mode::Idle;
+
+	SetCarriedItem(carried_item);
+	SetAnimation("idle");
+
+	return true;
 }
 
 auto Player::CheckWall(const Direction dir) const -> int

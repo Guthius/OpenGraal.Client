@@ -29,7 +29,6 @@ static constexpr Rectangle sprites[] = {
 	/* 23 */ {0, 456, 16, 8},
 
 	/* 24 */ {35, 8, 9, 8},
-
 	/* 25 */ {44, 0, 16, 16},
 	/* 26 */ {60, 0, 16, 16},
 
@@ -55,7 +54,7 @@ static constexpr Rectangle sprites[] = {
 	/* 46 */ {6, 148, 6, 4}
 };
 
-LeapFrameSet frame_set = {
+LeapFrameSet frame_set_leaves = {
 	{{25, 0, 4}, {25, 6, 0}, {26, 6, 8}, {26, 9, 17}},
 	{{25, -2, 4}, {25, 4, -4}, {26, 8, 10}, {26, 9, 19}},
 	{{26, -4, 4}, {25, 2, -8}, {26, 10, 12}, {26, 9, 21}},
@@ -65,7 +64,7 @@ LeapFrameSet frame_set = {
 	{{26, -8, 4}, {25, -2, -16}, {26, 10, 22}, {26, 10, 25}},
 };
 
-LeapFrameSet frame_set_2 = {
+LeapFrameSet frame_set_grass = {
 	{{24, 0, 8}, {24, 8, 0}, {24, 12, 8}},
 	{{24, -2, 8}, {24, 8, -2}, {24, 14, 8}},
 	{{24, -4, 8}, {24, 8, -4}, {24, 16, 8}},
@@ -80,10 +79,10 @@ static const LeapFrameSet &get_frame_set(const LeapType type)
 	{
 		default:
 		case LeapType::Leaves:
-			return frame_set;
+			return frame_set_leaves;
 
 		case LeapType::Grass:
-			return frame_set_2;
+			return frame_set_grass;
 	}
 }
 

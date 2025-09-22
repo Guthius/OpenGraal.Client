@@ -15,7 +15,7 @@ public:
 		None,
 		Bush,
 		Sign,
-		Pot,
+		Vase,
 		Stone,
 		BlackStone
 	};

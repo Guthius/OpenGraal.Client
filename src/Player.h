@@ -22,6 +22,7 @@ private:
 	auto TryMove(Vector2& position, Vector2 direction, float speed) const -> bool;
 	auto TryMoveFromWall(Vector2 position) -> void;
 	void CheckPushAndPull();
+	auto TryPickupItem() -> bool;
 	auto CheckWall(Direction dir) const -> int;
 	void Slide(Vector2 &position, Direction dir, int wall, float speed);
 	void UpdateAnimation();

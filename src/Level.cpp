@@ -15,15 +15,35 @@
 
 struct LevelObjectPattern
 {
-	const LevelObjectType Type;
-	const short Tiles[4];
-	const short Replacement[4];
+	LevelObjectType Type;
+	std::array<short, 4> Tiles;
+	std::array<short, 4> Replacement;
 	LeapType LeapType;
 };
 
 static const std::vector<LevelObjectPattern> object_patterns = {
-	{LevelObjectType::Bush, {2, 3, 18, 19}, {677, 678, 693, 694}, LeapType::Leaves},
-	{LevelObjectType::Grass, {420, 421, 436, 437}, {679, 680, 695, 696}, LeapType::Grass},
+	{
+		.Type = LevelObjectType::Bush,
+		.Tiles = {2, 3, 18, 19},
+		.Replacement = {677, 678, 693, 694},
+		.LeapType = LeapType::Leaves
+	},
+	{
+		.Type = LevelObjectType::Grass,
+		.Tiles = {420, 421, 436, 437},
+		.Replacement = {679, 680, 695, 696},
+		.LeapType = LeapType::Grass
+	},
+	{
+		.Type = LevelObjectType::Vase,
+		.Tiles = {684, 685, 700, 701},
+		.Replacement = {1770, 1771, 1786, 1787}
+	},
+	{
+		.Type = LevelObjectType::Sign,
+		.Tiles = {512, 513, 528, 529},
+		.Replacement = {1802, 1803, 1818, 1819}
+	},
 };
 
 LevelLink::LevelLink(const std::string &data)
@@ -249,7 +269,7 @@ auto Level::MatchObjectAt(const int x, const int y) const -> LevelObjectMatch
 		return dx >= 0 && dx < 64 && dy >= 0 && dy < 64;
 	};
 
-	const auto match_pattern_at = [&](const int dx, const int dy, const short tile_ids[4]) -> bool {
+	const auto match_pattern_at = [&](const int dx, const int dy, const std::array<short, 4> &tile_ids) -> bool {
 		for (auto yy = 0; yy < 2; yy++)
 		{
 			for (auto xx = 0; xx < 2; xx++)
@@ -304,7 +324,12 @@ auto Level::MatchObjectAt(const int x, const int y) const -> LevelObjectMatch
 
 auto Level::DestroyObjectAt(const int x, const int y) -> std::tuple<LeapType, int, int>
 {
-	const auto replace_tiles_at = [&](const int dx, const int dy, const short tile_ids[4]) {
+	const auto is_destructible = [&](const LevelObjectType type) -> bool {
+		return type == LevelObjectType::Grass ||
+		       type == LevelObjectType::Bush;
+	};
+
+	const auto replace_tiles_at = [&](const int dx, const int dy, const std::array<short, 4> &tile_ids) {
 		for (auto yy = 0; yy < 2; yy++)
 		{
 			for (auto xx = 0; xx < 2; xx++)
@@ -318,7 +343,7 @@ auto Level::DestroyObjectAt(const int x, const int y) -> std::tuple<LeapType, in
 	};
 
 	const auto [object_type, dx, dy, replacement_tile_ids, leap_type] = MatchObjectAt(x, y);
-	if (object_type == LevelObjectType::None)
+	if (!is_destructible(object_type))
 	{
 		return {LeapType::None, 0, 0};
 	}
@@ -326,6 +351,45 @@ auto Level::DestroyObjectAt(const int x, const int y) -> std::tuple<LeapType, in
 	replace_tiles_at(dx, dy, replacement_tile_ids);
 
 	return {leap_type, dx * 16, dy * 16};
+}
+
+auto Level::LiftObjectAt(const int x, const int y) -> Actor::CarriedItem
+{
+	const auto get_carried_item_type = [&](const LevelObjectType type) -> Actor::CarriedItem {
+		switch (type)
+		{
+			case LevelObjectType::Bush: return Actor::CarriedItem::Bush;
+			case LevelObjectType::Vase: return Actor::CarriedItem::Vase;
+			case LevelObjectType::Sign: return Actor::CarriedItem::Sign;
+			default:
+				return Actor::CarriedItem::None;
+		}
+	};
+
+	const auto replace_tiles_at = [&](const int dx, const int dy, const std::array<short, 4> &tile_ids) {
+		for (auto yy = 0; yy < 2; yy++)
+		{
+			for (auto xx = 0; xx < 2; xx++)
+			{
+				const auto tx = dx + xx;
+				const auto ty = dy + yy;
+
+				_board[ty * 64 + tx] = tile_ids[yy * 2 + xx];
+			}
+		}
+	};
+
+	const auto [object_type, dx, dy, replacement_tile_ids, leap_type] = MatchObjectAt(x, y);
+
+	const auto carried_item_type = get_carried_item_type(object_type);
+	if (carried_item_type == Actor::CarriedItem::None)
+	{
+		return Actor::CarriedItem::None;
+	}
+
+	replace_tiles_at(dx, dy, replacement_tile_ids);
+
+	return carried_item_type;
 }
 
 auto Level::Load(const std::filesystem::path &path) -> Level *

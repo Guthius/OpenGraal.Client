@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <filesystem>
 #include <fstream>
 #include <vector>
@@ -12,14 +13,16 @@ enum class LevelObjectType
 {
 	None,
 	Bush,
-	Grass
+	Grass,
+	Vase,
+	Sign
 };
 
 struct LevelObjectMatch
 {
 	LevelObjectType Type;
 	int X, Y;
-	short Replacement[4];
+	std::array<short, 4> Replacement;
 	LeapType LeapType;
 };
 
@@ -63,6 +66,7 @@ public:
 	[[nodiscard]] auto MatchObjectAt(int x, int y) const -> LevelObjectMatch;
 
 	auto DestroyObjectAt(int x, int y) -> std::tuple<LeapType, int, int>;
+	auto LiftObjectAt(int x, int y) -> Actor::CarriedItem;
 
 	static auto Load(const std::filesystem::path &path) -> Level *;
 

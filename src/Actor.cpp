@@ -54,7 +54,7 @@ void Actor::Draw() const
 				draw_carried_object_at({32.0f, 338.0f}, dest);
 				break;
 
-			case CarriedItem::Pot:
+			case CarriedItem::Vase:
 				draw_carried_object_at({64.0f, 338.0f}, dest);
 				break;
 

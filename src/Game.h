@@ -49,7 +49,7 @@ private:
 
 	void Draw() const;
 	void DrawPlayer() const;
-	void DraWHud() const;
+	void DrawHud() const;
 	void DrawHudResource(Rectangle rect, Vector2 pos, const std::string &text) const;
 	void DrawDiagnostics() const;
 

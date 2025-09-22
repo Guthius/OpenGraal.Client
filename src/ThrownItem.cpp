@@ -2,8 +2,9 @@
 
 #include "TextureManager.h"
 
-constexpr float carry_height = 40.0f;
-constexpr float travel_distance = 7.0f * 16.0f; // 7 tiles
+constexpr auto carry_height = 40.0f;
+constexpr auto travel_distance_in_tiles = 7.0f;
+constexpr auto travel_distance = travel_distance_in_tiles * 16.0f;
 
 static constexpr Rectangle GetSpriteRect(const Actor::CarriedItem type)
 {
@@ -11,7 +12,7 @@ static constexpr Rectangle GetSpriteRect(const Actor::CarriedItem type)
 	{
 		case Actor::CarriedItem::Bush: return {0.0f, 338.0f, 32, 32};
 		case Actor::CarriedItem::Sign: return {32.0f, 338.0f, 32, 32};
-		case Actor::CarriedItem::Pot: return {64.0f, 338.0f, 32, 32};
+		case Actor::CarriedItem::Vase: return {64.0f, 338.0f, 32, 32};
 		case Actor::CarriedItem::Stone: return {96.0f, 338.0f, 32, 32};
 		case Actor::CarriedItem::BlackStone: return {96.0f, 370.0f, 32, 32};
 		default: return {};
