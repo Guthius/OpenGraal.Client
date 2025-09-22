@@ -120,6 +120,21 @@ static constexpr auto GetSpeed(const float dt, const float speed) -> float
 
 void Player::Update(const float dt)
 {
+	// Handle temporary lift-show state: show pull animation and item in front, block other actions
+	if (mode_ == Mode::LiftShow)
+	{
+		lift_show_timer_ -= dt;
+		if (lift_show_timer_ <= 0.0f)
+		{
+			mode_ = Mode::Idle;
+			UpdateAnimation();
+		}
+
+		Actor::Update(dt);
+		UpdateOverlay(dt);
+		return;
+	}
+
 	auto position = GetPosition();
 
 	const auto mode = mode_;
@@ -142,12 +157,13 @@ void Player::Update(const float dt)
 		}
 	}
 
+	CheckThrow();
 	CheckForLevelLinkAt(position);
 	CheckPushAndPull();
 
 	if (mode_ != mode)
 	{
-		if (mode_ != Mode::Idle && mode_ != Mode::Walk)
+		if (mode_ != Mode::Idle && mode_ != Mode::Walk && mode_ != Mode::LiftShow)
 		{
 			DropCarriedItem();
 		}
@@ -309,7 +325,6 @@ void Player::TryDestroyObjectFacing(const Vector2 &position) const
 			                  static_cast<float>(leap_y)));
 	}
 }
-
 
 auto Player::CheckMovement(Vector2 &position, const float speed, const float slide_speed) -> bool
 {
@@ -566,17 +581,18 @@ auto Player::TryPickupItem() -> bool
 		return false;
 	}
 
-	SetAnimation("pull");
+	SetAnimation("grab");
 
 	if (const auto sound = SoundManager::Get("lift.wav"); IsSoundValid(sound))
 	{
 		PlaySound(sound);
 	}
 
-	mode_ = Mode::Idle;
-
 	SetCarriedItem(carried_item);
-	SetAnimation("idle");
+
+	mode_ = Mode::LiftShow;
+
+	lift_show_timer_ = 0.1f;
 
 	return true;
 }
@@ -584,9 +600,6 @@ auto Player::TryPickupItem() -> bool
 auto Player::CheckWall(const Direction dir) const -> int
 {
 	auto [x, y] = GetPosition();
-
-	// x += 8;
-	// y += 16;
 
 	Vector2 v1, v2;
 	switch (dir)
@@ -621,6 +634,22 @@ auto Player::CheckWall(const Direction dir) const -> int
 	if (game_->OnWall(v2)) result |= Corner2;
 
 	return result;
+}
+
+auto is_key_pressed = false;
+auto was_key_pressed = false;
+
+void Player::CheckThrow()
+{
+	was_key_pressed = is_key_pressed;
+	is_key_pressed = IsKeyPressed(KEY_A);
+
+	if (is_key_pressed && !was_key_pressed && IsCarrying())
+	{
+		DropCarriedItem();
+
+		SetAnimation(mode_ == Mode::Walk ? "walk" : "idle");
+	}
 }
 
 void Player::Slide(Vector2 &position, const Direction dir, int wall, const float speed)
@@ -721,6 +750,7 @@ void Player::UpdateAnimation()
 			SetAnimation("pull");
 			break;
 
+		case Mode::LiftShow:
 		case Mode::Grab:
 			SetAnimation("grab");
 			break;
@@ -946,4 +976,16 @@ void Player::SetOverlay(const OverlayType overlay)
 	overlay_ = overlay;
 	overlay_frame_ = 0;
 	overlay_timer_ = 0.1f;
+}
+
+
+bool Player::GetCarriedDestinationOverride(Vector2 &dest) const
+{
+	if (mode_ == Mode::LiftShow)
+	{
+		const auto [dirx, diry] = GetDirectionVector(GetDirection());
+		dest = {position_.x + dirx * 32.0f, position_.y + diry * 32.0f};
+		return true;
+	}
+	return false;
 }

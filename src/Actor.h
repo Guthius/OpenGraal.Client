@@ -43,6 +43,8 @@ public:
 	void SetCarriedItem(const CarriedItem item) { carried_object_ = item; }
 
 protected:
+	virtual bool GetCarriedDestinationOverride(Vector2 &dest) const { return false; }
+
 	Vector2 position_{0, 0};
 	Direction dir_ = Direction::DIR_UP;
 	AnimationState animation_state_{};

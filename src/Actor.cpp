@@ -42,7 +42,9 @@ void Actor::Draw() const
 
 	if (carried_object_ != CarriedItem::None && sprites_.id != 0)
 	{
-		const Vector2 dest{position_.x, position_.y - 40};
+		Vector2 dest{position_.x, position_.y - 40};
+
+		GetCarriedDestinationOverride(dest);
 
 		switch (carried_object_)
 		{

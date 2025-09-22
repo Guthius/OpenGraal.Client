@@ -24,6 +24,7 @@ private:
 	void CheckPushAndPull();
 	auto TryPickupItem() -> bool;
 	auto CheckWall(Direction dir) const -> int;
+	void CheckThrow();
 	void Slide(Vector2 &position, Direction dir, int wall, float speed);
 	void UpdateAnimation();
 	auto GetTileFacing() const -> int;
@@ -45,7 +46,8 @@ private:
 		Swim,
 		Sit,
 		Jump,
-		Attack
+		Attack,
+		LiftShow
 	};
 
 	enum class OverlayType
@@ -67,6 +69,9 @@ private:
 
 	void SetOverlay(OverlayType overlay);
 
+	// Override hook to control how carried items are drawn (e.g., during lift show)
+	bool GetCarriedDestinationOverride(Vector2 &dest) const override;
+
 	Game *game_;
 	Mode mode_ = Mode::Idle;
 	float speed_ = 3.5f;
@@ -79,4 +84,5 @@ private:
 	Vector2 jump_from_{};
 	Vector2 jump_to_{};
 	Sound jump_sound_{};
+	float lift_show_timer_ = 0.0f;
 };
