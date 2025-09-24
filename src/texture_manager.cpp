@@ -1,38 +1,42 @@
 #include "texture_manager.hpp"
 
+#include <map>
 #include <boost/algorithm/string.hpp>
 
 #include "file_manager.hpp"
 
-texture_manager::TextureMap texture_manager::_textures;
-
-auto texture_manager::Get(const std::string &fileName) -> Texture2D
+namespace
 {
-	const auto key = boost::to_lower_copy(fileName);
-	const auto it = _textures.find(key);
+	std::map<std::string, Texture2D> loaded_textures;
 
-	if (it == _textures.end())
+	auto load_texture_from_file(const std::string &key) -> Texture2D
 	{
-		return Load(key);
-	}
+		const auto path = find_file(key);
 
-	return it->second;
+		if (path.empty())
+		{
+			loaded_textures[key] = {};
+
+			return {};
+		}
+
+		const auto texture = LoadTexture(path.string().c_str());
+
+		loaded_textures[key] = texture;
+
+		return texture;
+	}
 }
 
-auto texture_manager::Load(const std::string &key) -> Texture2D
+auto load_texture(const std::string &filename) -> Texture2D
 {
-	const auto path = file_manager::GetPath(key);
+	const auto key = boost::to_lower_copy(filename);
+	const auto iter = loaded_textures.find(key);
 
-	if (path.empty())
+	if (iter == loaded_textures.end())
 	{
-		_textures[key] = {};
-
-		return {};
+		return load_texture_from_file(key);
 	}
 
-	const auto texture = LoadTexture(path.string().c_str());
-
-	_textures[key] = texture;
-
-	return texture;
+	return iter->second;
 }

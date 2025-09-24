@@ -3,4 +3,4 @@
 #include <vector>
 #include <string>
 
-auto Split(const std::string &str) -> std::vector<std::string>;
+auto split_string(const std::string &str) -> std::vector<std::string>;

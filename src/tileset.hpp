@@ -1,46 +1,37 @@
 #pragma once
 
 #include <raylib.h>
+#include <string>
 
-struct TileType
+struct tile_type
 {
 	enum
 	{
-		Passable = 0,
-		Wall = 1 << 0,
-		Water = 1 << 1,
-		Chair = 1 << 2,
-		WaterShallow = 1 << 3,
-		Swamp = 1 << 4,
-		Jump = 1 << 5,
-		BedTop = 1 << 6,
-		BedBottom = 1 << 7,
+		passable = 0,
+		wall = 1 << 0,
+		water = 1 << 1,
+		chair = 1 << 2,
+		water_shallow = 1 << 3,
+		swamp = 1 << 4,
+		jump = 1 << 5,
+		bed_top = 1 << 6,
+		bed_bottom = 1 << 7,
 
-		Unknown = 1 << 16
+		unknown = 1 << 16
 	};
 };
 
 class tileset
 {
 public:
-	explicit tileset(const char *filename);
+	explicit tileset(const std::string &filename);
 
-	~tileset()
-	{
-		if (tiles_ == nullptr)
-		{
-			return;
-		}
+	~tileset();
 
-		delete[] tiles_;
-
-		tiles_ = nullptr;
-	}
-
-	[[nodiscard]] auto GetTexture() const -> Texture2D { return texture_; }
-	[[nodiscard]] auto GetTileWidth() const -> float { return tile_width_; }
-	[[nodiscard]] auto GetTileHeight() const -> float { return tile_height_; }
-	[[nodiscard]] auto GetType(int tile_id) const -> int;
+	[[nodiscard]] auto get_texture() const -> Texture2D { return texture_; }
+	[[nodiscard]] auto get_tile_width() const -> float { return tile_width_; }
+	[[nodiscard]] auto get_tile_height() const -> float { return tile_height_; }
+	[[nodiscard]] auto get_tile_type(int tile_id) const -> int;
 
 private:
 	int tile_count_;

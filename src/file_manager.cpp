@@ -1,13 +1,17 @@
 #include "file_manager.hpp"
 
+#include <map>
 #include <raylib.h>
 #include <boost/algorithm/string.hpp>
 
-file_manager::FileMap file_manager::Files{};
-
-void file_manager::BuildFileTable(const std::string &data_path)
+namespace
 {
-	Files.clear();
+	std::map<std::string, std::filesystem::path> file_map{};
+}
+
+void build_file_table(const std::string &data_path)
+{
+	file_map.clear();
 
 	const auto path = std::filesystem::path(data_path);
 
@@ -34,13 +38,13 @@ void file_manager::BuildFileTable(const std::string &data_path)
 
 		auto key = boost::to_lower_copy(entry.path().filename().string());
 
-		Files[key] = entry.path();
+		file_map[key] = entry.path();
 	}
 
-	TraceLog(LOG_INFO, "FILEMANAGER: File table loaded successfully (%d files)", Files.size());
+	TraceLog(LOG_INFO, "FILEMANAGER: File table loaded successfully (%d files)", file_map.size());
 }
 
-auto file_manager::GetPath(const std::string &filename) -> std::filesystem::path
+auto find_file(const std::string &filename) -> std::filesystem::path
 {
 	if (filename.empty())
 	{
@@ -48,9 +52,9 @@ auto file_manager::GetPath(const std::string &filename) -> std::filesystem::path
 	}
 
 	const auto key = boost::to_lower_copy(filename);
-	const auto it = Files.find(key);
+	const auto it = file_map.find(key);
 
-	if (it == Files.end())
+	if (it == file_map.end())
 	{
 		TraceLog(LOG_WARNING, "FILEMANAGER: [%s] Could not locate file", filename.c_str());
 

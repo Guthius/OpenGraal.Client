@@ -5,20 +5,20 @@
 
 #include "texture_manager.hpp"
 
-void actor::Update(const float dt)
+actor::actor() : sprites_(load_texture("sprites.png"))
 {
-	if (sprites_.id == 0)
-	{
-		sprites_ = texture_manager::Get("sprites.png");
-	}
+	set_animation("idle");
+}
 
+void actor::update(const float dt)
+{
 	if (animation_ != nullptr)
 	{
-		animation_->Update(dt, animation_state_);
+		animation_->update(dt, animation_state_);
 	}
 }
 
-void actor::Draw() const
+void actor::draw() const
 {
 	if (animation_ == nullptr)
 	{
@@ -28,7 +28,7 @@ void actor::Draw() const
 	rlPushMatrix();
 	rlTranslatef(-8, -16, 0);
 
-	animation_->Draw(
+	animation_->draw(
 		position_.x,
 		position_.y,
 		dir_,
@@ -40,31 +40,31 @@ void actor::Draw() const
 		DrawTextureRec(sprites_, {src.x, src.y, 32, 32}, dst, WHITE);
 	};
 
-	if (carried_object_ != CarriedItem::None && sprites_.id != 0)
+	if (carried_object_ != carry_object_type::none && sprites_.id != 0)
 	{
 		Vector2 dest{position_.x, position_.y - 40};
 
-		GetCarriedDestinationOverride(dest);
+		get_carried_destination_override(dest);
 
 		switch (carried_object_)
 		{
-			case CarriedItem::Bush:
+			case carry_object_type::bush:
 				draw_carried_object_at({0.0f, 338.0f}, dest);
 				break;
 
-			case CarriedItem::Sign:
+			case carry_object_type::sign:
 				draw_carried_object_at({32.0f, 338.0f}, dest);
 				break;
 
-			case CarriedItem::Vase:
+			case carry_object_type::vase:
 				draw_carried_object_at({64.0f, 338.0f}, dest);
 				break;
 
-			case CarriedItem::Stone:
+			case carry_object_type::stone:
 				draw_carried_object_at({96.0f, 338.0f}, dest);
 				break;
 
-			case CarriedItem::BlackStone:
+			case carry_object_type::black_stone:
 				draw_carried_object_at({96.0f, 370.0f}, dest);
 				break;
 
@@ -73,7 +73,7 @@ void actor::Draw() const
 	}
 }
 
-void actor::SetAnimation(const std::string &name)
+void actor::set_animation(const std::string &name)
 {
 	const auto animation_name = boost::to_lower_copy(name);
 
@@ -83,12 +83,12 @@ void actor::SetAnimation(const std::string &name)
 	}
 
 	animation_name_ = animation_name;
-	animation_ = animation_manager::Get(animation_name_);
+	animation_ = load_animation(animation_name_);
 
 	if (animation_ == nullptr)
 	{
 		return;
 	}
 
-	animation_state_.Reset(0, animation_);
+	animation_state_.reset(0, animation_);
 }

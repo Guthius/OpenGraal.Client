@@ -9,62 +9,67 @@
 #include "texture_manager.hpp"
 #include "utils.hpp"
 
-void AnimationState::Reset(size_t frame, const animation *animation)
+namespace
+{
+	sprite_source parse_sprite_source(const std::string &str)
+	{
+		if (str == "SPRITES") return sprite_source::sprites;
+		if (str == "SHIELD") return sprite_source::shield;
+		if (str == "SWORD") return sprite_source::sword;
+		if (str == "HEAD") return sprite_source::head;
+		if (str == "BODY") return sprite_source::body;
+		if (str == "ATTR1") return sprite_source::attr1;
+
+		return sprite_source::file;
+	}
+}
+
+void animation_state::reset(size_t frame, const animation *animation)
 {
 	if (animation == nullptr)
 	{
 		return;
 	}
 
-	if (const auto max_frame = animation->GetFrameCount() - 1; frame > max_frame)
+	if (const auto max_frame = animation->frame_count() - 1; frame > max_frame)
 	{
 		frame = max_frame;
 	}
 
-	Frame = frame;
-	NextFrame = animation->GetFrameDuration(frame);
-	Ended = false;
+	current_frame = frame;
+	current_frame_duration = animation->frame_duration(frame);
+	ended = false;
 
-	animation->PlaySound(frame);
+	animation->play_sound(frame);
 }
 
-animation::SpriteSource animation::ParseSpriteSource(const std::string &str)
-{
-	if (str == "SPRITES") return SpriteSource::Sprites;
-	if (str == "SHIELD") return SpriteSource::Shield;
-	if (str == "SWORD") return SpriteSource::Sword;
-	if (str == "HEAD") return SpriteSource::Head;
-	if (str == "BODY") return SpriteSource::Body;
-	if (str == "ATTR1") return SpriteSource::Attr1;
-
-	return SpriteSource::File;
-}
-
-void animation::ParseSprite(const std::vector<std::string> &tokens)
+void animation::parse_sprite(const std::vector<std::string> &tokens)
 {
 	if (tokens.size() < 7)
 	{
 		return;
 	}
 
-	Sprite sprite;
+	sprite sprite;
 
-	sprite.Id = std::stoi(tokens[1]);
-	sprite.Source = ParseSpriteSource(tokens[2]);
-	sprite.X = std::stoi(tokens[3]);
-	sprite.Y = std::stoi(tokens[4]);
-	sprite.W = std::stoi(tokens[5]);
-	sprite.H = std::stoi(tokens[6]);
+	sprite.id = std::stoi(tokens[1]);
+	sprite.source = parse_sprite_source(tokens[2]);
+	sprite.texture_rect = {
+		.x = std::stof(tokens[3]),
+		.y = std::stof(tokens[4]),
+		.width = std::stof(tokens[5]),
+		.height = std::stof(tokens[6])
+	};
 
-	if (sprite.Source == SpriteSource::File)
+	if (sprite.source == sprite_source::file)
 	{
-		sprite.Texture = tokens[2];
+		sprite.texture = tokens[2];
 	}
 
-	sprites_[sprite.Id] = sprite;
+	sprites_[sprite.id] = sprite;
 }
 
-void animation::ParseAni(std::ifstream &stream)
+void animation::parse_ani(std::ifstream &stream)
 {
 	std::string line;
 	while (std::getline(stream, line))
@@ -76,26 +81,26 @@ void animation::ParseAni(std::ifstream &stream)
 			return;
 		}
 
-		Frame frame{};
+		frame frame{};
 
-		frame.Duration = 0.06f;
+		frame.duration = 0.06f;
 
 		if (single_direction_)
 		{
-			ParseSprites(line, frame.Sprites[0]);
+			parse_sprites(line, frame.sprites[0]);
 		}
 		else
 		{
-			ParseSprites(line, frame.Sprites[0]);
+			parse_sprites(line, frame.sprites[0]);
 
 			if (!std::getline(stream, line)) break;
-			ParseSprites(line, frame.Sprites[1]);
+			parse_sprites(line, frame.sprites[1]);
 
 			if (!std::getline(stream, line)) break;
-			ParseSprites(line, frame.Sprites[2]);
+			parse_sprites(line, frame.sprites[2]);
 
 			if (!std::getline(stream, line)) break;
-			ParseSprites(line, frame.Sprites[3]);
+			parse_sprites(line, frame.sprites[3]);
 		}
 
 		while (std::getline(stream, line))
@@ -113,7 +118,7 @@ void animation::ParseAni(std::ifstream &stream)
 				break;
 			}
 
-			auto tokens = Split(line);
+			auto tokens = split_string(line);
 			if (tokens.empty())
 			{
 				break;
@@ -121,15 +126,14 @@ void animation::ParseAni(std::ifstream &stream)
 
 			if (tokens[0] == "WAIT" && tokens.size() == 2)
 			{
-				frame.Duration = std::stof(tokens[1]) / 10;
+				frame.duration = std::stof(tokens[1]) / 10;
 			}
 			else if (tokens[0] == "PLAYSOUND" && tokens.size() == 4)
 			{
-				frame.PlaySound = tokens[1];
-				frame.PlaySoundAt =
-				{
-					std::stof(tokens[2]),
-					std::stof(tokens[3])
+				frame.play_sound = tokens[1];
+				frame.play_sound_at = {
+					.x = std::stof(tokens[2]),
+					.y = std::stof(tokens[3])
 				};
 			}
 		}
@@ -138,7 +142,7 @@ void animation::ParseAni(std::ifstream &stream)
 	}
 }
 
-void animation::ParseSprites(std::string &line, std::vector<SpriteRef> &frame)
+void animation::parse_sprites(std::string &line, std::vector<sprite_ref> &frame)
 {
 	std::vector<std::string> sprite_infos;
 	std::vector<std::string> tokens;
@@ -175,17 +179,17 @@ void animation::ParseSprites(std::string &line, std::vector<SpriteRef> &frame)
 			continue;
 		}
 
-		SpriteRef spriteRef{};
-
-		spriteRef.Sprite = &sprite->second;
-		spriteRef.X = std::stoi(tokens[1]);
-		spriteRef.Y = std::stoi(tokens[2]);
-
-		frame.push_back(spriteRef);
+		frame.push_back({
+			.sprite = &sprite->second,
+			.position = {
+				.x = std::stof(tokens[1]),
+				.y = std::stof(tokens[2])
+			}
+		});
 	}
 }
 
-void animation::Load(const std::filesystem::path &path)
+void animation::load_file(const std::filesystem::path &path)
 {
 	if (!is_regular_file(path))
 	{
@@ -208,7 +212,7 @@ void animation::Load(const std::filesystem::path &path)
 			continue;
 		}
 
-		auto tokens = Split(line);
+		auto tokens = split_string(line);
 
 		if (tokens.empty())
 		{
@@ -217,7 +221,7 @@ void animation::Load(const std::filesystem::path &path)
 
 		if (tokens[0] == "SPRITE")
 		{
-			ParseSprite(tokens);
+			parse_sprite(tokens);
 		}
 		else if (tokens[0] == "SINGLEDIRECTION")
 		{
@@ -245,35 +249,35 @@ void animation::Load(const std::filesystem::path &path)
 		}
 		else if (tokens[0] == "ANI")
 		{
-			ParseAni(file);
+			parse_ani(file);
 		}
 	}
 }
 
-void animation::Update(const float dt, AnimationState &state) const
+void animation::update(const float dt, animation_state &state) const
 {
-	if (state.Frame < 0 || state.Frame >= frames_.size())
+	if (state.current_frame < 0 || state.current_frame >= frames_.size())
 	{
-		state.Frame = 0;
-		state.NextFrame = frames_[0].Duration;
+		state.current_frame = 0;
+		state.current_frame_duration = frames_[0].duration;
 	}
 
-	state.NextFrame -= dt;
+	state.current_frame_duration -= dt;
 
-	if (state.NextFrame > 0)
+	if (state.current_frame_duration > 0)
 	{
 		return;
 	}
 
-	if (state.Frame < frames_.size() - 1)
+	if (state.current_frame < frames_.size() - 1)
 	{
-		state.Frame++;
-		state.NextFrame = frames_[state.Frame].Duration;
+		state.current_frame++;
+		state.current_frame_duration = frames_[state.current_frame].duration;
 
-		auto &sound = frames_[state.Frame].PlaySound;
+		auto &sound = frames_[state.current_frame].play_sound;
 		if (!sound.empty())
 		{
-			PlaySound(sound, {0, 0});
+			::play_sound(sound);
 		}
 
 		return;
@@ -281,22 +285,22 @@ void animation::Update(const float dt, AnimationState &state) const
 
 	if (continuous_)
 	{
-		state.Frame = 0;
-		state.NextFrame = frames_[0].Duration;
+		state.current_frame = 0;
+		state.current_frame_duration = frames_[0].duration;
 
-		auto &sound = frames_[state.Frame].PlaySound;
+		auto &sound = frames_[state.current_frame].play_sound;
 		if (!sound.empty())
 		{
-			PlaySound(sound, {0, 0});
+			::play_sound(sound);
 		}
 
 		return;
 	}
 
-	state.Ended = true;
+	state.ended = true;
 }
 
-void animation::Draw(float x, float y, Direction direction, const AnimationState &state) const
+void animation::draw(const float x, const float y, direction direction, const animation_state &state) const
 {
 	if (frames_.empty())
 	{
@@ -305,17 +309,17 @@ void animation::Draw(float x, float y, Direction direction, const AnimationState
 
 	if (single_direction_)
 	{
-		direction = Direction::DIR_UP;
+		direction = direction::up;
 	}
 
-	auto frame_index = state.Frame;
+	auto frame_index = state.current_frame;
 	if (frame_index > frames_.size() - 1)
 	{
 		frame_index = frames_.size() - 1;
 	}
 
 	auto &frame = frames_[frame_index];
-	auto &sprites = frame.Sprites[static_cast<int>(direction)];
+	auto &sprites = frame.sprites[static_cast<int>(direction)];
 
 	if (sprites.empty())
 	{
@@ -325,103 +329,80 @@ void animation::Draw(float x, float y, Direction direction, const AnimationState
 	rlPushMatrix();
 	rlTranslatef(x, y, 0);
 
-	DrawSprites(state, sprites);
+	draw_sprites(state, sprites);
 
 	rlPopMatrix();
 }
 
-void animation::PlaySound(const size_t frame) const
+void animation::play_sound(const size_t frame) const
 {
-	if (auto &sound = frames_[frame].PlaySound; !sound.empty())
+	if (auto &sound = frames_[frame].play_sound; !sound.empty())
 	{
-		PlaySound(sound, {0, 0});
+		::play_sound(sound);
 	}
 }
 
-void animation::PlaySound(const std::string &filename, const Vector2 &position)
-{
-	if (const auto sound = sound_manager::Get(filename); IsSoundValid(sound))
-	{
-		::PlaySound(sound);
-	}
-}
-
-void animation::DrawSprites(const AnimationState &state, const std::vector<SpriteRef> &sprite_refs) const
+void animation::draw_sprites(const animation_state &state, const std::vector<sprite_ref> &sprite_refs) const
 {
 	for (const auto &sprite_ref: sprite_refs)
 	{
-		if (sprite_ref.Sprite == nullptr)
+		if (sprite_ref.sprite == nullptr)
 		{
 			continue;
 		}
 
-		auto texture_name = GetTextureName(state, sprite_ref);
+		auto texture_name = get_texture_filename(state, sprite_ref);
 		if (texture_name.empty())
 		{
 			continue;
 		}
 
-		const auto texture = texture_manager::Get(texture_name);
+		const auto texture = load_texture(texture_name);
 
 		if (!IsTextureValid(texture))
 		{
 			continue;
 		}
 
-		const auto sx = static_cast<float>(sprite_ref.Sprite->X);
-		const auto sy = static_cast<float>(sprite_ref.Sprite->Y);
-		const auto sw = static_cast<float>(sprite_ref.Sprite->W);
-		const auto sh = static_cast<float>(sprite_ref.Sprite->H);
-
-		const auto dx = static_cast<float>(sprite_ref.X);
-		const auto dy = static_cast<float>(sprite_ref.Y);
-
 		DrawTextureRec(
 			texture,
-			{sx, sy, sw, sh},
-			{dx, dy},
+			sprite_ref.sprite->texture_rect,
+			sprite_ref.position,
 			WHITE);
 	}
 }
 
-std::string animation::GetTextureName(const AnimationState &state, const SpriteRef &sprite_ref) const
+std::string animation::get_texture_filename(const animation_state &state, const sprite_ref &sprite_ref) const
 {
-	switch (sprite_ref.Sprite->Source)
+	switch (sprite_ref.sprite->source)
 	{
-		case SpriteSource::File:
-			return sprite_ref.Sprite->Texture;
+		case sprite_source::file: return sprite_ref.sprite->texture;
+		case sprite_source::sprites: return "sprites.png";
+		case sprite_source::shield: return state.shield;
+		case sprite_source::sword: return state.sword;
 
-		case SpriteSource::Sprites:
-			return "sprites.png";
-
-		case SpriteSource::Shield:
-			return state.Shield;
-
-		case SpriteSource::Sword:
-			return state.Sword;
-
-		case SpriteSource::Head:
+		case sprite_source::head:
 			{
-				if (state.Head.empty())
+				if (state.head.empty())
 				{
 					return default_head_;
 				}
 
-				return state.Head;
+				return state.head;
 			}
 
-		case SpriteSource::Body:
+		case sprite_source::body:
 			{
-				if (state.Body.empty())
+				if (state.body.empty())
 				{
 					return default_body_;
 				}
 
-				return state.Body;
+				return state.body;
 			}
 
-		case SpriteSource::Attr1:
-			return state.Attr1;
+		case sprite_source::attr1:
+			return state.attr1;
 	}
 
 	return {};

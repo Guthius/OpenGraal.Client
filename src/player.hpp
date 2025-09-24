@@ -9,23 +9,23 @@ class player final : public actor
 public:
 	explicit player(game *game);
 
-	void Update(float dt) override;
-	void Draw() const override;
+	void update(float dt) override;
+	void draw() const override;
 
 private:
 	void ReturnIdle();
 	auto CheckForLevelLinkAt(const Vector2 &position) -> bool;
 	auto CheckForSignAt(const Vector2 &position) const -> bool;
-	void CheckAttack(Vector2 &position);
+	void CheckAttack(const Vector2 &position);
 	void TryDestroyObjectFacing(const Vector2 &position) const;
 	auto CheckMovement(Vector2 &position, float speed, float slide_speed) -> bool;
 	auto TryMove(Vector2& position, Vector2 direction, float speed) const -> bool;
 	auto TryMoveFromWall(Vector2 position) -> void;
 	void CheckPushAndPull();
 	auto TryPickupItem() -> bool;
-	auto CheckWall(Direction dir) const -> int;
+	auto CheckWall(direction dir) const -> int;
 	void CheckThrow();
-	void Slide(Vector2 &position, Direction dir, int wall, float speed);
+	void Slide(Vector2 &position, direction dir, int wall, float speed);
 	void UpdateAnimation();
 	auto GetTileFacing() const -> int;
 	auto IsFacingWall() const -> int;
@@ -70,7 +70,7 @@ private:
 	void SetOverlay(OverlayType overlay);
 
 	// Override hook to control how carried items are drawn (e.g., during lift show)
-	bool GetCarriedDestinationOverride(Vector2 &dest) const override;
+	bool get_carried_destination_override(Vector2 &dest) const override;
 
 	game *game_;
 	Mode mode_ = Mode::Idle;

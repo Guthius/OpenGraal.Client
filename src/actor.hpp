@@ -1,55 +1,43 @@
 #pragma once
 
+#include <raylib.h>
+#include <string>
+
 #include "animation.hpp"
 #include "animation_manager.hpp"
+#include "carry_object.hpp"
 #include "constants.hpp"
-
-#include <string>
-#include <raylib.h>
 
 class actor
 {
 public:
-	enum class CarriedItem
-	{
-		None,
-		Bush,
-		Sign,
-		Vase,
-		Stone,
-		BlackStone
-	};
-
-	actor()
-	{
-		SetAnimation("idle");
-	}
+	actor();
 
 	virtual ~actor() = default;
 
-	virtual void Update(float dt);
-	virtual void Draw() const;
+	virtual void update(float dt);
+	virtual void draw() const;
 
-	[[nodiscard]] auto GetPosition() const -> Vector2 { return position_; }
-	[[nodiscard]] auto GetDirection() const -> Direction { return dir_; }
-	[[nodiscard]] auto GetAnimation() const -> const std::string & { return animation_name_; }
-	[[nodiscard]] auto GetAnimationState() const -> const AnimationState & { return animation_state_; }
-	[[nodiscard]] auto GetCarriedItem() const -> CarriedItem { return carried_object_; }
-	[[nodiscard]] auto IsCarrying() const -> bool { return carried_object_ != CarriedItem::None; }
+	[[nodiscard]] auto get_position() const -> Vector2 { return position_; }
+	[[nodiscard]] auto get_direction() const -> direction { return dir_; }
+	[[nodiscard]] auto get_animation() const -> const std::string & { return animation_name_; }
+	[[nodiscard]] auto get_animation_state() const -> const animation_state & { return animation_state_; }
+	[[nodiscard]] auto get_carried_object() const -> carry_object_type { return carried_object_; }
+	[[nodiscard]] auto is_carrying() const -> bool { return carried_object_ != carry_object_type::none; }
 
-	void SetPosition(const Vector2 &position) { position_ = position; }
-	void SetDirection(const Direction dir) { dir_ = dir; }
-	void SetAnimation(const std::string &name);
-	void SetCarriedItem(const CarriedItem item) { carried_object_ = item; }
+	void set_position(const Vector2 &position) { position_ = position; }
+	void set_direction(const direction dir) { dir_ = dir; }
+	void set_animation(const std::string &name);
+	void set_carried_object(const carry_object_type item) { carried_object_ = item; }
 
 protected:
-	virtual bool GetCarriedDestinationOverride(Vector2 &dest) const { return false; }
+	virtual auto get_carried_destination_override(Vector2 &dest) const -> bool { return false; }
 
-	Vector2 position_{0, 0};
-	Direction dir_ = Direction::DIR_UP;
-	AnimationState animation_state_{};
+	Texture2D sprites_;
+	Vector2 position_{};
+	direction dir_ = direction::up;
+	animation_state animation_state_{};
 	std::string animation_name_{};
 	animation *animation_ = nullptr;
-	Texture2D sprites_{};
-	CarriedItem carried_object_ = CarriedItem::None;
+	carry_object_type carried_object_ = carry_object_type::none;
 };

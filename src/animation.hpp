@@ -1,93 +1,88 @@
 #pragma once
 
+#include <filesystem>
+#include <map>
+#include <raylib.h>
 #include <string>
 #include <vector>
-#include <map>
-#include <filesystem>
-#include <raylib.h>
 
 #include "constants.hpp"
 
 class animation;
 
-struct AnimationState
+struct animation_state
 {
-	size_t Frame;
-	float NextFrame;
-	bool Ended;
-	std::string Body{"body.png"};
-	std::string Head{"head0.png"};
-	std::string Sword{"sword1.png"};
-	std::string Shield{"shield1.png"};
-	std::string Attr1{"hat0.png"};
+	size_t current_frame;
+	float current_frame_duration;
+	std::string body{"body.png"};
+	std::string head{"head0.png"};
+	std::string sword{"sword1.png"};
+	std::string shield{"shield1.png"};
+	std::string attr1{"hat0.png"};
+	bool ended;
 
-	void Reset(size_t frame, const animation *animation);
+	void reset(size_t frame, const animation *animation);
+};
+
+enum class sprite_source
+{
+	file,
+	sprites,
+	shield,
+	sword,
+	head,
+	body,
+	attr1
 };
 
 class animation
 {
-	enum class SpriteSource
+	struct sprite
 	{
-		File,
-		Sprites,
-		Shield,
-		Sword,
-		Head,
-		Body,
-		Attr1
+		int id;
+		sprite_source source;
+		std::string texture;
+		Rectangle texture_rect;
 	};
 
-	struct Sprite
+	struct sprite_ref
 	{
-		int Id;
-		SpriteSource Source;
-		std::string Texture;
-		int X, Y, W, H;
+		sprite *sprite;
+		Vector2 position;
 	};
 
-	struct SpriteRef
+	struct frame
 	{
-		Sprite *Sprite;
-		int X, Y;
-	};
-
-	struct Frame
-	{
-		std::vector<SpriteRef> Sprites[4]{};
-		float Duration;
-		std::string PlaySound;
-		Vector2 PlaySoundAt;
+		std::vector<sprite_ref> sprites[4]{};
+		float duration;
+		std::string play_sound;
+		Vector2 play_sound_at;
 	};
 
 public:
 	animation() = default;
 
 private:
-	static auto ParseSpriteSource(const std::string &str) -> SpriteSource;
-
-	void ParseSprite(const std::vector<std::string> &tokens);
-	void ParseAni(std::ifstream &stream);
-	void ParseSprites(std::string &line, std::vector<SpriteRef> &frame);
+	void parse_sprite(const std::vector<std::string> &tokens);
+	void parse_ani(std::ifstream &stream);
+	void parse_sprites(std::string &line, std::vector<sprite_ref> &frame);
 
 public:
-	void Load(const std::filesystem::path &path);
-	void Update(float dt, AnimationState &state) const;
-	void Draw(float x, float y, Direction direction, const AnimationState &state) const;
+	void load_file(const std::filesystem::path &path);
+	void update(float dt, animation_state &state) const;
+	void draw(float x, float y, direction direction, const animation_state &state) const;
+	void play_sound(size_t frame) const;
 
 	[[nodiscard]]
-	auto GetFrameCount() const -> size_t { return frames_.size(); }
+	auto frame_count() const -> size_t { return frames_.size(); }
 
 	[[nodiscard]]
-	auto GetFrameDuration(const size_t frame) const -> float { return frames_[frame].Duration; }
-
-	void PlaySound(size_t frame) const;
+	auto frame_duration(const size_t frame) const -> float { return frames_[frame].duration; }
 
 private:
-	static void PlaySound(const std::string &filename, const Vector2 &position);
+	void draw_sprites(const animation_state &state, const std::vector<sprite_ref> &sprite_refs) const;
 
-	void DrawSprites(const AnimationState &state, const std::vector<SpriteRef> &sprite_refs) const;
-
-	[[nodiscard]] auto GetTextureName(const AnimationState &state, const SpriteRef &sprite_ref) const -> std::string;
+	[[nodiscard]] auto get_texture_filename(const animation_state &state, const sprite_ref &sprite_ref) const -> std::string;
 
 	std::string set_back_to_;
 	std::string default_attr1_{"hat0.png"};
@@ -95,6 +90,6 @@ private:
 	std::string default_body_{"body.png"};
 	bool single_direction_ = false;
 	bool continuous_ = false;
-	std::map<int, Sprite> sprites_{};
-	std::vector<Frame> frames_{};
+	std::map<int, sprite> sprites_{};
+	std::vector<frame> frames_{};
 };

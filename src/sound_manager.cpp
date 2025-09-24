@@ -1,37 +1,50 @@
 #include "sound_manager.hpp"
 
+#include <map>
 #include <boost/algorithm/string.hpp>
 
 #include "file_manager.hpp"
 
-sound_manager::SoundMap sound_manager::Sounds{};
-
-auto sound_manager::Get(const std::string &fileName) -> Sound
+namespace
 {
-	const auto key = boost::to_lower_copy(fileName);
+	std::map<std::string, Sound> loaded_sounds;
 
-	if (const auto it = Sounds.find(key); it != Sounds.end())
+	auto load_sound_from_file(const std::string &key) -> Sound
 	{
-		return it->second;
-	}
+		const auto path = find_file(key);
 
-	return Load(key);
+		if (path.empty())
+		{
+			loaded_sounds[key] = {};
+
+			return {};
+		}
+
+		const auto sound = LoadSound(path.string().c_str());
+
+		loaded_sounds[key] = sound;
+
+		return sound;
+	}
 }
 
-auto sound_manager::Load(const std::string &key) -> Sound
+auto load_sound(const std::string &filename) -> Sound
 {
-	const auto path = file_manager::GetPath(key);
+	const auto key = boost::to_lower_copy(filename);
+	const auto iter = loaded_sounds.find(key);
 
-	if (path.empty())
+	if (iter != loaded_sounds.end())
 	{
-		Sounds[key] = {};
-
-		return {};
+		return iter->second;
 	}
 
-	const auto sound = LoadSound(path.string().c_str());
+	return load_sound_from_file(key);
+}
 
-	Sounds[key] = sound;
-
-	return sound;
+void play_sound(const std::string &filename)
+{
+	if (const auto sound = load_sound(filename); IsSoundValid(sound))
+	{
+		PlaySound(sound);
+	}
 }

@@ -1,70 +1,62 @@
 #pragma once
 
+#include <vector>
+
 #include "actor.hpp"
+#include "leap_effect.hpp"
 #include "level.hpp"
 #include "player.hpp"
 #include "sign.hpp"
-#include "tileset.hpp"
 #include "thrown_item.hpp"
-
-#include <vector>
-
-#include "leaps.hpp"
+#include "tileset.hpp"
 
 class game
 {
-	struct LevelInfo
+	struct level_info
 	{
-		LevelInfo(level *level, tileset *tileset, const int x, const int y)
+		level_info(level *level, tileset *tileset, const int x, const int y)
+			: level(level), tileset(tileset), x(x), y(y)
 		{
-			Level = level;
-			Tileset = tileset;
-			X = x;
-			Y = y;
 		}
 
-		level *Level;
-		tileset *Tileset;
-		int X, Y;
+		level *level;
+		tileset *tileset;
+		int x, y;
 	};
 
 public:
 	game();
 
-	void Run() const;
+	void run();
 
-	void ChangeLevel(const std::string &level_name) const;
-	auto GetCurrentLevel() const -> level * { return level_->Level; }
-	auto OnWall(Rectangle rect) const -> bool;
-	auto OnWall(Vector2 pt) const -> bool;
-	auto GetTileType(int x, int y) const -> int;
-	void ShowSign(const std::string &str) const;
-	void SpawnThrownItem(actor::CarriedItem type, Vector2 origin, Direction dir) const;
-	void SpawnLeaps(LeapType type, Vector2 origin) const;
+	[[nodiscard]] auto get_current_level() const -> level * { return level_info_->level; }
+	[[nodiscard]] auto get_tile_type(int x, int y) const -> int;
+	[[nodiscard]] auto on_wall(Rectangle rect) const -> bool;
+	[[nodiscard]] auto on_wall(Vector2 pt) const -> bool;
+
+	void change_level(const std::string &level_name) const;
+	void show_sign(const std::string &str) const;
+	void spawn_thrown_item(carry_object_type type, Vector2 origin, direction dir);
+	void spawn_leaps(leap_effect_type type, Vector2 origin);
 
 private:
-	void Update() const;
-	void UpdateThrownItems(float dt) const;
-	void UpdateLeaps(float dt) const;
+	void update();
+	void update_thrown_items(float dt);
+	void update_leaps(float dt);
 
-	void Draw() const;
-	void DrawPlayer() const;
-	void DrawHud() const;
-	void DrawHudResource(Rectangle rect, Vector2 pos, const std::string &text) const;
-	void DrawDiagnostics() const;
-
-	void DrawThrownItems() const;
-	void DrawLeaps() const;
-
+	void draw() const;
+	void draw_hud() const;
+	void draw_hud_resource(Rectangle rect, Vector2 pos, const std::string &text) const;
+	void draw_diagnostics() const;
 
 	sign *sign_;
-	LevelInfo *level_;
+	level_info *level_info_;
 	player *player_;
 	Texture2D state_{};
 	Font font20_{};
 	Font font14_{};
 	Font font_pixel_{};
-	mutable std::vector<thrown_item> thrown_items_{};
-	mutable std::vector<Leap> leaps_{};
-	mutable Texture2D sprites_{};
+	std::vector<thrown_item> thrown_items_{};
+	std::vector<leap_effect> leaps_{};
+	Texture2D sprites_{};
 };

@@ -1,56 +1,33 @@
 #include "thrown_item.hpp"
 
+#include <raymath.h>
+
 #include "actor.hpp"
+#include "carry_object.hpp"
 #include "texture_manager.hpp"
 
-constexpr auto carry_height = 40.0f;
-constexpr auto travel_distance_in_tiles = 7.0f;
-constexpr auto travel_distance = travel_distance_in_tiles * 16.0f;
-
-static constexpr Rectangle GetSpriteRect(const actor::CarriedItem type)
+namespace
 {
-	switch (type)
-	{
-		case actor::CarriedItem::Bush: return {0.0f, 338.0f, 32, 32};
-		case actor::CarriedItem::Sign: return {32.0f, 338.0f, 32, 32};
-		case actor::CarriedItem::Vase: return {64.0f, 338.0f, 32, 32};
-		case actor::CarriedItem::Stone: return {96.0f, 338.0f, 32, 32};
-		case actor::CarriedItem::BlackStone: return {96.0f, 370.0f, 32, 32};
-		default: return {};
-	}
+	constexpr auto carry_height = 40.0f;
+	constexpr auto travel_distance_in_tiles = 7.0f;
+	constexpr auto travel_distance = travel_distance_in_tiles * 16.0f;
 }
 
-static constexpr LeapType GetLeapType(actor::CarriedItem type)
+thrown_item::thrown_item(const carry_object_type type, const Vector2 origin, const direction dir)
+	: type_(type), start_(origin),
+	  end_(origin + get_direction_vector(dir) * travel_distance),
+	  position_(origin), dir_(dir),
+	  texture_(load_texture("sprites.png")),
+	  texture_rect_(get_carry_object_rect(type)),
+	  leap_type_(get_carry_object_leap_type(type))
 {
-	switch (type)
-	{
-		case actor::CarriedItem::Bush: return LeapType::Leaves;
-		case actor::CarriedItem::Vase: return LeapType::Stone;
-		case actor::CarriedItem::Sign: return LeapType::Wood;
-		default:
-			return LeapType::None;
-	}
-}
-
-thrown_item::thrown_item(const actor::CarriedItem type, const Vector2 origin, const Direction dir)
-	: type_(type), start_(origin), position_(origin), dir_(dir),
-	  sprites_(texture_manager::Get("sprites.png")),
-	  leap_type_(::GetLeapType(type))
-{
-	const auto [dir_X, dir_y] = GetDirectionVector(dir);
-
-	end_ = {
-		origin.x + dir_X * travel_distance,
-		origin.y + dir_y * travel_distance
-	};
-
-	if (dir == Direction::DIR_DOWN)
+	if (dir == direction::down)
 	{
 		end_.y += carry_height;
 	}
 }
 
-void thrown_item::Update(const float dt)
+void thrown_item::update(const float dt)
 {
 	if (!alive_)
 	{
@@ -67,7 +44,7 @@ void thrown_item::Update(const float dt)
 	position_.x = start_.x + (end_.x - start_.x) * time_elapsed_;
 	position_.y = start_.y + (end_.y - start_.y) * time_elapsed_;
 
-	if (dir_ == Direction::DIR_LEFT || dir_ == Direction::DIR_RIGHT)
+	if (dir_ == direction::left || dir_ == direction::right)
 	{
 		const float drop = carry_height * (time_elapsed_ * time_elapsed_);
 
@@ -75,38 +52,37 @@ void thrown_item::Update(const float dt)
 	}
 }
 
-void thrown_item::Draw() const
+void thrown_item::draw() const
 {
-	if (!IsAlive())
+	if (!is_alive())
 	{
 		return;
 	}
 
-	const auto rect = GetSpriteRect(type_);
-	if (rect.width == 0.0f || rect.height == 0.0f)
+	if (texture_rect_.width == 0.0f || texture_rect_.height == 0.0f)
 	{
 		return;
 	}
 
-	DrawShadow();
+	draw_shadow();
 
-	DrawTextureRec(sprites_, rect, position_, WHITE);
+	DrawTextureRec(texture_, texture_rect_, position_, WHITE);
 }
 
-void thrown_item::DrawShadow() const
+void thrown_item::draw_shadow() const
 {
 	const auto sx = position_.x + 4;
 
 	float sy = 0.0f;
 	switch (dir_)
 	{
-		case Direction::DIR_LEFT:
-		case Direction::DIR_RIGHT:
+		case direction::left:
+		case direction::right:
 			sy = start_.y + carry_height + 16;
 			break;
 
-		case Direction::DIR_UP:
-		case Direction::DIR_DOWN:
+		case direction::up:
+		case direction::down:
 			{
 				const auto shadow_start = start_.y + carry_height + 16.0f;
 				const auto shadow_end = end_.y + 16.0f;
@@ -116,5 +92,5 @@ void thrown_item::DrawShadow() const
 			}
 	}
 
-	DrawTextureRec(sprites_, {0, 0, 24, 12}, {sx, sy}, WHITE);
+	DrawTextureRec(texture_, {0, 0, 24, 12}, {sx, sy}, WHITE);
 }

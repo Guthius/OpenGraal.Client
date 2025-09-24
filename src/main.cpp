@@ -9,13 +9,13 @@ int main()
 
 	SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 
-	animation_manager::LoadFrom("levels/ganis");
+	load_animations_from_directory("levels/ganis");
 
 	InitWindow(1280, 720, Title);
 
 	game game{};
 
-	game.Run();
+	game.run();
 
 	CloseWindow();
 

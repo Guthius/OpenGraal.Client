@@ -1,23 +1,38 @@
 #include "animation_manager.hpp"
 
+#include <map>
 #include <boost/algorithm/string.hpp>
 
-std::map<std::string, animation *> animation_manager::Animations{};
+namespace
+{
+	std::map<std::string, animation *> loaded_animations;
 
-auto animation_manager::Get(const std::string &name) -> animation *
+	void load_animation_from_file(const std::filesystem::path &path)
+	{
+		const auto animation = new ::animation();
+
+		animation->load_file(path);
+
+		const auto key = boost::to_lower_copy(path.stem().string());
+
+		loaded_animations[key] = animation;
+	}
+}
+
+auto load_animation(const std::string &name) -> animation *
 {
 	const auto key = boost::to_lower_copy(name);
-	const auto it = Animations.find(key);
+	const auto iter = loaded_animations.find(key);
 
-	if (it == Animations.end())
+	if (iter == loaded_animations.end())
 	{
 		return nullptr;
 	}
 
-	return it->second;
+	return iter->second;
 }
 
-void animation_manager::LoadFrom(const std::filesystem::path &path)
+void load_animations_from_directory(const std::filesystem::path &path)
 {
 	if (!is_directory(path))
 	{
@@ -36,17 +51,6 @@ void animation_manager::LoadFrom(const std::filesystem::path &path)
 			continue;
 		}
 
-		Load(file.path());
+		load_animation_from_file(file.path());
 	}
-}
-
-void animation_manager::Load(const std::filesystem::path &path)
-{
-	const auto animation = new ::animation();
-
-	animation->Load(path);
-
-	const auto key = boost::to_lower_copy(path.stem().string());
-
-	Animations[key] = animation;
 }

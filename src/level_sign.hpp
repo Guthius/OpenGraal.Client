@@ -6,14 +6,14 @@
 class level_sign
 {
 public:
-	level_sign(float x, float y, const std::string &text);
+	level_sign(float x, float y, std::string text);
 
-	[[nodiscard]] auto GetRectangle() const -> const Rectangle & { return rect_; }
-	[[nodiscard]] auto GetText() const -> const std::string & { return text_; }
-
-	static auto Decode(const std::string &str) -> std::string;
+	[[nodiscard]] auto get_rectangle() const -> const Rectangle & { return rectangle_; }
+	[[nodiscard]] auto get_text() const -> const std::string & { return text_; }
 
 private:
-	Rectangle rect_;
+	Rectangle rectangle_;
 	std::string text_{};
 };
+
+auto decode_sign_text(const std::string &str) -> std::string;

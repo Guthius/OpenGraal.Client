@@ -2,45 +2,29 @@
 
 #include <array>
 #include <filesystem>
-#include <fstream>
 #include <vector>
 
-#include "leaps.hpp"
+#include "carry_object.hpp"
+#include "leap_effect.hpp"
+#include "level_link.hpp"
 #include "level_sign.hpp"
 #include "tileset.hpp"
 
-enum class LevelObjectType
+enum class tile_pattern_type
 {
-	None,
-	Bush,
-	Grass,
-	Vase,
-	Sign
+	none,
+	bush,
+	swamp,
+	vase,
+	sign
 };
 
-struct LevelObjectMatch
+struct tile_pattern_match
 {
-	LevelObjectType Type;
-	int X, Y;
-	std::array<short, 4> Replacement;
-	LeapType LeapType;
-};
-
-class LevelLink
-{
-public:
-	explicit LevelLink(const std::string &data);
-
-	[[nodiscard]] auto GetNewLevel() const -> const std::string & { return new_level_; }
-	[[nodiscard]] auto GetNewX() const -> const std::string & { return new_x_; }
-	[[nodiscard]] auto GetNewY() const -> const std::string & { return new_y_; }
-	[[nodiscard]] auto GetRectangle() const -> const Rectangle & { return rect_; }
-
-private:
-	std::string new_level_{};
-	std::string new_x_{};
-	std::string new_y_{};
-	Rectangle rect_{};
+	tile_pattern_type type;
+	int x, y;
+	std::array<short, 4> replacement;
+	leap_effect_type leap_type;
 };
 
 class level
@@ -48,34 +32,35 @@ class level
 public:
 	explicit level(
 		const std::vector<short> &board,
-		const std::vector<LevelLink> &links,
+		const std::vector<level_link> &links,
 		const std::vector<level_sign> &signs)
-		: _board(board), _links(links), _signs(signs)
+		: board_(board), links_(links), signs_(signs)
 	{
 	}
 
-	void Draw(const tileset *tileset) const;
-	void DrawEditorHints() const;
+	void draw(const tileset *tileset) const;
 
-	[[nodiscard]] auto GetLinkAt(int x, int y) const -> const LevelLink *;
-	[[nodiscard]] auto GetSignAt(int x, int y) const -> const level_sign *;
-	[[nodiscard]] auto GetTileType(const tileset *tileset, int x, int y) const -> int;
-	[[nodiscard]] auto GetTileId(int x, int y) const -> int;
-	[[nodiscard]] auto OnWall(const tileset *tileset, Rectangle rect) const -> bool;
-	[[nodiscard]] auto OnWall(const tileset *tileset, Vector2 pt) const -> bool;
-	[[nodiscard]] auto MatchObjectAt(int x, int y) const -> LevelObjectMatch;
+	[[nodiscard]] auto get_link_at(float x, float y) const -> const level_link *;
+	[[nodiscard]] auto get_sign_at(float x, float y) const -> const level_sign *;
+	[[nodiscard]] auto get_tile_type(const tileset *tileset, int x, int y) const -> int;
+	[[nodiscard]] auto get_tile_id(int x, int y) const -> int;
 
-	auto DestroyObjectAt(int x, int y) -> std::tuple<LeapType, int, int>;
-	auto LiftObjectAt(int x, int y) -> actor::CarriedItem;
+	[[nodiscard]] auto on_wall(const tileset *tileset, Rectangle rect) const -> bool;
+	[[nodiscard]] auto on_wall(const tileset *tileset, Vector2 pt) const -> bool;
 
-	static auto Load(const std::filesystem::path &path) -> level *;
+	[[nodiscard]] auto find_tile_pattern_at(float x, float y) const -> tile_pattern_match;
+
+	auto try_destroy_object_at(float x, float y) -> std::tuple<leap_effect_type, int, int>;
+	auto try_lift_object_at(float x, float y) -> carry_object_type;
+
+	static auto load(const std::filesystem::path &path) -> level *;
 
 private:
-	static auto LoadNw(std::ifstream &stream) -> level *;
-	static auto LoadGraal(std::ifstream &stream, int bits, size_t code_mask, size_t control_bit, bool has_chests) -> level *;
-	static auto LoadGraal(std::ifstream &stream, const char *version) -> level *;
+	static auto load_nw(std::ifstream &stream) -> level *;
+	static auto load_graal(std::ifstream &stream, int bits, size_t code_mask, size_t control_bit, bool has_chests) -> level *;
+	static auto load_graal(std::ifstream &stream, const char *version) -> level *;
 
-	std::vector<short> _board;
-	std::vector<LevelLink> _links;
-	std::vector<level_sign> _signs;
+	std::vector<short> board_;
+	std::vector<level_link> links_{};
+	std::vector<level_sign> signs_;
 };

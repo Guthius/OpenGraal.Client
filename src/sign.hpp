@@ -6,36 +6,19 @@
 
 class sign
 {
-	struct Letter
-	{
-		char ch;
-		float width;
-		Rectangle rect;
-	};
-
-	static Letter Glyphs[96];
-
 public:
 	sign();
 
-	void Show(const std::string &str);
-	void Draw(float width, float height) const;
-	void Update();
+	[[nodiscard]] auto is_open() const -> bool { return open_; }
+
+	void show(const std::string &str);
+	void draw(float width, float height) const;
+	void update();
 
 private:
-	void DrawFrame(float width, float height) const;
-	void DrawLetters(const std::string &str) const;
-	void DrawLetter(char c, Vector2 &pos) const;
-
-public:
-	[[nodiscard]] auto IsOpen() const -> bool { return _open; }
-
-private:
-	static auto IsNextKeyPressed() -> bool;
-
-	Texture2D _texture{};
-	bool _open = false;
-	std::vector<std::string> _pages;
-	int _page = 0;
-	Sound _nextPageSound{};
+	Texture2D texture_{};
+	bool open_ = false;
+	std::vector<std::string> pages_{};
+	int page_ = 0;
+	Sound next_page_sound_;
 };

@@ -8,7 +8,7 @@ find_package(raylib CONFIG REQUIRED)
 
 if (MINGW)
     add_link_options(-mwindows -static-libstdc++ -static-libgcc)
-endif()
+endif ()
 
 add_executable(OpenGraal WIN32
         src/actor.cpp
@@ -17,15 +17,19 @@ add_executable(OpenGraal WIN32
         src/animation.hpp
         src/animation_manager.cpp
         src/animation_manager.hpp
+        src/carry_object.cpp
+        src/carry_object.hpp
         src/constants.hpp
         src/file_manager.cpp
         src/file_manager.hpp
         src/game.cpp
         src/game.hpp
-        src/leaps.hpp
-        src/leaps.cpp
+        src/leap_effect.hpp
+        src/leap_effect.cpp
         src/level.cpp
         src/level.hpp
+        src/level_link.cpp
+        src/level_link.hpp
         src/level_manager.cpp
         src/level_manager.hpp
         src/level_sign.cpp

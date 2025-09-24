@@ -1,38 +1,33 @@
 #pragma once
 
-enum class Direction
+enum class direction
 {
-	DIR_UP,
-	DIR_LEFT,
-	DIR_DOWN,
-	DIR_RIGHT
+	up,
+	left,
+	down,
+	right
 };
 
-static constexpr Direction GetOppositeDirection(const Direction dir)
+static constexpr Vector2 get_direction_vector(const direction dir)
 {
 	switch (dir)
 	{
-		case Direction::DIR_UP:
-			return Direction::DIR_DOWN;
-		case Direction::DIR_LEFT:
-			return Direction::DIR_RIGHT;
-		case Direction::DIR_DOWN:
-			return Direction::DIR_UP;
-		case Direction::DIR_RIGHT:
-			return Direction::DIR_LEFT;
-		default:
-			return dir;
+		case direction::up: return {0, -1};
+		case direction::down: return {0, 1};
+		case direction::left: return {-1, 0};
+		case direction::right: return {1, 0};
+		default: return {0, 0};
 	}
 }
 
-static constexpr Vector2 GetDirectionVector(const Direction dir)
+static constexpr direction get_opposite_direction(const direction dir)
 {
 	switch (dir)
 	{
-		case Direction::DIR_UP: return {0, -1};
-		case Direction::DIR_DOWN: return {0, 1};
-		case Direction::DIR_LEFT: return {-1, 0};
-		case Direction::DIR_RIGHT: return {1, 0};
-		default: return {0, 0};
+		case direction::up: return direction::down;
+		case direction::left: return direction::right;
+		case direction::down: return direction::up;
+		case direction::right: return direction::left;
+		default: return dir;
 	}
 }

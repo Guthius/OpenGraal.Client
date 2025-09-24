@@ -1,19 +1,26 @@
 #include "tileset_manager.hpp"
 
-tileset_manager::TilesetMap tileset_manager::Tilesets{};
+#include <map>
+#include <boost/algorithm/string.hpp>
 
-auto tileset_manager::Get(const char *filename) -> tileset *
+namespace
 {
-	const auto it = Tilesets.find(filename);
+	std::map<std::string, tileset *> loaded_tilesets;
+}
 
-	if (it == Tilesets.end())
+auto load_tileset(const std::string &texture_filename) -> tileset *
+{
+	const auto key = boost::to_lower_copy(texture_filename);
+
+	const auto iter = loaded_tilesets.find(key);
+	if (iter != loaded_tilesets.end())
 	{
-		const auto tileset = new ::tileset(filename);
-
-		Tilesets[filename] = tileset;
-
-		return tileset;
+		return iter->second;
 	}
 
-	return it->second;
+	const auto tileset = new ::tileset(texture_filename);
+
+	loaded_tilesets[key] = tileset;
+
+	return tileset;
 }
