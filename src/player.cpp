@@ -1,31 +1,10 @@
 #include "player.hpp"
 
-#include <cassert>
 #include <raymath.h>
 
 #include "game.hpp"
 #include "sound_manager.hpp"
 #include "texture_manager.hpp"
-
-static constexpr int Corner1 = 1;
-static constexpr int Corner2 = 2;
-
-static auto IsGridAligned(const Vector2 &pos) -> bool
-{
-	static constexpr float grid_alignment_epsilon = 0.01f;
-
-	const auto is_tile_aligned = [&](const float v) {
-		float m = std::fmod(v, 16.0f);
-		if (m < 0.0f)
-		{
-			m += 16.0f;
-		}
-
-		return m <= grid_alignment_epsilon || std::fabs(m - 16.0f) <= grid_alignment_epsilon;
-	};
-
-	return is_tile_aligned(pos.x) && is_tile_aligned(pos.y);
-}
 
 static constexpr float jump_speed = 0.05f;
 static constexpr Vector2 jump_frames[][8] =
@@ -72,128 +51,74 @@ static constexpr Vector2 jump_frames[][8] =
 	}
 };
 
-static constexpr auto GetDirectionKey(const direction direction) -> int
-{
-	switch (direction)
-	{
-		case direction::up:
-			return KEY_UP;
-		case direction::left:
-			return KEY_LEFT;
-		case direction::down:
-			return KEY_DOWN;
-		case direction::right:
-			return KEY_RIGHT;
-		default:
-			return KEY_NULL;
-	}
-}
-
-static constexpr auto GetOppositeDirectionKey(const direction direction) -> int
-{
-	switch (direction)
-	{
-		case direction::up:
-			return KEY_DOWN;
-		case direction::left:
-			return KEY_RIGHT;
-		case direction::down:
-			return KEY_UP;
-		case direction::right:
-			return KEY_LEFT;
-		default:
-			return KEY_NULL;
-	}
-}
-
 player::player(game *game)
+	: actor(game), game_(game),
+	  sprites_(load_texture("sprites.png")),
+	  jump_sound_(load_sound("jump.wav"))
 {
-	game_ = game;
-	sprites_ = load_texture("sprites.png");
-	jump_sound_ = load_sound("jump.wav");
-}
-
-static constexpr auto GetSpeed(const float dt, const float speed) -> float
-{
-	return dt * speed * 70;
 }
 
 void player::update(const float dt)
 {
-	// Handle temporary lift-show state: show pull animation and item in front, block other actions
-	if (mode_ == Mode::LiftShow)
-	{
-		lift_show_timer_ -= dt;
-		if (lift_show_timer_ <= 0.0f)
-		{
-			mode_ = Mode::Idle;
-			UpdateAnimation();
-		}
+	update_new(dt);
 
-		actor::update(dt);
-		UpdateOverlay(dt);
-		return;
-	}
-
-	auto position = get_position();
-
-	const auto mode = mode_;
-	const auto speed = GetSpeed(dt, speed_);
-
-	if (const auto slide_speed = GetSpeed(dt, slide_speed_);
-		CheckJump(dt, position) ||
-		CheckMovement(position, speed, slide_speed))
-	{
-		set_position(position);
-	}
-
-	CheckAttack(position);
-
-	if (mode_ == Mode::Walk)
-	{
-		if (CheckForSignAt(position))
-		{
-			mode_ = Mode::Idle;
-		}
-	}
-
-	CheckThrow();
-	CheckForLevelLinkAt(position);
-	CheckPushAndPull();
-
-	if (mode_ != mode)
-	{
-		if (mode_ != Mode::Idle && mode_ != Mode::Walk && mode_ != Mode::LiftShow)
-		{
-			DropCarriedItem();
-		}
-
-		UpdateAnimation();
-	}
-
+	// // Handle temporary lift-show state: show pull animation and item in front, block other actions
+	// if (mode_ == player_state::lift_show)
+	// {
+	// 	lift_show_timer_ -= dt;
+	// 	if (lift_show_timer_ <= 0.0f)
+	// 	{
+	// 		mode_ = player_state::idle;
+	// 		UpdateAnimation();
+	// 	}
+	//
+	// 	actor::update(dt);
+	// 	UpdateOverlay(dt);
+	// 	return;
+	// }
+	//
+	// auto position = get_position();
+	//
+	// const auto mode = mode_;
+	// const auto speed = GetSpeed(dt, speed_);
+	//
+	// if (const auto slide_speed = GetSpeed(dt, slide_speed_);
+	// 	CheckJump(dt, position) ||
+	// 	CheckMovement(position, speed, slide_speed))
+	// {
+	// 	set_position(position);
+	// }
+	//
+	// CheckAttack(position);
+	//
+	// if (mode_ == player_state::walk)
+	// {
+	// 	if (CheckForSignAt(position))
+	// 	{
+	// 		mode_ = player_state::idle;
+	// 	}
+	// }
+	//
+	// CheckThrow();
+	// CheckForLevelLinkAt(position);
+	// CheckPushAndPull();
+	//
+	// if (mode_ != mode)
+	// {
+	// 	if (mode_ != player_state::idle && mode_ != player_state::walk && mode_ != player_state::lift_show)
+	// 	{
+	// 		DropCarriedItem();
+	// 	}
+	//
+	// 	UpdateAnimation();
+	// }
+	//
 	actor::update(dt);
-
-	UpdateOverlay(dt);
-}
-
-static float terrain_sprite[][2] =
-{
-	{0, 274},
-	{32, 274},
-	{0, 306},
-	{32, 306},
-};
-
-void player::draw() const
-{
-	actor::draw();
-
-	DrawOverlay();
 }
 
 void player::ReturnIdle()
 {
-	if (mode_ == Mode::Attack)
+	if (state_ == player_state::attack)
 	{
 		if (!get_animation_state().ended)
 		{
@@ -201,17 +126,17 @@ void player::ReturnIdle()
 		}
 	}
 
-	if (mode_ == Mode::Swim)
+	if (state_ == player_state::swim)
 	{
 		return;
 	}
 
-	if ((mode_ == Mode::Pull || mode_ == Mode::Grab) && IsKeyDown(KEY_A))
+	if ((state_ == player_state::pull || state_ == player_state::grab) && IsKeyDown(KEY_A))
 	{
 		return;
 	}
 
-	mode_ = Mode::Idle;
+	state_ = player_state::idle;
 }
 
 auto player::CheckForLevelLinkAt(const Vector2 &position) -> bool
@@ -255,9 +180,9 @@ auto player::CheckForLevelLinkAt(const Vector2 &position) -> bool
 	return true;
 }
 
-auto player::CheckForSignAt(const Vector2 &position) const -> bool
+auto player::check_for_sign_at(const Vector2 &position) const -> bool
 {
-	if (!IsFacingWall())
+	if (!is_facing_wall())
 	{
 		return false;
 	}
@@ -287,7 +212,7 @@ auto player::CheckForSignAt(const Vector2 &position) const -> bool
 
 void player::CheckAttack(const Vector2 &position)
 {
-	if (mode_ != Mode::Walk && mode_ != Mode::Idle)
+	if (state_ != player_state::walk && state_ != player_state::idle)
 	{
 		return;
 	}
@@ -297,14 +222,14 @@ void player::CheckAttack(const Vector2 &position)
 		return;
 	}
 
-	if (DropCarriedItem())
+	if (drop_carried_object())
 	{
 		UpdateAnimation();
 
 		return;
 	}
 
-	mode_ = Mode::Attack;
+	state_ = player_state::attack;
 
 	TryDestroyObjectFacing(position);
 }
@@ -320,162 +245,6 @@ void player::TryDestroyObjectFacing(const Vector2 &position) const
 			static_cast<float>(leap_x),
 			static_cast<float>(leap_y)));
 	}
-}
-
-auto player::CheckMovement(Vector2 &position, const float speed, const float slide_speed) -> bool
-{
-	static constexpr direction directions[] = {
-		direction::up,
-		direction::left,
-		direction::down,
-		direction::right,
-	};
-
-	ReturnIdle();
-
-	if (mode_ == Mode::Attack)
-	{
-		return false;
-	}
-
-	if (mode_ == Mode::Grab || mode_ == Mode::Pull)
-	{
-		return false;
-	}
-
-	bool moved = false;
-
-	Vector2 move_vector = {0, 0};
-
-	for (const auto dir: directions)
-	{
-		if (IsKeyDown(GetDirectionKey(dir)))
-		{
-			move_vector += get_direction_vector(dir);
-
-			if (dir != get_direction())
-			{
-				push_timer_ = 0;
-			}
-
-			set_direction(dir);
-		}
-	}
-
-	move_vector = Vector2Normalize(move_vector);
-	if (move_vector.x != 0 || move_vector.y != 0)
-	{
-		if ((moved = TryMove(position, move_vector, speed)))
-		{
-			mode_ = Mode::Walk;
-		}
-	}
-
-	// Attempt to slide along corners only if we tried to move but didn't,
-	// the player is facing a wall corner, and we're not perfectly grid-aligned.
-	if (!moved)
-	{
-		if (const auto wall = CheckWall(get_direction());
-			IsKeyDown(GetDirectionKey(get_direction())) &&
-			(wall == Corner1 || wall == Corner2) &&
-			!IsGridAligned(position))
-		{
-			const auto [x, y] = position;
-
-			Slide(position, get_direction(), wall, slide_speed);
-
-			if (position.x != x || position.y != y)
-			{
-				moved = true;
-				mode_ = Mode::Walk;
-			}
-		}
-	}
-
-	const auto check_x = static_cast<int>(position.x + 16);
-	const auto check_y = static_cast<int>(position.y + 24);
-
-	if (const auto tile_type = game_->get_tile_type(check_x, check_y); tile_type & tile_type::chair)
-	{
-		SetOverlay(OverlayType::None);
-
-		mode_ = Mode::Sit;
-	}
-	else if (tile_type & tile_type::swamp)
-	{
-		SetOverlay(OverlayType::Grass);
-	}
-	else if (tile_type & tile_type::water_shallow)
-	{
-		SetOverlay(OverlayType::Water);
-	}
-	else if (tile_type & tile_type::water)
-	{
-		SetOverlay(OverlayType::None);
-
-		mode_ = Mode::Swim;
-	}
-	else
-	{
-		SetOverlay(OverlayType::None);
-	}
-
-	return moved;
-}
-
-auto player::TryMove(Vector2 &position, const Vector2 direction, const float speed) const -> bool
-{
-	auto collides = [&](const float nx, const float ny) -> bool {
-		return game_->on_wall(Rectangle{nx, ny, 31.0f, 31.0f});
-	};
-
-	auto check_x = [&](float &x, const float delta) {
-		const float step_sign = delta > 0.0f ? 1.0f : -1.0f;
-		auto remaining = std::fabs(delta);
-		while (remaining > 0.0f)
-		{
-			const float step = std::min(1.0f, remaining);
-
-			if (collides(x + step_sign * step, position.y))
-			{
-				break;
-			}
-
-			x += step_sign * step;
-
-			remaining -= step;
-		}
-	};
-
-	auto check_y = [&](float &y, const float delta) {
-		const float step_sign = delta > 0.0f ? 1.0f : -1.0f;
-		auto remaining = std::fabs(delta);
-		while (remaining > 0.0f)
-		{
-			const float step = std::min(1.0f, remaining);
-
-			if (collides(position.x, y + step_sign * step))
-			{
-				break;
-			}
-
-			y += step_sign * step;
-
-			remaining -= step;
-		}
-	};
-
-	const auto start_x = position.x;
-	const auto start_y = position.y;
-
-	const auto delta_x = direction.x * speed;
-	const auto delta_y = direction.y * speed;
-
-	if (delta_x != 0.0f) check_x(position.x, delta_x);
-	if (delta_y != 0.0f) check_y(position.y, delta_y);
-
-	return position.x != start_x ||
-	       position.y != start_y;
 }
 
 auto player::TryMoveFromWall(Vector2 position) -> void
@@ -513,17 +282,17 @@ auto player::TryMoveFromWall(Vector2 position) -> void
 
 void player::CheckPushAndPull()
 {
-	if (mode_ == Mode::Attack)
+	if (state_ == player_state::attack)
 	{
 		return;
 	}
 
-	if (mode_ == Mode::Jump)
+	if (state_ == player_state::jump)
 	{
 		return;
 	}
 
-	if (mode_ == Mode::Swim || !IsFacingWall() || is_carrying())
+	if (state_ == player_state::swim || !is_facing_wall() || is_carrying())
 	{
 		return;
 	}
@@ -532,32 +301,32 @@ void player::CheckPushAndPull()
 
 	if (IsKeyDown(KEY_A))
 	{
-		if (TryPickupItem())
+		if (try_pickup_item())
 		{
 			return;
 		}
 
-		if (IsKeyDown(GetOppositeDirectionKey(dir)))
+		if (IsKeyDown(get_opposite_direction_key(dir)))
 		{
-			mode_ = Mode::Pull;
+			state_ = player_state::pull;
 		}
 		else
 		{
-			mode_ = Mode::Grab;
+			state_ = player_state::grab;
 		}
 
 		return;
 	}
 
-	if (IsKeyDown(GetDirectionKey(dir)))
+	if (IsKeyDown(get_direction_key(dir)))
 	{
-		if (mode_ != Mode::Push)
+		if (state_ != player_state::push)
 		{
 			push_timer_ += GetFrameTime();
 
 			if (push_timer_ >= .75f)
 			{
-				mode_ = Mode::Push;
+				state_ = player_state::push;
 			}
 		}
 	}
@@ -567,9 +336,9 @@ void player::CheckPushAndPull()
 	}
 }
 
-auto player::TryPickupItem() -> bool
+auto player::try_pickup_item() -> bool
 {
-	auto [ax, ay] = position_ + Vector2(16, 16) + get_direction_vector(get_direction()) * 32;
+	auto [ax, ay] = look_at(get_direction());
 
 	const auto carried_item = game_->get_current_level()->try_lift_object_at(ax, ay);
 	if (carried_item == carry_object_type::none)
@@ -586,50 +355,9 @@ auto player::TryPickupItem() -> bool
 
 	set_carried_object(carried_item);
 
-	mode_ = Mode::LiftShow;
-
 	lift_show_timer_ = 0.1f;
 
 	return true;
-}
-
-auto player::CheckWall(const direction dir) const -> int
-{
-	auto [x, y] = get_position();
-
-	Vector2 v1, v2;
-	switch (dir)
-	{
-		case direction::up:
-			v1 = {x, y - 1};
-			v2 = {x + 31, y - 1};
-			break;
-
-		case direction::left:
-			v1 = {x - 1, y};
-			v2 = {x - 1, y + 31};
-			break;
-
-		case direction::down:
-			v1 = {x, y + 32};
-			v2 = {x + 31, y + 32};
-			break;
-
-		case direction::right:
-			v1 = {x + 32, y};
-			v2 = {x + 32, y + 31};
-			break;
-
-		default:
-			return 0;
-	}
-
-	char result = 0;
-
-	if (game_->on_wall(v1)) result |= Corner1;
-	if (game_->on_wall(v2)) result |= Corner2;
-
-	return result;
 }
 
 auto is_key_pressed = false;
@@ -642,77 +370,17 @@ void player::CheckThrow()
 
 	if (is_key_pressed && !was_key_pressed && is_carrying())
 	{
-		DropCarriedItem();
+		drop_carried_object();
 
-		set_animation(mode_ == Mode::Walk ? "walk" : "idle");
+		set_animation(state_ == player_state::walk ? "walk" : "idle");
 	}
-}
-
-void player::Slide(Vector2 &position, const direction dir, int wall, const float speed)
-{
-	if (IsGridAligned(position))
-	{
-		return;
-	}
-
-	direction slide_dir;
-
-	if (wall == Corner1)
-	{
-		switch (dir)
-		{
-			case direction::up:
-				slide_dir = direction::right;
-				break;
-			case direction::left:
-				slide_dir = direction::down;
-				break;
-			case direction::down:
-				slide_dir = direction::right;
-				break;
-			case direction::right:
-				slide_dir = direction::down;
-				break;
-			default:
-				return;
-		}
-	}
-	else
-	{
-		switch (dir)
-		{
-			case direction::up:
-				slide_dir = direction::left;
-				break;
-			case direction::left:
-				slide_dir = direction::up;
-				break;
-			case direction::down:
-				slide_dir = direction::left;
-				break;
-			case direction::right:
-				slide_dir = direction::up;
-				break;
-			default:
-				return;
-		}
-	}
-
-	if (const auto blocked = CheckWall(slide_dir); blocked != 0)
-	{
-		return;
-	}
-
-	TryMove(position, get_direction_vector(slide_dir), speed);
-
-	set_position(position);
 }
 
 void player::UpdateAnimation()
 {
-	switch (mode_)
+	switch (state_)
 	{
-		case Mode::Idle:
+		case player_state::idle:
 			if (is_carrying())
 			{
 				set_animation("carrystill");
@@ -723,7 +391,7 @@ void player::UpdateAnimation()
 			}
 			break;
 
-		case Mode::Walk:
+		case player_state::walk:
 			if (is_carrying())
 			{
 				set_animation("carry");
@@ -734,28 +402,28 @@ void player::UpdateAnimation()
 			}
 			break;
 
-		case Mode::Swim:
+		case player_state::swim:
 			set_animation("swim");
 			break;
 
-		case Mode::Sit:
+		case player_state::sit:
 			set_animation("sit");
 			break;
 
-		case Mode::Pull:
+		case player_state::pull:
 			set_animation("pull");
 			break;
 
-		case Mode::LiftShow:
-		case Mode::Grab:
+		case player_state::lift:
+		case player_state::grab:
 			set_animation("grab");
 			break;
 
-		case Mode::Push:
+		case player_state::push:
 			set_animation("push");
 			break;
 
-		case Mode::Attack:
+		case player_state::attack:
 			set_animation("sword");
 			break;
 
@@ -775,40 +443,7 @@ auto player::GetTileFacing() const -> int
 	return game_->get_tile_type(lx, ly);
 }
 
-auto player::IsFacingWall() const -> int
-{
-	auto [x, y] = get_position();
-
-	Vector2 v1, v2;
-
-	switch (get_direction())
-	{
-		default: return false;
-		case direction::up:
-			v1 = {x + 8, y - 1};
-			v2 = {x + 31 - 8, y - 1};
-			break;
-
-		case direction::left:
-			v1 = {x - 1, y + 8};
-			v2 = {x - 1, y + 31 - 8};
-			break;
-
-		case direction::down:
-			v1 = {x + 8, y + 32};
-			v2 = {x + 31 - 8, y + 32};
-			break;
-
-		case direction::right:
-			v1 = {x + 32, y + 8};
-			v2 = {x + 32, y + 31 - 8};
-			break;
-	}
-
-	return game_->on_wall(v1) || game_->on_wall(v2);
-}
-
-auto player::DropCarriedItem() -> bool
+auto player::drop_carried_object() -> bool
 {
 	if (!is_carrying())
 	{
@@ -826,7 +461,7 @@ auto player::DropCarriedItem() -> bool
 
 auto player::CheckJump(const float dt, Vector2 &position) -> bool
 {
-	if (mode_ == Mode::Jump)
+	if (state_ == player_state::jump)
 	{
 		return JumpUpdate(dt, position);
 	}
@@ -843,7 +478,7 @@ auto player::CheckJump(const float dt, Vector2 &position) -> bool
 
 auto player::CanJump(const Vector2 &position) const -> bool
 {
-	if (mode_ != Mode::Push)
+	if (state_ != player_state::push)
 	{
 		return false;
 	}
@@ -873,7 +508,7 @@ void player::Jump()
 
 	PlaySound(jump_sound_);
 
-	mode_ = Mode::Jump;
+	state_ = player_state::jump;
 	jump_step_ = 0;
 	jump_timer_ = 0;
 	jump_origin_ = get_position();
@@ -895,7 +530,7 @@ auto player::JumpUpdate(const float dt, Vector2 &position) -> bool
 
 		if (jump_step_ >= 8)
 		{
-			mode_ = Mode::Idle;
+			state_ = player_state::idle;
 
 			return false;
 		}
@@ -912,76 +547,14 @@ auto player::JumpUpdate(const float dt, Vector2 &position) -> bool
 	return true;
 }
 
-void player::UpdateOverlay(const float dt)
-{
-	if (overlay_ == OverlayType::None)
-	{
-		return;
-	}
-
-	if (overlay_ == OverlayType::Grass ||
-	    overlay_ == OverlayType::GrassLava)
-	{
-		if (mode_ != Mode::Walk)
-		{
-			return;
-		}
-	}
-
-	overlay_timer_ -= dt;
-
-	if (overlay_timer_ <= 0)
-	{
-		overlay_timer_ = 0.1f;
-		overlay_frame_++;
-
-		if (overlay_frame_ > 1)
-		{
-			overlay_frame_ = 0;
-		}
-	}
-}
-
-void player::DrawOverlay() const
-{
-	if (overlay_ == OverlayType::None)
-	{
-		return;
-	}
-
-	const auto i = static_cast<int>(overlay_);
-	const auto sx = terrain_sprite[i][0];
-	auto sy = terrain_sprite[i][1];
-
-	sy += static_cast<float>(overlay_frame_) * 16;
-
-	const auto [x, y] = get_position();
-	const auto dx = x;
-	const auto dy = y + 16;
-
-	DrawTextureRec(sprites_, {sx, sy, 32, 16}, {dx, dy}, WHITE);
-}
-
-void player::SetOverlay(const OverlayType overlay)
-{
-	if (overlay_ == overlay)
-	{
-		return;
-	}
-
-	overlay_ = overlay;
-	overlay_frame_ = 0;
-	overlay_timer_ = 0.1f;
-}
-
-
 bool player::get_carried_destination_override(Vector2 &dest) const
 {
-	if (mode_ == Mode::LiftShow)
+	if (state_ == player_state::lift)
 	{
-		const auto [dirx, diry] = get_direction_vector(get_direction());
-		dest = {position_.x + dirx * 32.0f, position_.y + diry * 32.0f};
+		dest = get_position() + get_direction_vector(get_direction()) * 32.0f;
+
 		return true;
 	}
+
 	return false;
 }

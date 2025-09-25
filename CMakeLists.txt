@@ -13,6 +13,7 @@ endif ()
 add_executable(OpenGraal WIN32
         src/actor.cpp
         src/actor.hpp
+        src/actor_move.cpp
         src/animation.cpp
         src/animation.hpp
         src/animation_manager.cpp
@@ -24,6 +25,8 @@ add_executable(OpenGraal WIN32
         src/file_manager.hpp
         src/game.cpp
         src/game.hpp
+        src/input.cpp
+        src/input.hpp
         src/leap_effect.hpp
         src/leap_effect.cpp
         src/level.cpp
@@ -37,6 +40,7 @@ add_executable(OpenGraal WIN32
         src/main.cpp
         src/player.cpp
         src/player.hpp
+        src/player_state.cpp
         src/sign.cpp
         src/sign.hpp
         src/sound_manager.cpp

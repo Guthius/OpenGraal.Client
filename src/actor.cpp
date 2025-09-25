@@ -3,9 +3,25 @@
 #include <rlgl.h>
 #include <boost/algorithm/string.hpp>
 
+#include "game.hpp"
 #include "texture_manager.hpp"
 
-actor::actor() : sprites_(load_texture("sprites.png"))
+namespace
+{
+	constexpr Rectangle get_terrain_rectangle(const terrain_effect_type type)
+	{
+		switch (type)
+		{
+			case terrain_effect_type::swamp: return {0, 274, 32, 16};
+			case terrain_effect_type::lava_swamp: return {32, 274, 32, 16};
+			case terrain_effect_type::near_water: return {0, 306, 32, 16};
+			case terrain_effect_type::near_lava: return {32, 306, 32, 16};
+			default: return {};
+		}
+	}
+}
+
+actor::actor(game *game) : game_(game), sprites_(load_texture("sprites.png"))
 {
 	set_animation("idle");
 }
@@ -15,6 +31,30 @@ void actor::update(const float dt)
 	if (animation_ != nullptr)
 	{
 		animation_->update(dt, animation_state_);
+	}
+
+	if (terrain_effect_type_ != terrain_effect_type::none)
+	{
+		if (terrain_effect_type_ == terrain_effect_type::swamp ||
+		    terrain_effect_type_ == terrain_effect_type::lava_swamp)
+		{
+			if (velocity_.x == 0 && velocity_.y == 0)
+			{
+				return;
+			}
+		}
+
+		terrain_effect_timer_ -= dt;
+		if (terrain_effect_timer_ <= 0)
+		{
+			terrain_effect_timer_ = 0.1f;
+			terrain_effect_frame_++;
+
+			if (terrain_effect_frame_ > 1)
+			{
+				terrain_effect_frame_ = 0;
+			}
+		}
 	}
 }
 
@@ -36,41 +76,21 @@ void actor::draw() const
 
 	rlPopMatrix();
 
-	auto draw_carried_object_at = [&](const Vector2 src, const Vector2 dst) {
-		DrawTextureRec(sprites_, {src.x, src.y, 32, 32}, dst, WHITE);
-	};
-
 	if (carried_object_ != carry_object_type::none && sprites_.id != 0)
 	{
 		Vector2 dest{position_.x, position_.y - 40};
 
 		get_carried_destination_override(dest);
 
-		switch (carried_object_)
-		{
-			case carry_object_type::bush:
-				draw_carried_object_at({0.0f, 338.0f}, dest);
-				break;
-
-			case carry_object_type::sign:
-				draw_carried_object_at({32.0f, 338.0f}, dest);
-				break;
-
-			case carry_object_type::vase:
-				draw_carried_object_at({64.0f, 338.0f}, dest);
-				break;
-
-			case carry_object_type::stone:
-				draw_carried_object_at({96.0f, 338.0f}, dest);
-				break;
-
-			case carry_object_type::black_stone:
-				draw_carried_object_at({96.0f, 370.0f}, dest);
-				break;
-
-			default: break;
-		}
+		DrawTextureRec(sprites_, carried_object_rectangle_, dest, WHITE);
 	}
+
+	draw_terrain();
+}
+
+auto actor::is_facing_wall() const -> bool
+{
+	return game_->on_wall(look_at(dir_));
 }
 
 void actor::set_animation(const std::string &name)
@@ -91,4 +111,34 @@ void actor::set_animation(const std::string &name)
 	}
 
 	animation_state_.reset(0, animation_);
+}
+
+void actor::set_carried_object(const carry_object_type type)
+{
+	carried_object_ = type;
+	carried_object_rectangle_ = get_carry_object_rect(type);
+}
+
+void actor::set_terrain(const terrain_effect_type type)
+{
+	terrain_effect_type_ = type;
+	terrain_effect_rect_ = get_terrain_rectangle(type);
+}
+
+void actor::draw_terrain() const
+{
+	if (terrain_effect_type_ == terrain_effect_type::none)
+	{
+		return;
+	}
+
+	auto rectangle = terrain_effect_rect_;
+
+	rectangle.y += static_cast<float>(terrain_effect_frame_) * 16;
+
+	const auto [x, y] = get_position();
+	const auto dx = x;
+	const auto dy = y + 16;
+
+	DrawTextureRec(sprites_, rectangle, {dx, dy}, WHITE);
 }

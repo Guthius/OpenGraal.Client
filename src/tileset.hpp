@@ -11,7 +11,7 @@ struct tile_type
 		wall = 1 << 0,
 		water = 1 << 1,
 		chair = 1 << 2,
-		water_shallow = 1 << 3,
+		near_water = 1 << 3,
 		swamp = 1 << 4,
 		jump = 1 << 5,
 		bed_top = 1 << 6,

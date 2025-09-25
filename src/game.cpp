@@ -42,7 +42,7 @@ game::game()
 	player_->set_position(pos);
 
 	level_info_ = new level_info(
-		load_level("onlinestartlocal.graal"),
+		load_level("onlinestartlocal.nw"),
 		load_tileset("pics1.png"),
 		0, 0);
 
@@ -174,7 +174,7 @@ void game::update_leaps(const float dt)
 void game::draw() const
 {
 	constexpr auto camera_offset = Vector2(16, 16);
-	const auto screen_size = Vector2(GetScreenWidth(), GetScreenHeight());
+	const auto screen_size = Vector2(static_cast<float>(GetScreenWidth()), static_cast<float>(GetScreenHeight()));
 	const auto screen_half_size = screen_size / 2.0f;
 	const auto [cx, cy] = screen_half_size - player_->get_position() - camera_offset;
 
