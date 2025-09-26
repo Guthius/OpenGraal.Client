@@ -58,7 +58,7 @@ namespace
 			}
 			else
 			{
-				tiles[tile] |= type;
+				tiles[tile] = type;
 			}
 		}
 

@@ -156,10 +156,9 @@ auto level::get_tile_id(const int x, const int y) const -> int
 auto level::on_wall(const tileset *tileset, const Rectangle rect) const -> bool
 {
 	if (constexpr float map_size = 64.0f * 16.0f;
-		rect.x >= map_size ||
-		rect.y >= map_size ||
-		rect.x + rect.width <= 0.0f ||
-		rect.y + rect.height <= 0.0f)
+		rect.x < 0 || rect.y < 0 ||
+		rect.x + rect.width > map_size ||
+		rect.y + rect.height > map_size)
 	{
 		return true;
 	}
