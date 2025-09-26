@@ -4,4 +4,4 @@
 
 #include "level.hpp"
 
-auto load_level(const std::string &name) -> level *;
+auto load_level(const std::string &name) -> std::shared_ptr<level>;

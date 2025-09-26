@@ -13,9 +13,7 @@ int main()
 
 	InitWindow(1280, 720, Title);
 
-	game game{};
-
-	game.run();
+	run_game();
 
 	CloseWindow();
 

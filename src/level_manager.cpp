@@ -7,9 +7,9 @@
 
 namespace
 {
-	std::map<std::string, level *> loaded_levels;
+	std::map<std::string, std::shared_ptr<level> > loaded_levels;
 
-	auto load_level_from_file(const std::string &key) -> level *
+	auto load_level_from_file(const std::string &key) -> std::shared_ptr<level>
 	{
 		const auto path = find_file(key);
 
@@ -35,7 +35,7 @@ namespace
 	}
 }
 
-auto load_level(const std::string &name) -> level *
+auto load_level(const std::string &name) -> std::shared_ptr<level>
 {
 	const auto key = boost::to_lower_copy(name);
 	const auto iter = loaded_levels.find(key);

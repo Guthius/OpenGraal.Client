@@ -53,12 +53,12 @@ public:
 	auto try_destroy_object_at(float x, float y) -> std::tuple<leap_effect_type, int, int>;
 	auto try_lift_object_at(float x, float y) -> carry_object_type;
 
-	static auto load(const std::filesystem::path &path) -> level *;
+	static auto load(const std::filesystem::path &path) -> std::shared_ptr<level>;
 
 private:
-	static auto load_nw(std::ifstream &stream) -> level *;
-	static auto load_graal(std::ifstream &stream, int bits, size_t code_mask, size_t control_bit, bool has_chests) -> level *;
-	static auto load_graal(std::ifstream &stream, const char *version) -> level *;
+	static auto load_nw(std::ifstream &stream) -> std::shared_ptr<level>;
+	static auto load_graal(std::ifstream &stream, int bits, size_t code_mask, size_t control_bit, bool has_chests) -> std::shared_ptr<level>;
+	static auto load_graal(std::ifstream &stream, const char *version) -> std::shared_ptr<level>;
 
 	std::vector<short> board_;
 	std::vector<level_link> links_{};

@@ -277,7 +277,7 @@ auto player::attack() -> player_state
 		return player_state::walk;
 	}
 
-	TryDestroyObjectFacing(get_position());
+	try_destroy_object_facing(get_position());
 
 	return player_state::attack;
 }

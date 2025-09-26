@@ -7,10 +7,10 @@
 
 namespace
 {
-	auto try_move(const game *game, Vector2 &position, const Vector2 &velocity) -> bool
+	auto try_move(Vector2 &position, const Vector2 &velocity) -> bool
 	{
 		auto collides = [&](const float nx, const float ny) -> bool {
-			return game->on_wall(Rectangle{nx, ny, 31.0f, 31.0f});
+			return on_wall(Rectangle{nx, ny, 31.0f, 31.0f});
 		};
 
 		auto check_x = [&](float &x, const float delta) {
@@ -66,7 +66,7 @@ auto actor::move(const float dt) -> bool
 		return false;
 	}
 
-	if (try_move(game_, position_, velocity_ * dt) || slide(dt))
+	if (try_move(position_, velocity_ * dt) || slide(dt))
 	{
 		update_terrain();
 
@@ -126,14 +126,14 @@ bool actor::slide(const float dt)
 		}
 	}
 
-	if (game_->on_wall(look_at(dir_)))
+	if (on_wall(look_at(dir_)))
 	{
 		return false;
 	}
 
 	const auto slide_speed = Vector2DotProduct(velocity_, get_direction_vector(dir_)) * 0.35f * dt;
 
-	return try_move(game_, position_, get_direction_vector(slide_dir) * slide_speed);
+	return try_move(position_, get_direction_vector(slide_dir) * slide_speed);
 }
 
 auto actor::get_facing_walls(const direction dir) const -> std::tuple<bool, bool>
@@ -168,8 +168,8 @@ auto actor::get_facing_walls(const direction dir) const -> std::tuple<bool, bool
 	}
 
 	return {
-		game_->on_wall(v1),
-		game_->on_wall(v2)
+		on_wall(v1),
+		on_wall(v2)
 	};
 }
 
@@ -183,7 +183,7 @@ void actor::update_terrain()
 	const auto check_x = static_cast<int>(position_.x + 16);
 	const auto check_y = static_cast<int>(position_.y + 24);
 
-	terrain_tile_type_ = game_->get_tile_type(check_x, check_y);
+	terrain_tile_type_ = get_tile_type(check_x, check_y);
 	if (terrain_tile_type_ & tile_type::swamp)
 	{
 		set_terrain(terrain_effect_type::swamp);

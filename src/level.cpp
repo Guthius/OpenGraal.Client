@@ -336,7 +336,7 @@ auto level::try_lift_object_at(const float x, const float y) -> carry_object_typ
 	return carried_item_type;
 }
 
-auto level::load(const std::filesystem::path &path) -> level *
+auto level::load(const std::filesystem::path &path) -> std::shared_ptr<level>
 {
 	if (!is_regular_file(path))
 	{
@@ -365,7 +365,7 @@ auto level::load(const std::filesystem::path &path) -> level *
 	return load_graal(stream, version);
 }
 
-auto level::load_nw(std::ifstream &stream) -> level *
+auto level::load_nw(std::ifstream &stream) -> std::shared_ptr<level>
 {
 	static std::string base64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
@@ -424,10 +424,10 @@ auto level::load_nw(std::ifstream &stream) -> level *
 	constexpr std::vector<level_link> links;
 	constexpr std::vector<level_sign> signs;
 
-	return new level(board, links, signs);
+	return std::make_shared<level>(board, links, signs);
 }
 
-auto level::load_graal(std::ifstream &stream, const int bits, const size_t code_mask, const size_t control_bit, const bool has_chests) -> level *
+auto level::load_graal(std::ifstream &stream, const int bits, const size_t code_mask, const size_t control_bit, const bool has_chests) -> std::shared_ptr<level>
 {
 	constexpr int boardSize = 64 * 64;
 
@@ -569,10 +569,10 @@ auto level::load_graal(std::ifstream &stream, const int bits, const size_t code_
 		signs.emplace_back(x * 16, y * 16, text);
 	}
 
-	return new level(board, links, signs);
+	return std::make_shared<level>(board, links, signs);
 }
 
-auto level::load_graal(std::ifstream &stream, const char *version) -> level *
+auto level::load_graal(std::ifstream &stream, const char *version) -> std::shared_ptr<level>
 {
 	auto v = -1;
 

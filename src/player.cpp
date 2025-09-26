@@ -51,9 +51,8 @@ static constexpr Vector2 jump_frames[][8] =
 	}
 };
 
-player::player(game *game)
-	: actor(game), game_(game),
-	  sprites_(load_texture("sprites.png")),
+player::player()
+	: sprites_(load_texture("sprites.png")),
 	  jump_sound_(load_sound("jump.wav"))
 {
 }
@@ -116,30 +115,7 @@ void player::update(const float dt)
 	actor::update(dt);
 }
 
-void player::ReturnIdle()
-{
-	if (state_ == player_state::attack)
-	{
-		if (!get_animation_state().ended)
-		{
-			return;
-		}
-	}
-
-	if (state_ == player_state::swim)
-	{
-		return;
-	}
-
-	if ((state_ == player_state::pull || state_ == player_state::grab) && IsKeyDown(KEY_A))
-	{
-		return;
-	}
-
-	state_ = player_state::idle;
-}
-
-auto player::CheckForLevelLinkAt(const Vector2 &position) -> bool
+auto player::check_for_level_link_at_at(const Vector2 &position) -> bool
 {
 	const auto dir = get_direction();
 
@@ -147,7 +123,7 @@ auto player::CheckForLevelLinkAt(const Vector2 &position) -> bool
 	const auto x = position.x + 16 + dirx * 17;
 	const auto y = position.y + 16 + diry * 17;
 
-	const auto level = game_->get_current_level();
+	const auto level = get_current_level();
 	if (level == nullptr)
 	{
 		return false;
@@ -172,10 +148,10 @@ auto player::CheckForLevelLinkAt(const Vector2 &position) -> bool
 
 	set_position(pos);
 
-	game_->change_level(link->get_new_level());
+	change_level(link->get_new_level());
 
 	// Many levels will warp players partially on top of walls... nudge them off...
-	TryMoveFromWall(pos);
+	try_move_from_wall(pos);
 
 	return true;
 }
@@ -193,7 +169,7 @@ auto player::check_for_sign_at(const Vector2 &position) const -> bool
 	const auto x = position.x + 16 + dirx * 24;
 	const auto y = position.y + 16 + diry * 24;
 
-	const auto level = game_->get_current_level();
+	const auto level = get_current_level();
 	if (level == nullptr)
 	{
 		return false;
@@ -205,52 +181,28 @@ auto player::check_for_sign_at(const Vector2 &position) const -> bool
 		return false;
 	}
 
-	game_->show_sign(sign->get_text());
+	show_sign(sign->get_text());
 
 	return true;
 }
 
-void player::CheckAttack(const Vector2 &position)
-{
-	if (state_ != player_state::walk && state_ != player_state::idle)
-	{
-		return;
-	}
-
-	if (!IsKeyPressed(KEY_S))
-	{
-		return;
-	}
-
-	if (drop_carried_object())
-	{
-		UpdateAnimation();
-
-		return;
-	}
-
-	state_ = player_state::attack;
-
-	TryDestroyObjectFacing(position);
-}
-
-void player::TryDestroyObjectFacing(const Vector2 &position) const
+void player::try_destroy_object_facing(const Vector2 &position) const
 {
 	auto [ax, ay] = position + Vector2(16, 16) + get_direction_vector(get_direction()) * 32;
 
-	const auto [leap_type, leap_x, leap_y] = game_->get_current_level()->try_destroy_object_at(ax, ay);
+	const auto [leap_type, leap_x, leap_y] = get_current_level()->try_destroy_object_at(ax, ay);
 	if (leap_type != leap_effect_type::none)
 	{
-		game_->spawn_leaps(leap_type, Vector2(
+		spawn_leaps(leap_type, Vector2(
 			static_cast<float>(leap_x),
 			static_cast<float>(leap_y)));
 	}
 }
 
-auto player::TryMoveFromWall(Vector2 position) -> void
+auto player::try_move_from_wall(Vector2 position) -> void
 {
 	auto collides = [&](const Vector2 &p) {
-		return game_->on_wall(Rectangle{p.x, p.y, 31.0f, 31.0f});
+		return on_wall(Rectangle{p.x, p.y, 31.0f, 31.0f});
 	};
 
 	if (collides(position))
@@ -280,67 +232,11 @@ auto player::TryMoveFromWall(Vector2 position) -> void
 	}
 }
 
-void player::CheckPushAndPull()
-{
-	if (state_ == player_state::attack)
-	{
-		return;
-	}
-
-	if (state_ == player_state::jump)
-	{
-		return;
-	}
-
-	if (state_ == player_state::swim || !is_facing_wall() || is_carrying())
-	{
-		return;
-	}
-
-	const auto dir = get_direction();
-
-	if (IsKeyDown(KEY_A))
-	{
-		if (try_pickup_item())
-		{
-			return;
-		}
-
-		if (IsKeyDown(get_opposite_direction_key(dir)))
-		{
-			state_ = player_state::pull;
-		}
-		else
-		{
-			state_ = player_state::grab;
-		}
-
-		return;
-	}
-
-	if (IsKeyDown(get_direction_key(dir)))
-	{
-		if (state_ != player_state::push)
-		{
-			push_timer_ += GetFrameTime();
-
-			if (push_timer_ >= .75f)
-			{
-				state_ = player_state::push;
-			}
-		}
-	}
-	else
-	{
-		push_timer_ = 0;
-	}
-}
-
 auto player::try_pickup_item() -> bool
 {
 	auto [ax, ay] = look_at(get_direction());
 
-	const auto carried_item = game_->get_current_level()->try_lift_object_at(ax, ay);
+	const auto carried_item = get_current_level()->try_lift_object_at(ax, ay);
 	if (carried_item == carry_object_type::none)
 	{
 		return false;
@@ -360,78 +256,6 @@ auto player::try_pickup_item() -> bool
 	return true;
 }
 
-auto is_key_pressed = false;
-auto was_key_pressed = false;
-
-void player::CheckThrow()
-{
-	was_key_pressed = is_key_pressed;
-	is_key_pressed = IsKeyPressed(KEY_A);
-
-	if (is_key_pressed && !was_key_pressed && is_carrying())
-	{
-		drop_carried_object();
-
-		set_animation(state_ == player_state::walk ? "walk" : "idle");
-	}
-}
-
-void player::UpdateAnimation()
-{
-	switch (state_)
-	{
-		case player_state::idle:
-			if (is_carrying())
-			{
-				set_animation("carrystill");
-			}
-			else
-			{
-				set_animation("idle");
-			}
-			break;
-
-		case player_state::walk:
-			if (is_carrying())
-			{
-				set_animation("carry");
-			}
-			else
-			{
-				set_animation("walk");
-			}
-			break;
-
-		case player_state::swim:
-			set_animation("swim");
-			break;
-
-		case player_state::sit:
-			set_animation("sit");
-			break;
-
-		case player_state::pull:
-			set_animation("pull");
-			break;
-
-		case player_state::lift:
-		case player_state::grab:
-			set_animation("grab");
-			break;
-
-		case player_state::push:
-			set_animation("push");
-			break;
-
-		case player_state::attack:
-			set_animation("sword");
-			break;
-
-		default:
-			break;
-	}
-}
-
 auto player::GetTileFacing() const -> int
 {
 	const auto [x, y] = get_position();
@@ -440,7 +264,7 @@ auto player::GetTileFacing() const -> int
 	const auto lx = static_cast<int>(x + 16 + dirx * 24);
 	const auto ly = static_cast<int>(y + 16 + diry * 24);
 
-	return game_->get_tile_type(lx, ly);
+	return get_tile_type(lx, ly);
 }
 
 auto player::drop_carried_object() -> bool
@@ -452,7 +276,7 @@ auto player::drop_carried_object() -> bool
 
 	const auto [x, y] = get_position();
 
-	game_->spawn_thrown_item(get_carried_object(), {x, y - 40.0f}, get_direction());
+	spawn_thrown_item(get_carried_object(), {x, y - 40.0f}, get_direction());
 
 	set_carried_object(carry_object_type::none);
 
@@ -492,7 +316,7 @@ auto player::CanJump(const Vector2 &position) const -> bool
 	const auto x = position.x + jump_frames[static_cast<int>(dir)][7].x;
 	const auto y = position.y + jump_frames[static_cast<int>(dir)][7].y;
 
-	if (game_->on_wall({x, y, 31, 31}))
+	if (on_wall({x, y, 31, 31}))
 	{
 		return false;
 	}

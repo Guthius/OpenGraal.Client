@@ -21,7 +21,7 @@ namespace
 	}
 }
 
-actor::actor(game *game) : game_(game), sprites_(load_texture("sprites.png"))
+actor::actor() : sprites_(load_texture("sprites.png"))
 {
 	set_animation("idle");
 }
@@ -90,7 +90,7 @@ void actor::draw() const
 
 auto actor::is_facing_wall() const -> bool
 {
-	return game_->on_wall(look_at(dir_));
+	return on_wall(look_at(dir_));
 }
 
 void actor::set_animation(const std::string &name)

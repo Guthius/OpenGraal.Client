@@ -22,7 +22,7 @@ class game;
 class actor
 {
 public:
-	explicit actor(game *game);
+	explicit actor();
 
 	virtual ~actor() = default;
 
@@ -60,7 +60,6 @@ protected:
 private:
 	void draw_terrain() const;
 
-	game *game_;
 	Texture2D sprites_;
 	Vector2 position_{};
 	direction dir_ = direction::up;
