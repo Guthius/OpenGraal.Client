@@ -1,3 +1,0 @@
-if (playerenters) {show;
-timeout=1}
-if (timeout) {hide} 

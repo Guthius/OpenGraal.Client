@@ -1,3 +1,0 @@
-if (watermateriafired) {timeout=0.6;}
-if (playertouchsme) { hurt 0}
-if (timeout) { destroy}

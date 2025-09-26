@@ -1,6 +1,0 @@
-dontblock;
-drawunderplayer;
-if (playertouchsme) {
-putexplosion 4,x,y;
-destroy;
-}

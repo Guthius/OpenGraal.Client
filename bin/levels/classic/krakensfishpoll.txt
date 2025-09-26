@@ -1,4 +1,0 @@
-if (created) {
-toinventory GotKrakensFP;
-destroy;
-}

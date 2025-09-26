@@ -1,1 +1,0 @@
-if (playertouchsme) { toweapons Fake Boots; hide;}

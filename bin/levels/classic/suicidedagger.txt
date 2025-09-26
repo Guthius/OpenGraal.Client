@@ -1,4 +1,0 @@
-if(playertouchsme){toweapons Suicide Dagger;destroy}
-if(weaponfired){timeout=.5;hidesword .5;playerdir=2;
-freezeplayer .5;setbow blank.gif;playersprite=33}
-if(timeout){hurt 40}
