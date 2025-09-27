@@ -15,16 +15,12 @@ namespace
 
 		if (path.empty())
 		{
-			loaded_textures[key] = {};
-
-			return {};
+			return loaded_textures[key] = {};
 		}
 
 		const auto texture = LoadTexture(path.string().c_str());
 
-		loaded_textures[key] = texture;
-
-		return texture;
+		return loaded_textures[key] = texture;
 	}
 }
 

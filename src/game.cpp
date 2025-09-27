@@ -11,6 +11,11 @@
 #include "texture_manager.hpp"
 #include "thrown_item.hpp"
 #include "tileset_manager.hpp"
+#include "gui/gui_button_ctrl.hpp"
+#include "gui/gui_check_box_ctrl.hpp"
+#include "gui/gui_control.hpp"
+#include "gui/gui_radio_ctrl.hpp"
+#include "gui/gui_window_ctrl.hpp"
 
 #define SIGN_WIDTH 382
 #define SIGN_HEIGHT 142
@@ -37,6 +42,7 @@ namespace
 	Font font_pixel_12{};
 	std::vector<thrown_item> active_thrown_items{};
 	std::vector<leap_effect> active_leaps{};
+	std::shared_ptr<gui_control> gui;
 
 	void update_thrown_items(const float dt)
 	{
@@ -70,6 +76,8 @@ namespace
 	void update()
 	{
 		const auto dt = GetFrameTime();
+
+		gui->update(dt);
 
 		update_thrown_items(dt);
 		update_leaps(dt);
@@ -120,6 +128,8 @@ namespace
 		draw_hud_resource({80, 33, 16, 16}, {274, 30}, "754");
 		draw_hud_resource({136, 33, 16, 16}, {274 + 56, 30}, "5");
 		draw_hud_resource({184, 33, 16, 16}, {274 + 104, 30}, "0");
+
+		gui->draw();
 	}
 
 	void draw_diagnostics()
@@ -181,18 +191,95 @@ namespace
 		local_player->set_position(pos);
 
 		current_level_info = new level_info(
-			load_level("onlinestartlocal.graal"),
+			load_level("onlinestartlocal.nw"),
 			load_tileset("pics1.png"));
 
 		state_texture = load_texture("state.png");
 
-		font_24 = LoadFontEx("Fonts/LiberationSans-Bold.ttf", 24, nullptr, 250);
-		font_18 = LoadFontEx("Fonts/LiberationSans-Regular.ttf", 18, nullptr, 250);
-		font_pixel_12 = LoadFontEx("Fonts/Kenney Pixel.ttf", 12, nullptr, 0);
+		font_24 = LoadFontEx("levels/fonts/LiberationSans-Bold.ttf", 24, nullptr, 250);
+		font_18 = LoadFontEx("levels/fonts/LiberationSans-Regular.ttf", 18, nullptr, 250);
+		font_pixel_12 = LoadFontEx("levels/fonts/Kenney Pixel.ttf", 12, nullptr, 0);
 
 		current_sign = std::make_unique<sign>();
 
 		sprites_texture = load_texture("sprites.png");
+
+		const auto gui_window_profile = std::make_shared<gui_control_profile>();
+		gui_window_profile->set_texture("guiblue_window.png");
+		gui_window_profile->set_font("LiberationSans-Regular.ttf");
+
+		const auto gui_window = std::make_shared<gui_window_ctrl>();
+		gui_window->set_profile(gui_window_profile);
+		gui_window->set_position({200, 200});
+		gui_window->set_size({150, 150});
+		gui_window->set_text("GuiWindowCtrl");
+
+		const auto gui_button_profile = std::make_shared<gui_control_profile>();
+		gui_button_profile->set_texture("guiblue_button.png");
+		gui_button_profile->set_font("LiberationSans-Regular.ttf");
+
+		const auto gui_button = std::make_shared<gui_button_ctrl>();
+		gui_button->set_profile(gui_button_profile);
+		gui_button->set_position({10, 30});
+		gui_button->set_size({110, 25});
+		gui_button->set_text("GuiButtonCtrl");
+		gui_button->clicked = [] {
+			show_sign("Hello World");
+		};
+
+		const auto gui_check_box_profile = std::make_shared<gui_control_profile>();
+		gui_check_box_profile->set_texture("guiblue_check.png");
+		gui_check_box_profile->set_font("LiberationSans-Regular.ttf");
+
+		const auto gui_check_box = std::make_shared<gui_check_box_ctrl>();
+		gui_check_box->set_profile(gui_check_box_profile);
+		gui_check_box->set_position({10, 130});
+		gui_check_box->set_size({90, 25});
+		gui_check_box->set_text("GuiCheckBoxCtrl");
+
+		const auto gui_radio_profile = std::make_shared<gui_control_profile>();
+		gui_radio_profile->set_texture("guiblue_radio.png");
+		gui_radio_profile->set_font("LiberationSans-Regular.ttf");
+
+		const auto gui_radio_1 = std::make_shared<gui_radio_ctrl>();
+		gui_radio_1->set_profile(gui_radio_profile);
+		gui_radio_1->set_position({10, 160});
+		gui_radio_1->set_size({90, 25});
+		gui_radio_1->set_text("GuiRadioCtrl[0]");
+
+		const auto gui_radio_2 = std::make_shared<gui_radio_ctrl>();
+		gui_radio_2->set_profile(gui_radio_profile);
+		gui_radio_2->set_position({10, 190});
+		gui_radio_2->set_size({90, 25});
+		gui_radio_2->set_text("GuiRadioCtrl[1]");
+
+		const auto gui_radio_3 = std::make_shared<gui_radio_ctrl>();
+		gui_radio_3->set_profile(gui_radio_profile);
+		gui_radio_3->set_position({10, 220});
+		gui_radio_3->set_size({90, 25});
+		gui_radio_3->set_text("GuiRadioCtrl[2]");
+
+		const auto gui_text_profile = std::make_shared<gui_control_profile>();
+		gui_text_profile->set_texture("guiblue_radio.png");
+		gui_text_profile->set_font("LiberationSans-Regular.ttf");
+		gui_text_profile->set_text_shadow(true);
+		gui_text_profile->set_shadow_offset({2, 2});
+
+		const auto gui_text = std::make_shared<gui_text_ctrl>();
+		gui_text->set_profile(gui_text_profile);
+		gui_text->set_position({10, 230});
+		gui_text->set_size({90, 25});
+		gui_text->set_text("GuiTextCtrl");
+
+		gui_window->add_child(gui_button);
+
+		gui = std::make_shared<gui_control>();
+		gui->add_child(gui_check_box);
+		gui->add_child(gui_radio_1);
+		gui->add_child(gui_radio_2);
+		gui->add_child(gui_radio_3);
+		gui->add_child(gui_text);
+		gui->add_child(gui_window);
 	}
 }
 

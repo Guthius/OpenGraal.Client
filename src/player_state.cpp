@@ -68,6 +68,9 @@ void player::state_enter(const player_state state)
 			push_timer_ = 0;
 			break;
 
+		case player_state::swim:
+			break;
+
 		case player_state::lift:
 			lift_show_timer_ = 0.1f;
 			break;

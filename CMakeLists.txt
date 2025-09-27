@@ -11,6 +11,22 @@ if (MINGW)
 endif ()
 
 add_executable(OpenGraal WIN32
+        src/gui/gui_button_base_ctrl.cpp
+        src/gui/gui_button_base_ctrl.hpp
+        src/gui/gui_button_ctrl.cpp
+        src/gui/gui_button_ctrl.hpp
+        src/gui/gui_check_box_ctrl.cpp
+        src/gui/gui_check_box_ctrl.hpp
+        src/gui/gui_control.cpp
+        src/gui/gui_control.hpp
+        src/gui/gui_control_profile.cpp
+        src/gui/gui_control_profile.hpp
+        src/gui/gui_radio_ctrl.cpp
+        src/gui/gui_radio_ctrl.hpp
+        src/gui/gui_text_ctrl.cpp
+        src/gui/gui_text_ctrl.hpp
+        src/gui/gui_utils.hpp
+
         src/actor.cpp
         src/actor.hpp
         src/actor_move.cpp
@@ -23,6 +39,8 @@ add_executable(OpenGraal WIN32
         src/constants.hpp
         src/file_manager.cpp
         src/file_manager.hpp
+        src/font_manager.cpp
+        src/font_manager.hpp
         src/game.cpp
         src/game.hpp
         src/input.cpp
@@ -55,6 +73,8 @@ add_executable(OpenGraal WIN32
         src/tileset_manager.hpp
         src/utils.cpp
         src/utils.hpp
+        src/gui/gui_window_ctrl.cpp
+        src/gui/gui_window_ctrl.hpp
 )
 
 target_sources(OpenGraal PRIVATE game.rc)
