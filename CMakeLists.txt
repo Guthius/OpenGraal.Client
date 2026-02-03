@@ -1,10 +1,11 @@
-cmake_minimum_required(VERSION 3.26)
+cmake_minimum_required(VERSION 4.1)
 project(OpenGraal)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(raylib CONFIG REQUIRED)
+find_package(glfw3 CONFIG REQUIRED)
 
 if (MINGW)
     add_link_options(-mwindows -static-libstdc++ -static-libgcc)
@@ -26,6 +27,8 @@ add_executable(OpenGraal WIN32
         src/gui/gui_text_ctrl.cpp
         src/gui/gui_text_ctrl.hpp
         src/gui/gui_utils.hpp
+        src/gui/gui_window_ctrl.cpp
+        src/gui/gui_window_ctrl.hpp
 
         src/actor.cpp
         src/actor.hpp
@@ -73,9 +76,12 @@ add_executable(OpenGraal WIN32
         src/tileset_manager.hpp
         src/utils.cpp
         src/utils.hpp
-        src/gui/gui_window_ctrl.cpp
-        src/gui/gui_window_ctrl.hpp
 )
 
 target_sources(OpenGraal PRIVATE game.rc)
-target_link_libraries(OpenGraal PRIVATE raylib)
+
+target_link_libraries(OpenGraal PRIVATE raylib glfw)
+
+target_compile_options(OpenGraal PRIVATE
+        $<$<CXX_COMPILER_ID:GNU>:-Wno-changes-meaning>
+)
