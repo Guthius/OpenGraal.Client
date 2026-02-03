@@ -29,18 +29,26 @@ class player final : public actor {
 
   private:
     auto check_for_level_link_at_at(const Vector2 &position) -> bool;
+
+    [[nodiscard]]
     auto check_for_sign_at(const Vector2 &position) const -> bool;
+
     void try_destroy_object_facing(const Vector2 &position) const;
     auto try_move_from_wall(Vector2 position) -> void;
     auto try_pickup_item() -> bool;
-    auto GetTileFacing() const -> int;
+
+    [[nodiscard]]
+    auto get_tile_facing() const -> int;
 
     auto drop_carried_object() -> bool;
 
-    auto CheckJump(float dt, Vector2 &position) -> bool;
-    auto CanJump(const Vector2 &position) const -> bool;
-    void Jump();
-    auto JumpUpdate(float dt, Vector2 &position) -> bool;
+    auto check_jump(float dt, Vector2 &position) -> bool;
+
+    [[nodiscard]]
+    auto can_jump(const Vector2 &position) const -> bool;
+
+    void jump();
+    auto jump_update(float dt, Vector2 &position) -> bool;
 
     void state_enter(player_state state);
     auto state_update(player_state state, float dt) -> player_state;

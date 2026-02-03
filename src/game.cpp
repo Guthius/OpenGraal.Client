@@ -3,6 +3,7 @@
 #include "file_manager.hpp"
 #include "level_manager.hpp"
 #include "player.hpp"
+#include "sign.hpp"
 #include "sound_manager.hpp"
 #include "texture_manager.hpp"
 #include "thrown_item.hpp"

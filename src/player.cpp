@@ -246,7 +246,7 @@ auto player::try_pickup_item() -> bool {
     return true;
 }
 
-auto player::GetTileFacing() const -> int {
+auto player::get_tile_facing() const -> int {
     const auto [x, y] = get_position();
     const auto [dirx, diry] = get_direction_vector(get_direction());
 
@@ -270,26 +270,26 @@ auto player::drop_carried_object() -> bool {
     return true;
 }
 
-auto player::CheckJump(const float dt, Vector2 &position) -> bool {
+auto player::check_jump(const float dt, Vector2 &position) -> bool {
     if (state_ == player_state::jump) {
-        return JumpUpdate(dt, position);
+        return jump_update(dt, position);
     }
 
-    if (!CanJump(position)) {
+    if (!can_jump(position)) {
         return false;
     }
 
-    Jump();
+    jump();
 
     return true;
 }
 
-auto player::CanJump(const Vector2 &position) const -> bool {
+auto player::can_jump(const Vector2 &position) const -> bool {
     if (state_ != player_state::push) {
         return false;
     }
 
-    if (const auto tile = GetTileFacing(); !(tile & tile_type::jump)) {
+    if (const auto tile = get_tile_facing(); !(tile & tile_type::jump)) {
         return false;
     }
 
@@ -304,7 +304,7 @@ auto player::CanJump(const Vector2 &position) const -> bool {
     return true;
 }
 
-void player::Jump() {
+void player::jump() {
     const auto dir = get_direction();
 
     set_animation("walk");
@@ -320,7 +320,7 @@ void player::Jump() {
     jump_to_.y = jump_from_.y + jump_frames[static_cast<int>(dir)][jump_step_].y;
 }
 
-auto player::JumpUpdate(const float dt, Vector2 &position) -> bool {
+auto player::jump_update(const float dt, Vector2 &position) -> bool {
     jump_timer_ += dt;
 
     if (jump_timer_ >= jump_speed) {
