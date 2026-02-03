@@ -1,18 +1,18 @@
 #pragma once
+
 #include "actor.hpp"
 
-enum class input_action
-{
-	up,
-	left,
-	down,
-	right,
-	shoot,
-	attack,
-	grab,
-	map,
-	chat,
-	inventory
+enum class input_action {
+    up,
+    left,
+    down,
+    right,
+    shoot,
+    attack,
+    grab,
+    map,
+    chat,
+    inventory
 };
 
 auto is_action_down(input_action action) -> bool;

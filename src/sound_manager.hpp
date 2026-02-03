@@ -4,4 +4,4 @@
 #include <string>
 
 auto load_sound(const std::string &filename) -> Sound;
-void play_sound(const std::string& filename);
+void play_sound(const std::string &filename);

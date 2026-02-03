@@ -3,19 +3,18 @@
 
 constexpr auto Title = "OpenGraal";
 
-int main()
-{
-	InitAudioDevice();
+int main() {
+    InitAudioDevice();
 
-	SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 
-	load_animations_from_directory("levels/ganis");
+    load_animations_from_directory("levels/ganis");
 
-	InitWindow(1280, 720, Title);
+    InitWindow(1280, 720, Title);
 
-	run_game();
+    run_game();
 
-	CloseWindow();
+    CloseWindow();
 
-	return 0;
+    return 0;
 }

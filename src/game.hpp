@@ -3,7 +3,6 @@
 #include "actor.hpp"
 #include "leap_effect.hpp"
 #include "level.hpp"
-#include "sign.hpp"
 
 void run_game();
 
