@@ -152,7 +152,8 @@ auto actor::get_facing_walls(const direction dir) const -> std::tuple<bool, bool
 
     return {
         on_wall(v1),
-        on_wall(v2)};
+        on_wall(v2),
+    };
 }
 
 auto actor::look_at(const direction dir) const -> Vector2 {

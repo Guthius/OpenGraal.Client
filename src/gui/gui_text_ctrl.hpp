@@ -8,7 +8,6 @@ class gui_text_ctrl : public gui_control {
 
     void set_text(const std::string &text) { text_ = text; }
 
-  protected:
     void draw() const override;
 
   private:

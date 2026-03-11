@@ -26,6 +26,8 @@ add_executable(OpenGraal WIN32
         src/gui/gui_radio_ctrl.hpp
         src/gui/gui_text_ctrl.cpp
         src/gui/gui_text_ctrl.hpp
+        src/gui/gui_text_edit_ctrl.cpp
+        src/gui/gui_text_edit_ctrl.hpp
         src/gui/gui_utils.hpp
         src/gui/gui_window_ctrl.cpp
         src/gui/gui_window_ctrl.hpp

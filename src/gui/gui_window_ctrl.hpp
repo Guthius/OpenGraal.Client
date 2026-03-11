@@ -3,6 +3,6 @@
 #include "gui_text_ctrl.hpp"
 
 class gui_window_ctrl final : public gui_text_ctrl {
-  public:
+  protected:
     void draw() const override;
 };

@@ -12,6 +12,7 @@
 #include "gui/gui_check_box_ctrl.hpp"
 #include "gui/gui_control.hpp"
 #include "gui/gui_radio_ctrl.hpp"
+#include "gui/gui_text_edit_ctrl.hpp"
 #include "gui/gui_window_ctrl.hpp"
 
 #include <raylib.h>
@@ -251,7 +252,13 @@ namespace {
         gui_text->set_size({90, 25});
         gui_text->set_text("GuiTextCtrl");
 
+        const auto gui_text_edit = std::make_shared<gui_text_edit_ctrl>();
+        gui_text_edit->set_profile(gui_text_profile);
+        gui_text_edit->set_position({10, 60});
+        gui_text_edit->set_size({110, 25});
+
         gui_window->add_child(gui_button);
+        gui_window->add_child(gui_text_edit);
 
         gui = std::make_shared<gui_control>();
         gui->add_child(gui_check_box);
