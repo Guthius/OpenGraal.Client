@@ -194,6 +194,7 @@ namespace {
         gui_window->set_position({200, 200});
         gui_window->set_size({150, 150});
         gui_window->set_text("GuiWindowCtrl");
+        gui_window->set_draggable(true);
 
         const auto gui_button_profile = std::make_shared<gui_control_profile>();
         gui_button_profile->set_texture("guiblue_button.png");
