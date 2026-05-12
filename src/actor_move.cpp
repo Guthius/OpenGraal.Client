@@ -46,10 +46,8 @@ namespace {
         const auto start_x = position.x;
         const auto start_y = position.y;
 
-        if (velocity.x != 0.0f)
-            check_x(position.x, velocity.x);
-        if (velocity.y != 0.0f)
-            check_y(position.y, velocity.y);
+        if (velocity.x != 0.0f) check_x(position.x, velocity.x);
+        if (velocity.y != 0.0f) check_y(position.y, velocity.y);
 
         return position.x != start_x || position.y != start_y;
     }
@@ -78,35 +76,19 @@ bool actor::slide(const float dt) {
     direction slide_dir;
     if (tile1) {
         switch (dir_) {
-        case direction::up:
-            slide_dir = direction::right;
-            break;
-        case direction::left:
-            slide_dir = direction::down;
-            break;
-        case direction::down:
-            slide_dir = direction::right;
-            break;
-        case direction::right:
-            slide_dir = direction::down;
-            break;
+        case direction::up:    slide_dir = direction::right; break;
+        case direction::left:  slide_dir = direction::down; break;
+        case direction::down:  slide_dir = direction::right; break;
+        case direction::right: slide_dir = direction::down; break;
         default:
             return false;
         }
     } else {
         switch (dir_) {
-        case direction::up:
-            slide_dir = direction::left;
-            break;
-        case direction::left:
-            slide_dir = direction::up;
-            break;
-        case direction::down:
-            slide_dir = direction::left;
-            break;
-        case direction::right:
-            slide_dir = direction::up;
-            break;
+        case direction::up:    slide_dir = direction::left; break;
+        case direction::left:  slide_dir = direction::up; break;
+        case direction::down:  slide_dir = direction::left; break;
+        case direction::right: slide_dir = direction::up; break;
         default:
             return false;
         }

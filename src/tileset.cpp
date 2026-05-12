@@ -69,8 +69,8 @@ namespace {
         load_array(stream, tiles, tile_count, tile_type::chair);
         load_array(stream, tiles, tile_count, tile_type::bed_top);
         load_array(stream, tiles, tile_count, tile_type::bed_bottom);
-        load_array(stream, tiles, tile_count, tile_type::swamp);
-        // load_array(stream, tiles, tile_count, tile_type::water_shallow);
+        load_array(stream, tiles, tile_count, tile_type::near_water);
+        load_array(stream, tiles, tile_count, tile_type::near_water);
         // load_array(stream, tiles, tile_count, tile_type::jump);
         // load_array(stream, tiles, tile_count, tile_type::swamp);
 

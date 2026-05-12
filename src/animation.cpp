@@ -51,7 +51,8 @@ void animation::parse_sprite(const std::vector<std::string> &tokens) {
         .x = std::stof(tokens[3]),
         .y = std::stof(tokens[4]),
         .width = std::stof(tokens[5]),
-        .height = std::stof(tokens[6])};
+        .height = std::stof(tokens[6]),
+    };
 
     if (sprite.source == sprite_source::file) {
         sprite.texture = tokens[2];

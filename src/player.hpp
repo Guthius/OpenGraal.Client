@@ -24,7 +24,6 @@ class player final : public actor {
     explicit player();
 
     void update(float dt) override;
-    void update_new(float dt);
 
   private:
     auto check_for_level_link_at_at(const Vector2 &position) -> bool;

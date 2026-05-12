@@ -56,63 +56,6 @@ player::player()
       jump_sound_(load_sound("jump.wav")) {
 }
 
-void player::update(const float dt) {
-    update_new(dt);
-
-    // // Handle temporary lift-show state: show pull animation and item in front, block other actions
-    // if (mode_ == player_state::lift_show)
-    // {
-    // 	lift_show_timer_ -= dt;
-    // 	if (lift_show_timer_ <= 0.0f)
-    // 	{
-    // 		mode_ = player_state::idle;
-    // 		UpdateAnimation();
-    // 	}
-    //
-    // 	actor::update(dt);
-    // 	UpdateOverlay(dt);
-    // 	return;
-    // }
-    //
-    // auto position = get_position();
-    //
-    // const auto mode = mode_;
-    // const auto speed = GetSpeed(dt, speed_);
-    //
-    // if (const auto slide_speed = GetSpeed(dt, slide_speed_);
-    // 	CheckJump(dt, position) ||
-    // 	CheckMovement(position, speed, slide_speed))
-    // {
-    // 	set_position(position);
-    // }
-    //
-    // CheckAttack(position);
-    //
-    // if (mode_ == player_state::walk)
-    // {
-    // 	if (CheckForSignAt(position))
-    // 	{
-    // 		mode_ = player_state::idle;
-    // 	}
-    // }
-    //
-    // CheckThrow();
-    // CheckForLevelLinkAt(position);
-    // CheckPushAndPull();
-    //
-    // if (mode_ != mode)
-    // {
-    // 	if (mode_ != player_state::idle && mode_ != player_state::walk && mode_ != player_state::lift_show)
-    // 	{
-    // 		DropCarriedItem();
-    // 	}
-    //
-    // 	UpdateAnimation();
-    // }
-    //
-    actor::update(dt);
-}
-
 auto player::check_for_level_link_at_at(const Vector2 &position) -> bool {
     const auto dir = get_direction();
 

@@ -1,5 +1,6 @@
 #include "input.hpp"
 #include "player.hpp"
+#include "tileset.hpp"
 
 #include <raylib.h>
 #include <raymath.h>
@@ -267,7 +268,7 @@ auto player::attack() -> player_state {
     return player_state::attack;
 }
 
-void player::update_new(const float dt) {
+void player::update(const float dt) {
     const auto new_state = state_update(state_, dt);
     if (new_state != state_) {
         state_exit(state_);
@@ -282,4 +283,6 @@ void player::update_new(const float dt) {
 
         check_for_sign_at(get_position());
     }
+
+    actor::update(dt);
 }

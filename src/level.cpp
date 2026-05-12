@@ -110,10 +110,10 @@ auto level::get_tile_type(const tileset *tileset, const int x, const int y) cons
         return tile_type::passable;
     }
 
-    const auto tileIndex = ty * 64 + tx;
-    const auto tileId = board_[tileIndex];
+    const auto tile_index = ty * 64 + tx;
+    const auto tile_id = board_[tile_index];
 
-    return tileset->get_tile_type(tileId);
+    return tileset->get_tile_type(tile_id);
 }
 
 auto level::get_tile_id(const int x, const int y) const -> int {
@@ -124,8 +124,8 @@ auto level::get_tile_id(const int x, const int y) const -> int {
         return -1;
     }
 
-    const auto tileIndex = ty * 64 + tx;
-    return board_[tileIndex];
+    const auto tile_index = ty * 64 + tx;
+    return board_[tile_index];
 }
 
 auto level::on_wall(const tileset *tileset, const Rectangle rect) const -> bool {
@@ -365,37 +365,37 @@ auto level::load_nw(std::ifstream &stream) -> std::shared_ptr<level> {
 }
 
 auto level::load_graal(std::ifstream &stream, const int bits, const size_t code_mask, const size_t control_bit, const bool has_chests) -> std::shared_ptr<level> {
-    constexpr int boardSize = 64 * 64;
+    constexpr int board_size = 64 * 64;
 
-    int bitsRead = 0;
+    int bits_read = 0;
     char byte;
     size_t buf = 0;
     short tile1 = -1;
-    int boardIndex = 0;
-    bool doubleMode = false;
+    int board_index = 0;
+    bool double_mode = false;
     int count = 1;
     std::vector<short> board(64 * 64);
 
-    while (boardIndex < boardSize && !stream.eof()) {
-        while (bitsRead < bits) {
+    while (board_index < board_size && !stream.eof()) {
+        while (bits_read < bits) {
             stream.read(&byte, 1);
 
-            buf |= static_cast<uint8_t>(byte) << bitsRead;
+            buf |= static_cast<uint8_t>(byte) << bits_read;
 
-            bitsRead += 8;
+            bits_read += 8;
         }
 
         const uint16_t code = buf & code_mask;
         buf >>= bits;
-        bitsRead -= bits;
+        bits_read -= bits;
 
         if (code & control_bit) {
-            doubleMode = (code & 0x100) == 0x100;
+            double_mode = (code & 0x100) == 0x100;
             count = code & 0xFF;
             continue;
         }
 
-        if (doubleMode) {
+        if (double_mode) {
             if (tile1 == -1) {
                 tile1 = static_cast<short>(code);
                 continue;
@@ -403,16 +403,16 @@ auto level::load_graal(std::ifstream &stream, const int bits, const size_t code_
 
             const auto tile2 = static_cast<short>(code);
 
-            for (auto i = 0; i < count && boardIndex < boardSize - 1; ++i) {
-                board[boardIndex++] = tile1;
-                board[boardIndex++] = tile2;
+            for (auto i = 0; i < count && board_index < board_size - 1; ++i) {
+                board[board_index++] = tile1;
+                board[board_index++] = tile2;
             }
 
             tile1 = -1;
-            doubleMode = false;
+            double_mode = false;
         } else {
-            for (auto i = 0; i < count && boardIndex < boardSize; ++i) {
-                board[boardIndex++] = static_cast<short>(code);
+            for (auto i = 0; i < count && board_index < board_size; ++i) {
+                board[board_index++] = static_cast<short>(code);
             }
         }
 
@@ -432,15 +432,15 @@ auto level::load_graal(std::ifstream &stream, const int bits, const size_t code_
         links.emplace_back(line);
     }
 
-    char baddyX;
-    char baddyY;
-    char baddyType;
+    char baddy_x;
+    char baddy_y;
+    char baddy_type;
 
     /* Read Baddies */
     while (!stream.eof()) {
-        stream.read(&baddyX, 1);
-        stream.read(&baddyY, 1);
-        stream.read(&baddyType, 1);
+        stream.read(&baddy_x, 1);
+        stream.read(&baddy_y, 1);
+        stream.read(&baddy_type, 1);
 
         std::getline(stream, line);
 
@@ -448,7 +448,7 @@ auto level::load_graal(std::ifstream &stream, const int bits, const size_t code_
             break;
         }
 
-        if (baddyX == -1 && baddyY == -1 && baddyType == -1) {
+        if (baddy_x == -1 && baddy_y == -1 && baddy_type == -1) {
             break;
         }
     }
