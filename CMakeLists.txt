@@ -4,12 +4,7 @@ project(OpenGraal)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(raylib CONFIG REQUIRED)
-find_package(glfw3 CONFIG REQUIRED)
-
-if (MINGW)
-    add_link_options(-mwindows -static-libstdc++ -static-libgcc)
-endif ()
+add_subdirectory(vendor)
 
 add_executable(OpenGraal WIN32
         src/gui/gui_button_base_ctrl.cpp

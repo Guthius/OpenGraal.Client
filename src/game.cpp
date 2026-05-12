@@ -200,15 +200,6 @@ namespace {
         gui_button_profile->set_texture("guiblue_button.png");
         gui_button_profile->set_font("LiberationSans-Regular.ttf");
 
-        const auto gui_button = std::make_shared<gui_button_ctrl>();
-        gui_button->set_profile(gui_button_profile);
-        gui_button->set_position({10, 30});
-        gui_button->set_size({110, 25});
-        gui_button->set_text("GuiButtonCtrl");
-        gui_button->clicked = [] {
-            show_sign("Hello World");
-        };
-
         const auto gui_check_box_profile = std::make_shared<gui_control_profile>();
         gui_check_box_profile->set_texture("guiblue_check.png");
         gui_check_box_profile->set_font("LiberationSans-Regular.ttf");
@@ -257,6 +248,16 @@ namespace {
         gui_text_edit->set_profile(gui_text_profile);
         gui_text_edit->set_position({10, 60});
         gui_text_edit->set_size({110, 25});
+
+        const auto gui_button = std::make_shared<gui_button_ctrl>();
+        gui_button->set_profile(gui_button_profile);
+        gui_button->set_position({10, 30});
+        gui_button->set_size({110, 25});
+        gui_button->set_text("GuiButtonCtrl");
+        gui_button->clicked = [gui_text_edit] {
+            show_sign(gui_text_edit->get_text());
+            gui_text_edit->set_text("");
+        };
 
         gui_window->add_child(gui_button);
         gui_window->add_child(gui_text_edit);

@@ -6,8 +6,6 @@
 
 An open-source, experimental re-implementation of the classic Graal Online client using modern C++ and raylib.
 
-OpenGraal aims to load legacy assets (levels, tiles, animations, sounds) and provide a lightweight playground for rendering maps, entities, and player animations in a standalone desktop app.
-
 > This project is not affiliated with, endorsed by, or connected to Graal Online or its owners. All trademarks and assets belong to their respective owners.
 
 ## Features
@@ -32,11 +30,12 @@ OpenGraal aims to load legacy assets (levels, tiles, animations, sounds) and pro
 - raylib (installed via your preferred package manager or from source)
 
 Suggested install methods for raylib:
+
 - macOS: `brew install raylib`
 - Ubuntu/Debian: `sudo apt-get install libraylib-dev`
 - Windows (vcpkg):
-    - `vcpkg install raylib:x64-windows`
-    - Configure CMake with `-DCMAKE_TOOLCHAIN_FILE=<vcpkg_root>/scripts/buildsystems/vcpkg.cmake`
+  - `vcpkg install raylib:x64-windows`
+  - Configure CMake with `-DCMAKE_TOOLCHAIN_FILE=<vcpkg_root>/scripts/buildsystems/vcpkg.cmake`
 
 ## Screenshots
 
@@ -46,7 +45,3 @@ Suggested install methods for raylib:
 [![c dark](.github/screenshot2-thumb.png)](.github/screenshot2.png)
 
 </div>
-
-## Disclaimer
-
-OpenGraal is a educational project designed to explore game programming patterns. It is not associated with the original Graal Online. Please ensure you own the rights to any assets you use.
