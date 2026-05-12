@@ -10,7 +10,7 @@ An open-source, experimental re-implementation of the classic Graal Online clien
 
 ## Features
 
-- Cross-platform C++20 project using CMake + raylib
+- Cross-platform C++23 project using CMake + raylib
 - Basic game loop, rendering, and input handling
 - Level/tileset loading (`.graal` and `.nw` level files)
 - Texture and sound resource management with simple caching
@@ -25,17 +25,9 @@ An open-source, experimental re-implementation of the classic Graal Online clien
 
 ## Requirements
 
-- C++20-capable compiler (Clang, GCC, or MSVC)
-- CMake 3.16+
-- raylib (installed via your preferred package manager or from source)
-
-Suggested install methods for raylib:
-
-- macOS: `brew install raylib`
-- Ubuntu/Debian: `sudo apt-get install libraylib-dev`
-- Windows (vcpkg):
-  - `vcpkg install raylib:x64-windows`
-  - Configure CMake with `-DCMAKE_TOOLCHAIN_FILE=<vcpkg_root>/scripts/buildsystems/vcpkg.cmake`
+- C++23-capable compiler (Clang, GCC, or MSVC)
+- CMake 4.1+
+- raylib (fetched automatically by CMake)
 
 ## Screenshots
 
