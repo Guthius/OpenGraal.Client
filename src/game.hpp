@@ -1,6 +1,6 @@
 #pragma once
 
-#include "actor.hpp"
+#include "constants.hpp"
 #include "leap_effect.hpp"
 #include "level.hpp"
 

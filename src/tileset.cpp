@@ -7,7 +7,7 @@
 
 namespace {
     constexpr auto to_le(const uint32_t i) -> uint32_t {
-        return i >> 24 & 0xFF | i >> 8 & 0xFF00;
+        return (i >> 24 & 0xFF) | (i >> 8 & 0xFF00);
     }
 
     auto skip_array(std::ifstream &stream) -> void {

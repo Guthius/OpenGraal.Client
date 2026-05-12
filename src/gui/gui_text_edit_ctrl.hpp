@@ -1,7 +1,7 @@
 #pragma once
 
-#include "gui_text_ctrl.hpp"
 #include "../font_manager.hpp"
+#include "gui_text_ctrl.hpp"
 
 #include <algorithm>
 #include <string>

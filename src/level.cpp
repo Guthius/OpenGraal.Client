@@ -2,10 +2,10 @@
 
 #include "utils.hpp"
 
+#include <boost/algorithm/string.hpp>
 #include <cmath>
 #include <fstream>
 #include <rlgl.h>
-#include <boost/algorithm/string.hpp>
 
 namespace {
     struct tile_pattern {

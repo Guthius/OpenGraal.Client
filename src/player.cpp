@@ -134,10 +134,10 @@ auto player::check_for_level_link_at_at(const Vector2 &position) -> bool {
     const auto dy = link->get_new_y() == "playery" ? position.y : (std::stof(link->get_new_y()) + 1.0f) * 16;
 
     TraceLog(LOG_INFO, "Warp to %s @ %s, %s (%f, %f)",
-             link->get_new_level().c_str(),
-             link->get_new_x().c_str(),
-             link->get_new_y().c_str(),
-             dx, dy);
+        link->get_new_level().c_str(),
+        link->get_new_x().c_str(),
+        link->get_new_y().c_str(),
+        dx, dy);
 
     const auto pos = Vector2{dx, dy};
 

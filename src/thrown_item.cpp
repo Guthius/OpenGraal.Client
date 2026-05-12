@@ -1,6 +1,5 @@
 #include "thrown_item.hpp"
 
-#include "actor.hpp"
 #include "carry_object.hpp"
 #include "texture_manager.hpp"
 

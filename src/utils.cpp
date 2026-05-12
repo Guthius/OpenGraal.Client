@@ -1,7 +1,7 @@
 #include "utils.hpp"
 
-#include <sstream>
 #include <cstdint>
+#include <sstream>
 
 namespace {
     constexpr bool is_pure_red(const Color &color) {

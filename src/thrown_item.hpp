@@ -1,6 +1,7 @@
 #pragma once
 
-#include "actor.hpp"
+#include "carry_object.hpp"
+#include "constants.hpp"
 #include "leap_effect.hpp"
 
 class thrown_item final {

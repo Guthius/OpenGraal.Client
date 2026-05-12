@@ -1,8 +1,8 @@
 #include "file_manager.hpp"
 
+#include <boost/algorithm/string.hpp>
 #include <map>
 #include <raylib.h>
-#include <boost/algorithm/string.hpp>
 
 namespace {
     std::map<std::string, std::filesystem::path> file_map{};

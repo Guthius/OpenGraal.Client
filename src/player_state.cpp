@@ -1,4 +1,3 @@
-#include "game.hpp"
 #include "input.hpp"
 #include "player.hpp"
 

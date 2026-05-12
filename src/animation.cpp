@@ -5,24 +5,18 @@
 #include "texture_manager.hpp"
 #include "utils.hpp"
 
+#include <boost/algorithm/string.hpp>
 #include <fstream>
 #include <rlgl.h>
-#include <boost/algorithm/string.hpp>
 
 namespace {
     sprite_source parse_sprite_source(const std::string &str) {
-        if (str == "SPRITES")
-            return sprite_source::sprites;
-        if (str == "SHIELD")
-            return sprite_source::shield;
-        if (str == "SWORD")
-            return sprite_source::sword;
-        if (str == "HEAD")
-            return sprite_source::head;
-        if (str == "BODY")
-            return sprite_source::body;
-        if (str == "ATTR1")
-            return sprite_source::attr1;
+        if (str == "SPRITES") return sprite_source::sprites;
+        if (str == "SHIELD") return sprite_source::shield;
+        if (str == "SWORD") return sprite_source::sword;
+        if (str == "HEAD") return sprite_source::head;
+        if (str == "BODY") return sprite_source::body;
+        if (str == "ATTR1") return sprite_source::attr1;
 
         return sprite_source::file;
     }
@@ -84,16 +78,13 @@ void animation::parse_ani(std::ifstream &stream) {
         } else {
             parse_sprites(line, frame.sprites[0]);
 
-            if (!std::getline(stream, line))
-                break;
+            if (!std::getline(stream, line)) break;
             parse_sprites(line, frame.sprites[1]);
 
-            if (!std::getline(stream, line))
-                break;
+            if (!std::getline(stream, line)) break;
             parse_sprites(line, frame.sprites[2]);
 
-            if (!std::getline(stream, line))
-                break;
+            if (!std::getline(stream, line)) break;
             parse_sprites(line, frame.sprites[3]);
         }
 

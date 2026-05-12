@@ -1,7 +1,7 @@
 #include "animation_manager.hpp"
 
-#include <map>
 #include <boost/algorithm/string.hpp>
+#include <map>
 
 namespace {
     std::map<std::string, animation *> loaded_animations;

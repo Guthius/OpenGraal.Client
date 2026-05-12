@@ -1,8 +1,8 @@
 #pragma once
 
-#include <vector>
-#include <string>
 #include <raylib.h>
+#include <string>
+#include <vector>
 
 auto split_string(const std::string &str) -> std::vector<std::string>;
 

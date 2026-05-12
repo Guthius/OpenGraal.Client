@@ -1,10 +1,11 @@
 #include "actor.hpp"
 
+#include "animation_manager.hpp"
 #include "game.hpp"
 #include "texture_manager.hpp"
 
-#include <rlgl.h>
 #include <boost/algorithm/string.hpp>
+#include <rlgl.h>
 
 namespace {
     constexpr Rectangle get_terrain_rectangle(const terrain_effect_type type) {

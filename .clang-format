@@ -2,19 +2,29 @@ Language: Cpp
 TabWidth: 4
 IndentWidth: 4
 UseTab: Never
-SortIncludes: Never
 IndentCaseBlocks: true
 ColumnLimit: 0
+AllowShortIfStatementsOnASingleLine: true
 AllowShortCaseLabelsOnASingleLine: true
 AlignArrayOfStructures: Left
 AlignConsecutiveMacros: Consecutive
+AlignConsecutiveAssignments:
+  Enabled: false
+  AcrossEmptyLines: false
 AlignConsecutiveShortCaseStatements:
   Enabled: true
   AlignCaseColons: false
+AlignAfterOpenBracket: false
 AlignConsecutiveDeclarations:
   Enabled: false
-  AcrossEmptyLines: true
+  AcrossEmptyLines: false
   AcrossComments: false
-  AlignFunctionDeclarations: false
+  AlignFunctionDeclarations: true
 NamespaceIndentation: All
 FixNamespaceComments: false
+SortIncludes: true
+IncludeCategories:
+  - Regex: "^<.*>"
+    Priority: 1
+  - Regex: '^".*"'
+    Priority: 2

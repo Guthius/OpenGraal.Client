@@ -1,6 +1,12 @@
 #include "game.hpp"
 
 #include "file_manager.hpp"
+#include "gui/gui_button_ctrl.hpp"
+#include "gui/gui_check_box_ctrl.hpp"
+#include "gui/gui_control.hpp"
+#include "gui/gui_radio_ctrl.hpp"
+#include "gui/gui_text_edit_ctrl.hpp"
+#include "gui/gui_window_ctrl.hpp"
 #include "level_manager.hpp"
 #include "player.hpp"
 #include "sign.hpp"
@@ -8,12 +14,6 @@
 #include "texture_manager.hpp"
 #include "thrown_item.hpp"
 #include "tileset_manager.hpp"
-#include "gui/gui_button_ctrl.hpp"
-#include "gui/gui_check_box_ctrl.hpp"
-#include "gui/gui_control.hpp"
-#include "gui/gui_radio_ctrl.hpp"
-#include "gui/gui_text_edit_ctrl.hpp"
-#include "gui/gui_window_ctrl.hpp"
 
 #include <raylib.h>
 #include <raymath.h>
@@ -287,9 +287,9 @@ void run_game() {
 
         draw_diagnostics();
 
-        update();
-
         EndDrawing();
+
+        update();
     }
 }
 

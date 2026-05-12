@@ -1,7 +1,6 @@
 #pragma once
 
 #include "animation.hpp"
-#include "animation_manager.hpp"
 #include "carry_object.hpp"
 #include "constants.hpp"
 

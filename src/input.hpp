@@ -1,6 +1,6 @@
 #pragma once
 
-#include "actor.hpp"
+#include <raylib.h>
 
 enum class input_action {
     up,

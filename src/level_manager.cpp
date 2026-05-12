@@ -2,8 +2,8 @@
 
 #include "file_manager.hpp"
 
-#include <map>
 #include <boost/algorithm/string.hpp>
+#include <map>
 
 namespace {
     std::map<std::string, std::shared_ptr<level>> loaded_levels;

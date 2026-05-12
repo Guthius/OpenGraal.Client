@@ -14,7 +14,6 @@ enum class player_state {
     sit,
     jump,
     attack,
-
     lift,
     carrystill,
     carry
@@ -30,7 +29,7 @@ class player final : public actor {
   private:
     auto check_for_level_link_at_at(const Vector2 &position) -> bool;
 
-    [[nodiscard]]
+    [[maybe_unused]]
     auto check_for_sign_at(const Vector2 &position) const -> bool;
 
     void try_destroy_object_facing(const Vector2 &position) const;
