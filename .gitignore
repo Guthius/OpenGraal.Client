@@ -1,0 +1,25 @@
+# JetBrains IDEs
+.idea/
+
+# Clangd Cache
+.cache/
+
+# CMake
+build/
+
+# CLang Compile Commands
+compile_commands.json
+
+# Script-written data
+bin/downloads/
+bin/input/
+bin/scriptdata/
+
+# Test Accounts
+bin/*/accounts/
+
+# Per-deployment secret, generated on first start
+bin/*/jwt_secret.txt
+
+# Remembered logins, written by the client
+bin/prefs.txt

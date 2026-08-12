@@ -1,0 +1,5 @@
+add_subdirectory(shared)
+add_subdirectory(gs2)
+add_subdirectory(net)
+add_subdirectory(client)
+add_subdirectory(server)

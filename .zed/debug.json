@@ -1,0 +1,14 @@
+[
+  {
+    "label": "Debug Client",
+    "build": {
+      "command": "cmake",
+      "args": ["--build", "build"],
+      "cwd": "$ZED_WORKTREE_ROOT",
+    },
+    "program": "$ZED_WORKTREE_ROOT/build/OpenGraal",
+    "cwd": "$ZED_WORKTREE_ROOT/bin",
+    "request": "launch",
+    "adapter": "CodeLLDB",
+  },
+]
